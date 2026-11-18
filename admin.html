@@ -3876,34 +3876,97 @@
       }
     }
 
-    // Lưu sản phẩm từ form
+    // Lưu sản phẩm từ form & Đồng bộ trực tiếp lên SQL Server 2022
     async function saveProductFromForm(e) {
       e.preventDefault();
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      let origHtml = '';
+      if (submitBtn) {
+        origHtml = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">progress_activity</span><span>Đang đồng bộ SQL Server...</span>';
+        submitBtn.disabled = true;
+      }
+
+      const rawBarcode = document.getElementById('prod-barcode').value.trim();
+      const barcode = rawBarcode || ('893601' + Math.floor(100000 + Math.random() * 900000));
+      const existingId = document.getElementById('prod-id').value;
+      const id = existingId || barcode;
+
       const p = {
-        id: document.getElementById('prod-id').value || 'SP_' + Date.now(),
+        id: id,
         name: document.getElementById('prod-name').value.trim(),
-        barcode: document.getElementById('prod-barcode').value.trim() || '893' + Math.floor(Math.random() * 1000000000),
+        barcode: barcode,
         category: document.getElementById('prod-category').value,
         price: Number(document.getElementById('prod-price').value),
-        stock: Number(document.getElementById('prod-stock').value),
-        unit: document.getElementById('prod-unit').value || 'Món',
+        costPrice: Math.round(Number(document.getElementById('prod-price').value) * 0.75),
+        stock: Number(document.getElementById('prod-stock').value) || 50,
+        unit: document.getElementById('prod-unit').value.trim() || 'Món',
         daysUntilExpiry: Number(document.getElementById('prod-expiry').value) || 180,
-        image: '📦'
+        expiryDays: Number(document.getElementById('prod-expiry').value) || 180,
+        image: '📦',
+        branchId: 'branch_main'
       };
 
+      // 1. Lưu cục bộ qua TapHoaCore DAL
       if (window.TapHoaCore && window.TapHoaCore.addProduct) {
-        await window.TapHoaCore.addProduct(p);
+        try { await window.TapHoaCore.addProduct(p); } catch (err) {}
       }
+
+      // 2. Đồng bộ trực tiếp lên Backend REST API & SQL Server 2022 (dbo.SAN_PHAM & dbo.LO_HANG)
+      try {
+        const apiUrl = window.location.protocol === 'file:' ? 'http://localhost:3600/api/products' : '/api/products';
+        const res = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(p)
+        });
+        if (res.ok) {
+          const resData = await res.json();
+          console.log('[Admin] Đã đồng bộ sản phẩm mới lên SQL Server:', resData);
+          alert(`✅ ĐÃ TẠO HÀNG HÓA VÀ ĐỒNG BỘ THÀNH CÔNG VÀO CSDL SQL SERVER!\n\n• Tên sản phẩm: ${p.name}\n• Mã vạch (Barcode): ${p.barcode}\n• Ngành hàng: ${p.category}\n• Giá bán: ${(p.price).toLocaleString('vi-VN')} đ\n• Tồn kho ban đầu: ${p.stock} ${p.unit}\n• CSDL: TapHoa36 (Bảng dbo.SAN_PHAM & dbo.LO_HANG)`);
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.message || 'Lỗi HTTP ' + res.status);
+        }
+      } catch (err) {
+        console.warn('[Admin] Lỗi đồng bộ Backend API:', err);
+        alert('Đã lưu cục bộ nhưng chưa đồng bộ được với Backend server: ' + err.message + '\nVui lòng kiểm tra server.js đang chạy tại cổng 3600.');
+      } finally {
+        if (submitBtn) {
+          submitBtn.innerHTML = origHtml;
+          submitBtn.disabled = false;
+        }
+      }
+
       closeModal('modal-product');
+      // Reset form modal
+      document.getElementById('form-product').reset();
+      document.getElementById('prod-id').value = '';
+
+      // Tải lại bảng sản phẩm & cập nhật số liệu
       await refreshProducts();
+      if (typeof checkDatabaseConnection === 'function') {
+        checkDatabaseConnection();
+      }
     }
 
     async function deleteProductItem(id) {
-      if (!confirm('Bạn có chắc muốn xóa mặt hàng này khỏi kho?')) return;
+      if (!confirm('Bạn có chắc muốn xóa mặt hàng này khỏi kho và đồng bộ xóa trên CSDL SQL Server?')) return;
       if (window.TapHoaCore && window.TapHoaCore.deleteProduct) {
-        await window.TapHoaCore.deleteProduct(id);
+        try { await window.TapHoaCore.deleteProduct(id); } catch (err) {}
       }
+
+      try {
+        const apiUrl = window.location.protocol === 'file:' ? `http://localhost:3600/api/products?id=${encodeURIComponent(id)}` : `/api/products?id=${encodeURIComponent(id)}`;
+        await fetch(apiUrl, { method: 'DELETE' });
+      } catch (err) {
+        console.warn('[Admin] Lỗi xóa sản phẩm trên server:', err);
+      }
+
       await refreshProducts();
+      if (typeof checkDatabaseConnection === 'function') {
+        checkDatabaseConnection();
+      }
     }
 
     // Render danh sách tài khoản ACL

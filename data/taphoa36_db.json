@@ -44,6 +44,18 @@
   ],
   "products": [
     {
+      "id": "893601999888",
+      "name": "Bánh gạo One One Vị Bò Nướng Tươi (Gói 150g)",
+      "barcode": "893601999888",
+      "category": "banh_keo",
+      "costPrice": 26000,
+      "price": 35000,
+      "stock": 65,
+      "unit": "Gói",
+      "expiryDays": 180,
+      "branchId": "branch_main"
+    },
+    {
       "id": "SP_0001",
       "name": "Omachi Mì ly hải sản chua cay 66gr",
       "barcode": "8936236471302",
@@ -51,7 +63,7 @@
       "costPrice": 11500,
       "price": 15000,
       "originalPrice": 16500,
-      "stock": 25,
+      "stock": 21,
       "unit": "ly",
       "rating": 4.5,
       "sales": 50,
@@ -14390,6 +14402,86 @@
     }
   ],
   "orders": [
+    {
+      "id": "#DH-326526",
+      "branchId": "branch_main",
+      "items": [
+        {
+          "id": "SP_0001",
+          "barcode": "SP_0001",
+          "name": "Omachi Mì ly hải sản chua cay 66gr",
+          "price": 15000,
+          "quantity": 2,
+          "unit": "ly"
+        }
+      ],
+      "total": 45000,
+      "paymentMethod": "cash",
+      "customerName": "Trần Ngọc Lâm (Anh Lâm - Chủ tiệm)",
+      "customerPhone": "0900000036",
+      "debtAmount": 0,
+      "createdAt": "2026-11-18T15:38:46.553Z"
+    },
+    {
+      "id": "#DH-823297",
+      "branchId": "branch_main",
+      "items": [
+        {
+          "id": "SP_0001",
+          "barcode": "SP_0001",
+          "name": "Omachi Mì ly hải sản chua cay 66gr",
+          "price": 15000,
+          "quantity": 2,
+          "unit": "ly"
+        }
+      ],
+      "total": 45000,
+      "paymentMethod": "cash",
+      "customerName": "Trần Ngọc Lâm (Anh Lâm - Chủ tiệm)",
+      "customerPhone": "0900000036",
+      "debtAmount": 0,
+      "createdAt": "2026-11-18T15:30:23.329Z"
+    },
+    {
+      "id": "HD_1795015741843",
+      "branchId": "branch_main",
+      "items": [
+        {
+          "id": "sp2",
+          "barcode": "sp2",
+          "name": "Nước mắm Nam Ngư 900ml",
+          "price": 30000,
+          "quantity": 1,
+          "unit": "chai"
+        }
+      ],
+      "total": 28500,
+      "paymentMethod": "cash",
+      "customerName": "Khách Tại Quầy UTH",
+      "customerPhone": "",
+      "debtAmount": 0,
+      "createdAt": "2026-11-18T15:29:01.849Z"
+    },
+    {
+      "id": "HD_1795015733024",
+      "branchId": "branch_main",
+      "items": [
+        {
+          "id": "sp2",
+          "barcode": "sp2",
+          "name": "Nước mắm Nam Ngư 900ml",
+          "price": 30000,
+          "quantity": 5,
+          "unit": "chai"
+        }
+      ],
+      "total": 142500,
+      "paymentMethod": "cash",
+      "customerName": "Khách Tại Quầy UTH",
+      "customerPhone": "",
+      "debtAmount": 0,
+      "createdAt": "2026-11-18T15:28:53.031Z"
+    },
     {
       "id": "DH_STORE_528293",
       "branchId": "branch_main",

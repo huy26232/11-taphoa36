@@ -302,15 +302,54 @@ function syncOrderToSqlServer(order) {
   }
 }
 
+function mapCategoryToMaDM(category) {
+  if (!category) return 'DM11';
+  const c = category.toLowerCase();
+  if (c.includes('thit') || c.includes('ca') || c.includes('trung') || c === 'thit_ca') return 'DM01';
+  if (c.includes('rau') || c.includes('cu') || c.includes('trai_cay') || c === 'rau_cu') return 'DM02';
+  if (c.includes('dau') || c.includes('mam') || c.includes('gia_vi')) return 'DM03';
+  if (c.includes('gao') || c.includes('bot') || c.includes('kho')) return 'DM04';
+  if (c.includes('mi') || c.includes('chao') || c.includes('pho') || c === 'mi_goi') return 'DM05';
+  if (c.includes('sua') || c === 'sua_bo') return 'DM06';
+  if (c.includes('dong_lanh') || c === 'hang_tuoi') return 'DM08';
+  if (c.includes('nuoc') || c.includes('bia') || c === 'nuoc_ngot' || c === 'nuoc_giai_khat') return 'DM09';
+  if (c.includes('ca_phe') || c.includes('tra')) return 'DM10';
+  if (c.includes('banh') || c.includes('keo') || c === 'banh_keo') return 'DM11';
+  if (c.includes('ve_sinh') || c.includes('hoa_pham')) return 'DM13';
+  if (c.includes('me') || c.includes('be') || c === 'me_be') return 'DM14';
+  return 'DM11';
+}
+
 function syncProductToSqlServer(product) {
   try {
-    const maSP = (product.id || 'SP_' + Date.now()).substring(0, 15);
-    const safeTen = (product.name || '').replace(/'/g, "''");
-    const dvt = (product.unit || 'món').replace(/'/g, "''");
+    const maSP = (product.barcode || product.id || 'SP_' + Date.now()).substring(0, 15);
+    const safeTen = (product.name || '').replace(/'/g, "''").substring(0, 145);
+    const dvt = (product.unit || 'món').replace(/'/g, "''").substring(0, 18);
     const giaBan = Number(product.price) || 0;
     const tonKho = Number(product.stock) || 50;
     const giaNhap = Number(product.costPrice) || Math.round(giaBan * 0.75);
-    const sql = `SET NOCOUNT ON; IF NOT EXISTS (SELECT 1 FROM dbo.SAN_PHAM WHERE MaSP = '${maSP}') BEGIN INSERT INTO dbo.SAN_PHAM (MaSP, TenSP, MaDanhMuc, DonViTinh, GiaBan, LaHangTuoiSong, MaNVSuaCuoi, NgaySuaCuoi) VALUES ('${maSP}', N'${safeTen}', 'DM11', N'${dvt}', ${giaBan}, 0, 'admin', GETDATE()); INSERT INTO dbo.LO_HANG (MaSP, NgaySanXuat, HanSuDung, SoLuongTon, GiaNhap) VALUES ('${maSP}', DATEADD(month, -1, GETDATE()), DATEADD(month, 6, GETDATE()), ${tonKho}, ${giaNhap}); END;`;
+    const maDM = mapCategoryToMaDM(product.category);
+    const laTuoiSong = (maDM === 'DM01' || maDM === 'DM02') ? 1 : 0;
+    const expiryDays = Number(product.expiryDays) || Number(product.daysUntilExpiry) || 180;
+
+    const sql = `SET NOCOUNT ON; 
+IF NOT EXISTS (SELECT 1 FROM dbo.SAN_PHAM WHERE MaSP = '${maSP}')
+BEGIN
+  INSERT INTO dbo.SAN_PHAM (MaSP, TenSP, MaDanhMuc, DonViTinh, GiaBan, LaHangTuoiSong, MaNVSuaCuoi, NgaySuaCuoi) 
+  VALUES ('${maSP}', N'${safeTen}', '${maDM}', N'${dvt}', ${giaBan}, ${laTuoiSong}, 'admin', GETDATE());
+  INSERT INTO dbo.LO_HANG (MaSP, NgaySanXuat, HanSuDung, SoLuongTon, GiaNhap) 
+  VALUES ('${maSP}', DATEADD(day, -30, GETDATE()), DATEADD(day, ${expiryDays}, GETDATE()), ${tonKho}, ${giaNhap});
+END
+ELSE
+BEGIN
+  UPDATE dbo.SAN_PHAM 
+  SET TenSP = N'${safeTen}', MaDanhMuc = '${maDM}', DonViTinh = N'${dvt}', GiaBan = ${giaBan}, LaHangTuoiSong = ${laTuoiSong}, MaNVSuaCuoi = 'admin', NgaySuaCuoi = GETDATE()
+  WHERE MaSP = '${maSP}';
+  UPDATE dbo.LO_HANG 
+  SET SoLuongTon = ${tonKho}, GiaNhap = ${giaNhap}, HanSuDung = DATEADD(day, ${expiryDays}, GETDATE())
+  WHERE MaSP = '${maSP}';
+END;`;
+
     setTimeout(() => {
       querySqlServer(sql);
     }, 10);
@@ -363,19 +402,27 @@ const server = http.createServer(async (req, res) => {
           sendJSON(res, 400, { success: false, message: 'Thiếu tên hoặc giá sản phẩm' });
           return;
         }
+        const barcode = (body.barcode || '').trim() || ('893601' + Math.floor(100000 + Math.random() * 900000));
+        const id = body.id || barcode || ('prod_' + Date.now());
         const newProduct = {
-          id: body.id || 'prod_' + Date.now(),
-          name: body.name,
-          barcode: body.barcode || ('893601' + Math.floor(100000 + Math.random() * 900000)),
-          category: body.category || 'Mặc định',
-          costPrice: Number(body.costPrice) || 0,
+          id: id,
+          name: body.name.trim(),
+          barcode: barcode,
+          category: body.category || 'Tạp hóa',
+          costPrice: Number(body.costPrice) || Math.round(Number(body.price) * 0.75),
           price: Number(body.price),
-          stock: Number(body.stock) || 0,
+          stock: Number(body.stock) || 50,
           unit: body.unit || 'món',
-          expiryDays: Number(body.expiryDays) || 30,
+          expiryDays: Number(body.expiryDays) || Number(body.daysUntilExpiry) || 180,
           branchId: body.branchId || 'branch_main'
         };
-        db.products.push(newProduct);
+
+        const existingIdx = db.products.findIndex(p => p.id === newProduct.id || p.barcode === newProduct.barcode);
+        if (existingIdx !== -1) {
+          db.products[existingIdx] = { ...db.products[existingIdx], ...newProduct };
+        } else {
+          db.products.unshift(newProduct);
+        }
         writeDatabase(db);
         syncProductToSqlServer(newProduct);
         sendJSON(res, 201, { success: true, product: newProduct });
@@ -384,6 +431,24 @@ const server = http.createServer(async (req, res) => {
         sendJSON(res, 400, { success: false, message: err.message });
         return;
       }
+    }
+    if (method === 'DELETE') {
+      const prodId = parsedUrl.searchParams.get('id') || '';
+      if (!prodId) {
+        sendJSON(res, 400, { success: false, message: 'Thiếu mã sản phẩm cần xóa' });
+        return;
+      }
+      const existingIdx = db.products.findIndex(p => p.id === prodId || p.barcode === prodId);
+      if (existingIdx !== -1) {
+        const removed = db.products.splice(existingIdx, 1)[0];
+        writeDatabase(db);
+        const maSP = (removed.barcode || removed.id || prodId).substring(0, 15);
+        querySqlServer(`SET NOCOUNT ON; DELETE FROM dbo.CHI_TIET_HOA_DON WHERE MaSP = '${maSP}'; DELETE FROM dbo.LO_HANG WHERE MaSP = '${maSP}'; DELETE FROM dbo.SAN_PHAM WHERE MaSP = '${maSP}';`);
+        sendJSON(res, 200, { success: true, message: 'Đã xóa sản phẩm thành công', id: prodId });
+        return;
+      }
+      sendJSON(res, 404, { success: false, message: 'Không tìm thấy sản phẩm' });
+      return;
     }
   }
 
