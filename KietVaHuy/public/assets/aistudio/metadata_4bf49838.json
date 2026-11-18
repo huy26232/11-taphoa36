@@ -1,0 +1,6 @@
+{
+  "name": "Tạp Hóa Số",
+  "description": "Hệ thống cửa hàng thực phẩm tươi sống, bách hóa tiện lợi giao nhanh 30 phút.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

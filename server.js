@@ -388,6 +388,14 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // 2b. Điều hướng chuyên trang Kiệt & Huy
+  const cleanPath = decodeURIComponent(pathname);
+  if (cleanPath === '/kietvahuy' || cleanPath === '/kietvahuy/' || cleanPath === '/KietVaHuy' || cleanPath === '/KietVaHuy/') {
+    res.writeHead(302, { 'Location': '/KietVaHuy/public/assets/aistudio/trangchu_92bc4247_92bc4247.html' });
+    res.end();
+    return;
+  }
+
   // 3. Products Endpoints
   if (pathname === '/api/products') {
     const db = readDatabase();
@@ -622,7 +630,12 @@ const server = http.createServer(async (req, res) => {
           '.json': 'application/json; charset=utf-8',
           '.png': 'image/png',
           '.jpg': 'image/jpeg',
-          '.svg': 'image/svg+xml'
+          '.jpeg': 'image/jpeg',
+          '.webp': 'image/webp',
+          '.svg': 'image/svg+xml',
+          '.ico': 'image/x-icon',
+          '.woff': 'font/woff',
+          '.woff2': 'font/woff2'
         };
         const contentType = mimeTypes[ext] || 'application/octet-stream';
         res.writeHead(200, {
