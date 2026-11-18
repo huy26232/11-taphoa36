@@ -285,12 +285,13 @@ function syncOrderToSqlServer(order) {
     let sql = `SET NOCOUNT ON; IF NOT EXISTS (SELECT 1 FROM dbo.HOA_DON WHERE MaHD = '${maHD}') BEGIN INSERT INTO dbo.HOA_DON (MaHD, NgayLap, TongTienHang, ThanhTien, PhuongThucTT, MaNV) VALUES ('${maHD}', GETDATE(), ${thanhTien}, ${thanhTien}, N'${pttt}', 'admin'); END;`;
     if (Array.isArray(order.items)) {
       order.items.forEach(item => {
-        let maSP = (item.id || item.barcode || 'SP_0001').substring(0, 15);
-        const sl = Number(item.quantity) || 1;
+        const barcode = (item.barcode || '').substring(0, 15);
+        const id = (item.id || '').substring(0, 15);
+        const sl = Number(item.quantity) || Number(item.qty) || 1;
         const gia = Number(item.price) || 0;
         const tt = sl * gia;
-        const rnd = Math.floor(Math.random() * 100000);
-        sql += ` DECLARE @Lo_${rnd} INT; SELECT TOP 1 @Lo_${rnd} = MaLo FROM dbo.LO_HANG WHERE MaSP = '${maSP}'; IF @Lo_${rnd} IS NOT NULL BEGIN INSERT INTO dbo.CHI_TIET_HOA_DON (MaHD, MaSP, MaLo, SoLuong, DonGia, ThanhTien, SoTienGiam) VALUES ('${maHD}', '${maSP}', @Lo_${rnd}, ${sl}, ${gia}, ${tt}, 0); UPDATE dbo.LO_HANG SET SoLuongTon = CASE WHEN SoLuongTon >= ${sl} THEN SoLuongTon - ${sl} ELSE 0 END WHERE MaLo = @Lo_${rnd}; END;`;
+        const rnd = Math.floor(Math.random() * 1000000);
+        sql += ` DECLARE @Lo_${rnd} INT, @Sp_${rnd} VARCHAR(15); SELECT TOP 1 @Lo_${rnd} = MaLo, @Sp_${rnd} = MaSP FROM dbo.LO_HANG WHERE MaSP = '${barcode}' OR MaSP = '${id}'; IF @Lo_${rnd} IS NULL BEGIN SELECT TOP 1 @Sp_${rnd} = MaSP FROM dbo.SAN_PHAM WHERE MaSP = '${barcode}' OR MaSP = '${id}'; IF @Sp_${rnd} IS NOT NULL BEGIN SELECT TOP 1 @Lo_${rnd} = MaLo FROM dbo.LO_HANG WHERE MaSP = @Sp_${rnd}; END; END; IF @Lo_${rnd} IS NOT NULL BEGIN INSERT INTO dbo.CHI_TIET_HOA_DON (MaHD, MaSP, MaLo, SoLuong, DonGia, ThanhTien, SoTienGiam) VALUES ('${maHD}', @Sp_${rnd}, @Lo_${rnd}, ${sl}, ${gia}, ${tt}, 0); UPDATE dbo.LO_HANG SET SoLuongTon = CASE WHEN SoLuongTon >= ${sl} THEN SoLuongTon - ${sl} ELSE 0 END WHERE MaLo = @Lo_${rnd}; END;`;
       });
     }
     setTimeout(() => {

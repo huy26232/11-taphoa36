@@ -121,6 +121,12 @@
           <!-- Populated by JS -->
         </div>
 
+        <!-- Database Badge (SQL Server 2022) -->
+        <div id="storeSqlStatusBadge" class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold" title="Đồng bộ trực tiếp với Microsoft SQL Server 2022">
+          <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+          <span id="storeSqlStatusText">SQL Server: TapHoa36</span>
+        </div>
+
         <!-- Cart Button with Counter Badge -->
         <button 
           id="btnOpenCart" 
@@ -769,9 +775,42 @@
       };
 
       // =======================================================================
-      // 3. NẠP VÀ HIỂN THỊ DANH MỤC HÀNG HÓA
+      // 3. NẠP VÀ HIỂN THỊ DANH MỤC HÀNG HÓA TỪ DATABASE
       // =======================================================================
+      async function updateDatabaseStatus() {
+        try {
+          const apiUrl = window.location.protocol === 'file:' ? 'http://localhost:3600/api/sql/status' : '/api/sql/status';
+          const resp = await fetch(apiUrl);
+          if (resp && resp.ok) {
+            const data = await resp.json();
+            const badge = document.getElementById('storeSqlStatusText');
+            if (badge && data.connected) {
+              badge.textContent = `SQL Server: ${data.database} (${data.totalProducts} SP)`;
+            }
+          }
+        } catch (e) {}
+      }
+
       async function loadStoreCatalog() {
+        // 1. Thử nạp trực tiếp từ Backend API (kết nối Microsoft SQL Server 2022)
+        try {
+          const apiUrl = window.location.protocol === 'file:' ? 'http://localhost:3600/api/products' : '/api/products';
+          const resp = await fetch(apiUrl);
+          if (resp && resp.ok) {
+            const serverProducts = await resp.json();
+            if (Array.isArray(serverProducts) && serverProducts.length > 0) {
+              catalog = serverProducts;
+              console.log('[Store Online] Đã nạp thành công ' + catalog.length + ' sản phẩm trực tiếp từ CSDL Backend/SQL Server');
+              updateDatabaseStatus();
+              renderCatalog();
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn('[Store Online] Không kết nối được API Backend, chuyển sang nạp cục bộ:', e);
+        }
+
+        // Fallback sang IndexedDB DAL nếu mất mạng
         catalog = await TapHoaCore.dal.getProducts();
         if (!catalog || catalog.length === 0) {
           catalog = await TapHoaCore.dal.seedProducts();
@@ -1290,6 +1329,42 @@
 
         // 1. Lưu vào IndexedDB / Offline Queue qua DAL
         await TapHoaCore.dal.saveOrder(orderData);
+
+        // 1.1 Gửi đơn hàng lên Backend API để ghi nhận vào SQL Server (dbo.HOA_DON, dbo.CHI_TIET_HOA_DON) và trừ kho (dbo.LO_HANG)
+        try {
+          const apiUrl = window.location.protocol === 'file:' ? 'http://localhost:3600/api/orders' : '/api/orders';
+          fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: orderData.id,
+              branchId: 'branch_main',
+              customerName: name,
+              customerPhone: phone,
+              customerAddress: address,
+              items: cart.map(i => ({
+                id: i.id,
+                barcode: i.barcode || i.id,
+                name: i.name,
+                price: i.price,
+                quantity: i.quantity,
+                unit: i.unit || 'món'
+              })),
+              total: finalTotal,
+              paymentMethod: paymentMethod === 'vietqr' ? 'vietqr' : 'cash',
+              note: note,
+              createdAt: new Date().toISOString()
+            })
+          }).then(r => r.json()).then(res => {
+            if (res && res.success) {
+              console.log('[Store Online] Đơn hàng online đã lưu thành công vào SQL Server (dbo.HOA_DON)!', orderData.id);
+            }
+          }).catch(err => {
+            console.warn('[Store Online] Backend sync error, order kept locally:', err);
+          });
+        } catch (err) {
+          console.warn('[Store Online] API call error:', err);
+        }
 
         // 2. Trừ tồn kho và đồng bộ sang POS & Admin (< 50ms)
         for (const item of cart) {

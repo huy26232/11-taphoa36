@@ -51,7 +51,7 @@
       "costPrice": 11500,
       "price": 15000,
       "originalPrice": 16500,
-      "stock": 27,
+      "stock": 25,
       "unit": "ly",
       "rating": 4.5,
       "sales": 50,
@@ -67,7 +67,7 @@
       "costPrice": 29500,
       "price": 38000,
       "originalPrice": 42000,
-      "stock": 34,
+      "stock": 33,
       "unit": "gói",
       "rating": 4.6,
       "sales": 63,
@@ -14390,6 +14390,46 @@
     }
   ],
   "orders": [
+    {
+      "id": "DH_STORE_528293",
+      "branchId": "branch_main",
+      "items": [
+        {
+          "id": "SP_0002",
+          "barcode": "4902888183447",
+          "name": "Dars Socola đen 42g",
+          "price": 38000,
+          "quantity": 1,
+          "unit": "hộp"
+        }
+      ],
+      "total": 38000,
+      "paymentMethod": "vietqr",
+      "customerName": "Nguyễn Văn A (Sinh viên UTH)",
+      "customerPhone": "0912345678",
+      "debtAmount": 0,
+      "createdAt": "2026-11-18T15:25:28.302Z"
+    },
+    {
+      "id": "HD_POS_528256",
+      "branchId": "branch_main",
+      "items": [
+        {
+          "id": "SP_0001",
+          "barcode": "8936236471302",
+          "name": "Omachi Mì ly hải sản chua cay 66gr",
+          "price": 15000,
+          "quantity": 2,
+          "unit": "ly"
+        }
+      ],
+      "total": 30000,
+      "paymentMethod": "cash",
+      "customerName": "Khách Tại Quầy UTH (Demo POS)",
+      "customerPhone": "",
+      "debtAmount": 0,
+      "createdAt": "2026-11-18T15:25:28.282Z"
+    },
     {
       "id": "HD_1795013626198",
       "branchId": "branch_main",
