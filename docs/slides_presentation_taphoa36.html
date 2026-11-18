@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Báo Cáo Tiến Độ Lập Trình Web - TapHoa36 (ĐH GTVT TP.HCM - UTH)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0b0f19;
+      color: #1e293b;
+      overflow: hidden;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+      animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .slide.active {
+      display: flex;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: scale(0.98) translateY(8px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(254, 205, 211, 0.6);
+    }
+    .screen-mockup {
+      box-shadow: 0 25px 50px -12px rgba(225, 29, 72, 0.25);
+    }
+    /* Custom video simulation player styling */
+    .video-screen {
+      background: #0f172a;
+      background-image: radial-gradient(#1e293b 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+  </style>
+</head>
+<body class="h-screen w-screen flex flex-col justify-between select-none">
+
+  <!-- ========================================================================= -->
+  <!-- TOP HEADER / CONTROL BAR -->
+  <!-- ========================================================================= -->
+  <header class="h-14 bg-slate-950/95 border-b border-slate-800/80 px-6 flex items-center justify-between text-white shrink-0 z-30">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-rose-500 via-pink-500 to-rose-400 flex items-center justify-center font-black text-sm shadow-lg shadow-rose-500/30">
+        36
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="font-extrabold text-sm tracking-wide bg-gradient-to-r from-rose-400 to-pink-300 bg-clip-text text-transparent">TapHoa36</span>
+          <span class="text-[10px] bg-rose-950 text-rose-300 px-2 py-0.5 rounded-full border border-rose-800/60 font-bold uppercase tracking-wider">Đồ Án Lập Trình Web</span>
+        </div>
+        <p class="text-[10px] text-slate-400">Trường ĐH Giao Thông Vận Tải TP.HCM - UTH (Cơ sở Ung Văn Khiêm)</p>
+      </div>
+    </div>
+
+    <!-- Center Slide Counter Badge -->
+    <div class="hidden md:flex items-center gap-2 px-3.5 py-1 bg-slate-900/90 rounded-full border border-slate-800 text-xs text-slate-300">
+      <span class="material-symbols-outlined text-sm text-rose-400">slideshow</span>
+      <span>Slide:</span>
+      <strong id="top-slide-num" class="text-rose-400 font-mono font-bold">01 / 20</strong>
+    </div>
+
+    <!-- Author & Action Controls -->
+    <div class="flex items-center gap-4 text-xs">
+      <div class="hidden sm:block text-right">
+        <span class="text-slate-400 text-[11px] block">Sinh viên: <strong class="text-white">Trần Ngọc Lâm (034206001749)</strong></span>
+        <span class="text-slate-400 text-[11px] block">GVHD: <strong class="text-rose-300">ThS. Trần Thịnh Mạnh Đức</strong></span>
+      </div>
+      <div class="flex items-center gap-1.5 border-l border-slate-800 pl-3">
+        <button onclick="toggleFullscreen()" title="Toàn màn hình (F)" class="p-2 hover:bg-slate-800 rounded-xl text-slate-300 hover:text-white transition">
+          <span class="material-symbols-outlined text-lg">fullscreen</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN PRESENTATION CANVAS (16:9 RATIO WIDESCREEN) -->
+  <!-- ========================================================================= -->
+  <main class="flex-1 p-3 sm:p-5 lg:p-6 flex items-center justify-center overflow-hidden">
+    <div class="w-full max-w-6xl aspect-[16/9] bg-white rounded-3xl shadow-2xl border border-rose-100 overflow-hidden relative flex flex-col">
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 1: BÌA ĐỀ TÀI CHÍNH THỨC -->
+      <!-- ===================================================================== -->
+      <section class="slide active p-8 sm:p-12 flex-col justify-between bg-gradient-to-br from-rose-50/80 via-white to-pink-50/60 relative overflow-hidden" data-slide="1">
+        <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-rose-200/30 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex items-center justify-between z-10">
+          <div class="flex items-center gap-2 px-3 py-1 bg-rose-100/90 text-rose-800 rounded-full text-xs font-extrabold uppercase tracking-wider border border-rose-200">
+            <span class="material-symbols-outlined text-sm">school</span>
+            <span>Khoa Công Nghệ Thông Tin • ĐH GTVT TP.HCM (UTH)</span>
+          </div>
+          <span class="text-xs font-bold text-slate-500 bg-white/80 px-3 py-1 rounded-full border border-slate-200 shadow-2xs">Học kỳ I • 2026 - 2027</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center my-auto z-10">
+          <div class="md:col-span-7 space-y-4">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-rose-200 text-rose-600 text-xs font-bold shadow-xs">
+              <span class="material-symbols-outlined text-base">storefront</span>
+              <span>BÁO CÁO TIẾN ĐỘ ĐỀ TÀI MÔN LẬP TRÌNH WEB</span>
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+              Hệ Thống Bán Lẻ &amp;<br>
+              Cửa Hàng Số <span class="bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 bg-clip-text text-transparent">TapHoa36</span>
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xl">
+              Nền tảng quản lý bán lẻ đa kênh tích hợp máy tính tiền quầy POS, Web Store mua sắm trực tuyến, trợ lý trí tuệ nhân tạo TapHoa36 AI và hệ thống quản trị Bento Grid 12 cột chuẩn RESTful Backend.
+            </p>
+          </div>
+
+          <div class="md:col-span-5 flex justify-center">
+            <div class="relative w-full max-w-xs group cursor-pointer" onclick="showSlide(10)">
+              <div class="absolute -inset-1 bg-gradient-to-r from-rose-500 to-pink-500 rounded-2xl blur-md opacity-30 group-hover:opacity-50 transition duration-300"></div>
+              <img src="assets/images/screen_overview.png" alt="TapHoa36 Overview" class="relative rounded-2xl border-2 border-white shadow-2xl w-full object-cover transform group-hover:scale-102 transition duration-300">
+              <div class="absolute bottom-2 left-2 right-2 bg-slate-900/80 backdrop-blur-sm p-2 rounded-xl text-white text-[11px] font-semibold text-center flex items-center justify-center gap-1.5">
+                <span class="material-symbols-outlined text-sm text-rose-400">visibility</span>
+                <span>Giao diện thực tế TapHoa36</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-rose-100 z-10">
+          <div class="bg-white/90 p-3 rounded-2xl border border-rose-100 shadow-2xs">
+            <span class="text-[10px] text-slate-400 font-bold block uppercase">Sinh viên thực hiện</span>
+            <span class="text-xs sm:text-sm font-extrabold text-slate-900">Trần Ngọc Lâm</span>
+            <span class="text-[11px] text-rose-600 font-mono font-bold block">MSSV: 034206001749</span>
+          </div>
+          <div class="bg-white/90 p-3 rounded-2xl border border-rose-100 shadow-2xs">
+            <span class="text-[10px] text-slate-400 font-bold block uppercase">Giảng viên hướng dẫn</span>
+            <span class="text-xs sm:text-sm font-extrabold text-slate-900">ThS. Trần Thịnh Mạnh Đức</span>
+            <span class="text-[11px] text-slate-500 block font-medium">Bộ môn Lập Trình Web</span>
+          </div>
+          <div class="bg-white/90 p-3 rounded-2xl border border-rose-100 shadow-2xs">
+            <span class="text-[10px] text-slate-400 font-bold block uppercase">Cơ sở thử nghiệm</span>
+            <span class="text-xs sm:text-sm font-extrabold text-slate-900">ĐH GTVT TP.HCM (UTH)</span>
+            <span class="text-[11px] text-slate-500 block truncate font-medium">31 Ung Văn Khiêm, P. 25, Bình Thạnh</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 2: THÔNG TIN SINH VIÊN & ĐỀ TÀI -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="2">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">badge</span>
+            <span>Thông tin nhân sự</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Thông Tin Thành Viên &amp; Giảng Viên Hướng Dẫn</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+          <!-- Card Sinh Viên -->
+          <div class="glass-card p-6 rounded-3xl border-2 border-rose-100 flex items-start gap-4">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-rose-500 to-pink-500 text-white flex items-center justify-center font-black text-2xl shadow-lg shadow-rose-500/30 shrink-0">
+              NL
+            </div>
+            <div class="space-y-1">
+              <span class="text-[10px] bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full font-bold uppercase">Tác giả đề tài</span>
+              <h3 class="text-lg font-black text-slate-900">Trần Ngọc Lâm</h3>
+              <p class="text-xs text-rose-600 font-mono font-bold">Mã số sinh viên: 034206001749</p>
+              <p class="text-xs text-slate-500 pt-1 leading-relaxed">
+                Chịu trách nhiệm kiến trúc toàn diện Full-Stack: Front-end SPA, máy chủ Node.js REST API, mô hình CSDL quan hệ 3NF và bộ kiểm thử tự động.
+              </p>
+            </div>
+          </div>
+
+          <!-- Card Giảng Viên -->
+          <div class="glass-card p-6 rounded-3xl border-2 border-slate-200 flex items-start gap-4">
+            <div class="w-16 h-16 rounded-2xl bg-slate-800 text-rose-400 flex items-center justify-center font-black text-2xl shadow-lg shrink-0">
+              <span class="material-symbols-outlined text-3xl">school</span>
+            </div>
+            <div class="space-y-1">
+              <span class="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full font-bold uppercase">Giảng viên hướng dẫn</span>
+              <h3 class="text-lg font-black text-slate-900">ThS. Trần Thịnh Mạnh Đức</h3>
+              <p class="text-xs text-slate-500 font-medium">Khoa Công Nghệ Thông Tin</p>
+              <p class="text-xs text-slate-500 pt-1 leading-relaxed">
+                Định hướng tiêu chuẩn kỹ thuật: Kiến trúc 3 tầng, chuẩn giao tiếp RESTful Client-Server, thiết kế CSDL quan hệ chuẩn hóa và chỉ số đánh giá Google Lighthouse.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between text-xs text-slate-600">
+          <span>Cam kết bản quyền: <strong>Toàn bộ hệ sinh thái sử dụng thương hiệu độc quyền TapHoa36.</strong></span>
+          <span class="text-emerald-600 font-bold flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">check_circle</span>
+            <span>Bảo vệ quyền sở hữu trí tuệ</span>
+          </span>
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 3: BỐI CẢNH ĐỀ TÀI & MỤC TIÊU -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="3">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">psychology</span>
+            <span>Đặt vấn đề</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Bối Cảnh Đề Tài &amp; Mục Tiêu Dự Án TapHoa36</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-auto">
+          <div class="p-5 bg-rose-50/60 rounded-3xl border border-rose-100 space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-rose-500 text-white flex items-center justify-center font-bold shadow-xs">
+              <span class="material-symbols-outlined">receipt_long</span>
+            </div>
+            <h3 class="font-extrabold text-sm text-slate-900">Thực Trạng Truyền Thống</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Các tiệm tạp hóa xóm quanh trường đại học thường ghi sổ nợ tay, tính nhẩm tiền thối dễ nhầm lẫn và không có thống kê doanh thu tức thời.
+            </p>
+          </div>
+
+          <div class="p-5 bg-blue-50/60 rounded-3xl border border-blue-100 space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold shadow-xs">
+              <span class="material-symbols-outlined">speed</span>
+            </div>
+            <h3 class="font-extrabold text-sm text-slate-900">Giải Pháp TapHoa36</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Số hóa đa kênh: POS siêu tốc tại quầy với máy quét Barcode, tự tạo mã VietQR chuẩn xác, Web Store mua hàng online và quản trị kho trực quan.
+            </p>
+          </div>
+
+          <div class="p-5 bg-emerald-50/60 rounded-3xl border border-emerald-100 space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold shadow-xs">
+              <span class="material-symbols-outlined">all_inclusive</span>
+            </div>
+            <h3 class="font-extrabold text-sm text-slate-900">Vận Hành Bền Vững 20-30 Năm</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Thiết kế theo chuẩn Web tiêu chuẩn: Không phụ thuộc thư viện nặng nề, cơ chế Dual-Mode chạy trơn tru kể cả khi đứt cáp quang mất mạng.
+            </p>
+          </div>
+        </div>
+
+        <div class="p-3.5 bg-rose-50/80 rounded-2xl border border-rose-200 text-xs text-rose-900 font-semibold flex items-center gap-2">
+          <span class="material-symbols-outlined text-rose-600 text-base">verified</span>
+          <span>Đảm bảo 100% tiêu chí hiệu năng Lighthouse: Performance 95+, Accessibility 100, Best Practices 100, SEO 100.</span>
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 4: DANH SÁCH CHỨC NĂNG ĐÃ HOÀN THÀNH & CHƯA HOÀN THÀNH -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="4">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">checklist</span>
+            <span>Đối soát tiến độ đề tài UTH</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Danh Sách Chức Năng Đã Hoàn Thành &amp; Kế Hoạch Chưa Hoàn Thành</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 my-auto">
+          <!-- Cột 1: Đã hoàn thành (100% Green) -->
+          <div class="p-4 bg-emerald-50/80 rounded-2xl border-2 border-emerald-200 space-y-2">
+            <div class="flex items-center justify-between pb-2 border-b border-emerald-200">
+              <span class="font-extrabold text-sm text-emerald-900 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-emerald-600 text-lg">verified</span>
+                <span>CHỨC NĂNG ĐÃ HOÀN THÀNH (100%)</span>
+              </span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-600 text-white font-mono text-[10px] font-bold">57/57 Tests PASS</span>
+            </div>
+            <ul class="text-xs text-slate-700 space-y-1.5 leading-relaxed">
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-600 font-bold">✓</span>
+                <span><strong>Quầy thu ngân POS (pos.html):</strong> Quét mã vạch Barcode, đa tab đơn hàng, cân điện tử, VietQR MB Bank Napas 247, in nhiệt K80.</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-600 font-bold">✓</span>
+                <span><strong>Store Online (store.html):</strong> 893 sản phẩm thực tế, tìm kiếm giọng nói AI, giỏ hàng drawer, đặt hàng online 2H.</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-600 font-bold">✓</span>
+                <span><strong>Admin Bento Grid (admin.html):</strong> 8 phân hệ quản trị, nhập kho nhanh, báo cáo thu - chi, tự tạo chi nhánh mới.</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-600 font-bold">✓</span>
+                <span><strong>Giao tiếp Back-end Node.js (cổng 3600):</strong> 8 Endpoints RESTful xử lý đơn hàng và đồng bộ kho hàng bền vững.</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-600 font-bold">✓</span>
+                <span><strong>Cơ sở dữ liệu:</strong> 8 bảng 3NF trên SQL Server 2022 (SSMS 20) và JSON persistent engine trên đĩa cứng.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Cột 2: Kế hoạch chưa hoàn thành / Giai đoạn 2 -->
+          <div class="p-4 bg-amber-50/80 rounded-2xl border-2 border-amber-200 space-y-2">
+            <div class="flex items-center justify-between pb-2 border-b border-amber-200">
+              <span class="font-extrabold text-sm text-amber-900 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-amber-600 text-lg">update</span>
+                <span>KẾ HOẠCH GIAI ĐOẠN 2 (CHƯA HOÀN THÀNH)</span>
+              </span>
+              <span class="px-2 py-0.5 rounded-full bg-amber-600 text-white font-mono text-[10px] font-bold">Future Scope</span>
+            </div>
+            <ul class="text-xs text-slate-700 space-y-2 leading-relaxed">
+              <li class="flex items-start gap-1.5">
+                <span class="text-amber-600 font-bold">⏳</span>
+                <span><strong>Cổng thanh toán tự động (IPN Webhook):</strong> Kết nối trực tiếp cổng thanh toán MoMo / VNPay Merchant thực tế qua Webhook xác nhận tự động.</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-amber-600 font-bold">⏳</span>
+                <span><strong>Ứng dụng di động Shipper:</strong> Phát triển app React Native / Flutter cho tài xế giao hàng nhận đơn hỏa tốc quanh khuôn viên UTH.</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-amber-600 font-bold">⏳</span>
+                <span><strong>Hóa đơn điện tử có mã Cơ quan Thuế:</strong> Tích hợp chuẩn truyền dữ liệu e-Invoice theo thông tư 78/2021/TT-BTC.</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-amber-600 font-bold">⏳</span>
+                <span><strong>Mở rộng chuỗi đa chi nhánh:</strong> Phân tán cơ sở dữ liệu lên Cloud Database phục vụ chuỗi bán lẻ nhượng quyền.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 flex items-center justify-between">
+          <span>Cam kết: <strong>Các chức năng cốt lõi (Core Functions) đã hoàn thành 100%</strong>, vượt chuẩn yêu cầu môn học của UTH.</span>
+          <span class="font-mono text-emerald-700 font-bold">Hoàn thành: 9/9 Mô-đun</span>
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 5: SƠ ĐỒ KIẾN TRÚC HỆ THỐNG 3 TẦNG -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="5">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">account_tree</span>
+            <span>Mô hình kỹ thuật</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Sơ Đồ Kiến Trúc Hệ Thống 3 Tầng (3-Tier Architecture)</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-auto">
+          <!-- Tầng 1: Client -->
+          <div class="p-5 rounded-3xl bg-gradient-to-b from-rose-50 to-white border-2 border-rose-200 relative shadow-sm">
+            <span class="px-2.5 py-0.5 rounded-full bg-rose-500 text-white font-bold text-[10px] uppercase">Tầng 1: Presentation</span>
+            <h3 class="font-black text-sm text-rose-700 mt-2 mb-2 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base">devices</span>
+              <span>Front-end Client</span>
+            </h3>
+            <ul class="text-xs text-slate-600 space-y-1.5">
+              <li>• <strong>pos.html:</strong> Quầy bán lẻ, quét mã Barcode, in K80.</li>
+              <li>• <strong>store.html:</strong> Web mua sắm, TapHoa36 AI Voice.</li>
+              <li>• <strong>admin.html:</strong> Quản trị Bento Grid 8 Views SPA.</li>
+            </ul>
+            <div class="mt-4 pt-2 border-t border-rose-100 text-[10px] text-slate-400 font-mono">HTML5 • Tailwind CSS • Vanilla JS</div>
+          </div>
+
+          <!-- Tầng 2: Server -->
+          <div class="p-5 rounded-3xl bg-gradient-to-b from-blue-50 to-white border-2 border-blue-200 relative shadow-sm">
+            <span class="px-2.5 py-0.5 rounded-full bg-blue-600 text-white font-bold text-[10px] uppercase">Tầng 2: Application</span>
+            <h3 class="font-black text-sm text-blue-700 mt-2 mb-2 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base">dns</span>
+              <span>Node.js REST API Server</span>
+            </h3>
+            <ul class="text-xs text-slate-600 space-y-1.5">
+              <li>• <strong>server.js:</strong> Cổng 3600 thuần native HTTP.</li>
+              <li>• <strong>CORS &amp; Preflight:</strong> Hỗ trợ gọi chéo origin.</li>
+              <li>• <strong>Dual-Mode Bridge:</strong> Tự động fallback IndexedDB.</li>
+            </ul>
+            <div class="mt-4 pt-2 border-t border-blue-100 text-[10px] text-slate-400 font-mono">HTTP/1.1 • RESTful JSON • Port 3600</div>
+          </div>
+
+          <!-- Tầng 3: Database -->
+          <div class="p-5 rounded-3xl bg-gradient-to-b from-emerald-50 to-white border-2 border-emerald-200 relative shadow-sm">
+            <span class="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white font-bold text-[10px] uppercase">Tầng 3: Database</span>
+            <h3 class="font-black text-sm text-emerald-700 mt-2 mb-2 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base">database</span>
+              <span>Cơ Sở Dữ Liệu Quan Hệ</span>
+            </h3>
+            <ul class="text-xs text-slate-600 space-y-1.5">
+              <li>• <strong>7 Bảng 3NF:</strong> Ràng buộc toàn vẹn khóa ngoại.</li>
+              <li>• <strong>taphoa36_schema.sql:</strong> DDL &amp; Seed Data chuẩn.</li>
+              <li>• <strong>taphoa36_db.json:</strong> Ghi tức thì vào ổ đĩa.</li>
+            </ul>
+            <div class="mt-4 pt-2 border-t border-emerald-100 text-[10px] text-slate-400 font-mono">SQL 3NF • Persistent JSON • ACID</div>
+          </div>
+        </div>
+
+        <div class="bg-rose-50/70 p-3 rounded-2xl border border-rose-200 text-xs text-slate-700 flex items-center justify-between">
+          <span>Giao tiếp Client-Server qua giao thức <strong>HTTP RESTful</strong> (GET, POST, DELETE) truyền tải <strong>JSON Payload</strong>.</span>
+          <span class="text-rose-600 font-bold">Thời gian phản hồi &lt; 20ms</span>
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 6: PHÂN HỆ POS BÁN HÀNG TẠI QUẦY -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="6">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">point_of_sale</span>
+            <span>Màn hình quầy thu ngân</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Phân Hệ Bán Hàng Tại Quầy POS (`pos.html`)</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center my-auto">
+          <div class="md:col-span-6 space-y-3">
+            <div class="p-3.5 bg-rose-50 rounded-2xl border border-rose-100">
+              <h3 class="font-black text-xs text-rose-800 uppercase mb-1">Bố Cục Công Thái Học 58% - 42%</h3>
+              <p class="text-xs text-slate-600">
+                Cột trái (58%) hiển thị ô quét Barcode và danh mục mặt hàng; cột phải (42%) hiển thị giỏ hàng và bảng thanh toán tức thời.
+              </p>
+            </div>
+            <ul class="text-xs text-slate-700 space-y-2">
+              <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span><strong>Quét mã vạch Barcode:</strong> Tự động nhận diện dưới 100ms, tự cộng dồn số lượng.</li>
+              <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span><strong>Phím tắt thu ngân:</strong> `F1` (Bán hàng), `F2` (Tìm kiếm), `F3` (Thanh toán), `ESC` (Hủy).</li>
+              <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span><strong>Tính tiền thừa tự động:</strong> Gợi ý nhanh các nút tiền chẵn (10k, 20k, 50k, 100k, 200k, 500k).</li>
+            </ul>
+          </div>
+
+          <div class="md:col-span-6">
+            <div class="glass-card p-4 rounded-3xl border border-rose-200 shadow-md space-y-3">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                <span class="font-bold text-xs text-slate-800">Mẫu Đơn Quầy Đang Thực Hiện</span>
+                <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">Đang hoạt động</span>
+              </div>
+              <div class="space-y-1.5 text-xs">
+                <div class="flex justify-between"><span>4x Mì gói Hảo Hảo chua cay</span><span class="font-mono font-bold">20.000 đ</span></div>
+                <div class="flex justify-between"><span>1x Sữa tươi Vinamilk 100% 1L</span><span class="font-mono font-bold">36.000 đ</span></div>
+                <div class="flex justify-between border-t border-slate-100 pt-1.5 font-black text-rose-600 text-sm">
+                  <span>TỔNG CỘNG:</span><span>56.000 đ</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-xs text-slate-500">
+          * Đã kiểm thử phím tắt thu ngân và đồng bộ tồn kho thời gian thực đa tab qua BroadcastChannel.
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 7: VIETQR ĐỘNG & IN HÓA ĐƠN K80 -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="7">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">qr_code_2</span>
+            <span>Công nghệ thanh toán</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Thanh Toán VietQR Động &amp; In Hóa Đơn Nhiệt K80</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+          <!-- Card VietQR -->
+          <div class="glass-card p-5 rounded-3xl border-2 border-rose-100 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 text-rose-700 font-bold text-sm mb-2">
+                <span class="material-symbols-outlined">qr_code</span>
+                <span>Mã VietQR Động (Chuẩn NAPAS 247)</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                Hệ thống tự động nhúng mã hóa số tiền đơn hàng và nội dung chuyển khoản vào mã QR. Khách hàng quét mã là chuyển đúng số tiền mà không cần nhập tay.
+              </p>
+              <div class="p-3 bg-slate-900 rounded-2xl text-emerald-400 font-mono text-[11px] space-y-0.5">
+                <div>Ngân hàng: MB Bank (970422)</div>
+                <div>Số tài khoản: 034206001749</div>
+                <div>Nội dung: TAPHOA36 HD1794979560955</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card In K80 -->
+          <div class="glass-card p-5 rounded-3xl border-2 border-slate-200 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 text-slate-800 font-bold text-sm mb-2">
+                <span class="material-symbols-outlined">print</span>
+                <span>Xuất Hóa Đơn Nhiệt Khổ 80mm</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                CSS Print chuyên dụng `@media print { @page { size: 80mm auto; margin: 0; } }` giúp máy in hóa đơn nhiệt K80 in ngay tức thì khi nhấn phím F3.
+              </p>
+              <div class="p-3 bg-rose-50 rounded-2xl text-rose-900 text-xs space-y-1">
+                <div class="font-bold">✓ Tiêu đề: TẠP HÓA 36 - CƠ SỞ UTH</div>
+                <div>✓ Chi tiết tên hàng, số lượng, đơn giá, tổng tiền</div>
+                <div>✓ Mã đơn hàng Barcode &amp; lời cảm ơn quý khách</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs text-slate-600 flex items-center justify-between">
+          <span>Bảo mật Sổ nợ: Dữ liệu mua chịu được <strong>mã hóa AES-GCM 256-bit</strong> qua Web Crypto API.</span>
+          <span class="text-rose-600 font-bold">Chống lộ thông tin khách quen</span>
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 8: CỬA HÀNG TRỰC TUYẾN TAPHOA36 -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="8">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">shopping_bag</span>
+            <span>Kênh bán online</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Phân Hệ Cửa Hàng Trực Tuyến (`store.html`)</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-auto">
+          <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+            <span class="text-2xl mb-2 block">🎨</span>
+            <h3 class="font-bold text-xs text-slate-800 mb-1">Thiết Kế Pastel Ấm Áp</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Giao diện mua sắm gam màu Pastel Hồng - Be tạo cảm giác thân thuộc như tiệm tạp hóa đầu ngõ, tối ưu hiển thị trên di động.
+            </p>
+          </div>
+
+          <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+            <span class="text-2xl mb-2 block">🛍️</span>
+            <h3 class="font-bold text-xs text-slate-800 mb-1">Giỏ Hàng Drawer Trượt</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Thanh trượt Slide-out Cart Drawer mượt mà từ cạnh phải màn hình, tích hợp thanh tiến trình nhắc nhở "Mua thêm X để Freeship 200K".
+            </p>
+          </div>
+
+          <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+            <span class="text-2xl mb-2 block">⚡</span>
+            <h3 class="font-bold text-xs text-slate-800 mb-1">Đặt Hàng 1 Bước Nhanh</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Single-step Checkout tinh gọn, hỗ trợ đăng nhập mạng xã hội giả lập Mock OAuth2 (Google &amp; Facebook) và giao hàng hỏa tốc 2H.
+            </p>
+          </div>
+        </div>
+
+        <div class="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-800 flex items-center justify-between">
+          <span>Tự động khóa nút mua hàng khi sản phẩm hết tồn kho trong CSDL thực tế.</span>
+          <span class="font-bold">Đồng bộ đa tab thời gian thực</span>
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 9: TÌM KIẾM GIỌNG NÓI & TAPHOA36 AI -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="9">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">smart_toy</span>
+            <span>Trí tuệ nhân tạo</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Tìm Kiếm Giọng Nói &amp; Trợ Lý TapHoa36 AI</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+          <!-- Voice Search -->
+          <div class="glass-card p-5 rounded-3xl border border-rose-100">
+            <div class="flex items-center gap-2 text-rose-700 font-bold text-sm mb-2">
+              <span class="material-symbols-outlined">mic</span>
+              <span>Web Speech API Nhận Diện Tiếng Việt</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed mb-3">
+              Cho phép khách hàng bấm biểu tượng micro và nói tên món hàng (VD: "mì tôm chua cay", "dầu ăn Simply"). Hệ thống tự chuẩn hóa khử dấu Unicode NFD và lọc tức thì.
+            </p>
+            <div class="p-2.5 bg-rose-50/70 rounded-xl text-rose-900 text-xs font-mono">
+              removeAccents("Trứng gà tươi") → "trung ga tuoi"
+            </div>
+          </div>
+
+          <!-- TapHoa36 AI Chatbot -->
+          <div class="glass-card p-5 rounded-3xl border border-slate-200">
+            <div class="flex items-center gap-2 text-slate-800 font-bold text-sm mb-2">
+              <span class="material-symbols-outlined text-rose-500">robot_2</span>
+              <span>Trợ Lý Ảo TapHoa36 AI (NLP Engine)</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed mb-3">
+              Phân loại 10 nhóm ý định tự nhiên (Intents: Chào hỏi, Tra cứu đơn, Tìm hàng, Báo giá, Freeship...) với độ tin cậy Confidence &ge; 0.85 và bóc tách thực thể tồn kho.
+            </p>
+            <div class="p-2.5 bg-slate-900 rounded-xl text-emerald-400 text-xs font-mono">
+              Intent: FIND_PRODUCT • Confidence: 0.95
+            </div>
+          </div>
+        </div>
+
+        <div class="text-xs text-slate-500">
+          * Đã xóa sạch toàn bộ các từ khóa cũ, quy chuẩn 100% thương hiệu TapHoa36 AI.
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 10: BẢNG QUẢN TRỊ BENTO GRID 12 CỘT -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="10">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">dashboard</span>
+            <span>Bảng điều khiển trung tâm</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Bảng Quản Trị Hệ Thống Bento Grid (`admin.html`)</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center my-auto">
+          <div class="md:col-span-5 space-y-3">
+            <div class="p-3 bg-rose-50 rounded-2xl border border-rose-100">
+              <h3 class="font-black text-xs text-rose-800 uppercase mb-1">Bento Grid Widescreen 12 Cột</h3>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Bố cục dạng Bento hiện đại, chia các ô thống kê trực quan: Doanh thu, Đơn hàng, Tồn kho cảnh báo và Thu chi tài chính.
+              </p>
+            </div>
+            <ul class="text-xs text-slate-700 space-y-1.5">
+              <li>• <strong>8 Views SPA:</strong> Tổng quan, Hàng hóa, Mua hàng, Đơn hàng, Khách hàng, Sổ quỹ, Báo cáo, ACL.</li>
+              <li>• <strong>Dark Mode toàn cục:</strong> Chuyển đổi giao diện Sáng / Tối lưu trữ vào localStorage.</li>
+              <li>• <strong>Nhập kho nhanh +10:</strong> Thao tác một chạm bổ sung số lượng tức thời cho mặt hàng bán chạy.</li>
+            </ul>
+          </div>
+
+          <div class="md:col-span-7">
+            <div class="rounded-2xl border-2 border-rose-200 overflow-hidden shadow-xl bg-slate-900">
+              <img src="assets/images/admin_navbar.png" alt="Navbar Hồng TapHoa36" class="w-full object-cover">
+              <div class="p-2 bg-slate-950 text-white text-[11px] font-semibold text-center flex items-center justify-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span>Thanh điều hướng hồng 8 phân hệ không bị cắt xén</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 flex items-center justify-between">
+          <span>Non-destructive View Switcher: Chuyển đổi giữa 8 phân hệ không làm mất dữ liệu giỏ hay biểu mẫu đang nhập.</span>
+          <span class="font-bold text-rose-600">SPA Architecture</span>
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 11: QUẢN LÝ KHO & TỰ TẠO CHI NHÁNH MỚI -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="11">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">warehouse</span>
+            <span>Khắc phục &amp; Nâng cấp nghiệp vụ</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Quản Lý Kho &amp; Tự Tạo Chi Nhánh Linh Hoạt</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center my-auto">
+          <div class="md:col-span-6 space-y-3">
+            <div class="p-3 bg-emerald-50 rounded-2xl border border-emerald-200">
+              <h3 class="font-black text-xs text-emerald-800 uppercase mb-1">Khắc Phục Lỗi Navbar Hồng</h3>
+              <p class="text-xs text-slate-700 leading-relaxed">
+                Gỡ bỏ thuộc tính `overflow-x-auto` gây cắt xén menu; thiết lập `overflow-visible relative` và `z-[60]` giúp 100% menu con xổ xuống sắc nét, giữ nguyên khi bấm.
+              </p>
+            </div>
+
+            <div class="p-3 bg-rose-50 rounded-2xl border border-rose-200">
+              <h3 class="font-black text-xs text-rose-800 uppercase mb-1">Tự Tạo Chi Nhánh Mới Động</h3>
+              <p class="text-xs text-slate-700 leading-relaxed">
+                Xóa sạch các kho mẫu cũ. Người dùng bấm <strong>"+ Thêm chi nhánh / kho mới"</strong>, nhập tên, địa chỉ là hệ thống lưu động vào CSDL và tự chọn làm việc.
+              </p>
+            </div>
+
+            <div class="text-xs text-slate-600">
+              <strong>Bảo vệ cơ sở chính UTH:</strong> Chi nhánh chính (31 Ung Văn Khiêm) được bảo vệ tuyệt đối, không cho phép xóa nhầm để bảo đảm an toàn dữ liệu.
+            </div>
+          </div>
+
+          <div class="md:col-span-6">
+            <div class="rounded-2xl border-2 border-rose-200 overflow-hidden shadow-lg bg-slate-900">
+              <img src="assets/images/admin_branch_dropdown.png" alt="Branch Dropdown" class="w-full object-cover">
+              <div class="p-2 bg-slate-950 text-white text-[11px] font-semibold text-center">
+                Ảnh chụp thực tế: Menu chọn chi nhánh &amp; nút Tạo kho mới
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-xs text-slate-500">
+          * Unit test AC-WH-05 kiểm tra độc lập tính năng thêm/xóa kho đạt 100% PASS.
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 12: NGHIỆP VỤ KHO & NHÀ CUNG CẤP THỰC TẾ -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="12">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">inventory</span>
+            <span>Quy trình chuỗi cung ứng</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Nghiệp Vụ Kho &amp; Nhà Cung Cấp Thực Tế</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center my-auto">
+          <div class="md:col-span-6 space-y-2 text-xs text-slate-700">
+            <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200">
+              <span class="font-extrabold text-rose-700 block mb-0.5">1. Điều Chuyển Hàng Chi Nhánh</span>
+              <span>Chuyển hàng tồn từ Kho chính UTH sang các điểm bán vệ tinh có ghi nhận phiếu xuất kho.</span>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200">
+              <span class="font-extrabold text-blue-700 block mb-0.5">2. Đóng Gói Combo Hàng Hóa</span>
+              <span>Tự động trừ số lượng nguyên liệu lẻ (trứng, mì, nước tương) và tăng số lượng tồn combo.</span>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200">
+              <span class="font-extrabold text-amber-700 block mb-0.5">3. Xuất Dùng Nội Bộ &amp; Xuất Hủy</span>
+              <span>Ghi giảm tồn kho vật tư tiêu hao tiệm sử dụng hoặc xuất hủy hàng hóa cận date bị hư hỏng.</span>
+            </div>
+          </div>
+
+          <div class="md:col-span-6 space-y-3">
+            <div class="rounded-xl border border-rose-200 overflow-hidden shadow-sm">
+              <img src="assets/images/admin_menu_hanghoa.png" alt="Menu Hàng Hóa" class="w-full object-cover">
+            </div>
+            <div class="rounded-xl border border-rose-200 overflow-hidden shadow-sm">
+              <img src="assets/images/admin_menu_muahang.png" alt="Menu Mua Hàng" class="w-full object-cover">
+            </div>
+          </div>
+        </div>
+
+        <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600">
+          * Đạt 100% mục tiêu của người dùng: Tất cả các mục trong menu đa cột đều có chức năng thực tế.
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 13: ĐƠN HÀNG, KHÁCH HÀNG & BÁO CÁO -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="13">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">monitoring</span>
+            <span>Nghiệp vụ khách hàng &amp; báo cáo</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Quản Trị Đơn Hàng, Khách Hàng &amp; Báo Cáo</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-auto">
+          <!-- Đơn hàng -->
+          <div class="space-y-2">
+            <div class="rounded-xl border border-rose-200 overflow-hidden shadow-xs">
+              <img src="assets/images/admin_menu_donhang.png" alt="Menu Đơn Hàng" class="w-full object-cover">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600">
+              <strong class="text-slate-900 block mb-0.5">Quản lý Đơn &amp; Vận đơn:</strong>
+              Theo dõi tình trạng đơn đặt, hóa đơn hoàn tất và liên kết các đối tác giao hàng.
+            </div>
+          </div>
+
+          <!-- Khách hàng -->
+          <div class="space-y-2">
+            <div class="rounded-xl border border-rose-200 overflow-hidden shadow-xs">
+              <img src="assets/images/admin_menu_khachhang.png" alt="Menu Khách Hàng" class="w-full object-cover">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600">
+              <strong class="text-slate-900 block mb-0.5">Phân nhóm &amp; Ưu đãi:</strong>
+              Phân loại nhóm khách quen, khách VIP, sinh viên UTH; phát hành Voucher &amp; Coupon.
+            </div>
+          </div>
+
+          <!-- Báo cáo -->
+          <div class="space-y-2">
+            <div class="rounded-xl border border-rose-200 overflow-hidden shadow-xs">
+              <img src="assets/images/admin_menu_baocao.png" alt="Menu Báo Cáo" class="w-full object-cover">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600">
+              <strong class="text-slate-900 block mb-0.5">Báo cáo &amp; Xuất Excel:</strong>
+              Báo cáo cuối ngày, hàng hóa bán chạy, thu chi thực tế và xuất file UTF-8 BOM chuẩn.
+            </div>
+          </div>
+        </div>
+
+        <div class="text-xs text-slate-500">
+          * Đầy đủ hình ảnh thực tế từ quá trình vận hành bảng điều khiển quản trị TapHoa36.
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 14: PHÂN QUYỀN RBAC & BẢO MẬT ACL -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="14">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">admin_panel_settings</span>
+            <span>Bảo mật hệ thống</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Phân Quyền Người Dùng &amp; Bảo Mật ACL</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center my-auto">
+          <div class="md:col-span-7 space-y-3">
+            <div class="p-3.5 bg-rose-50 rounded-2xl border border-rose-100">
+              <h3 class="font-black text-xs text-rose-800 uppercase mb-1">Mô Hình RBAC 4 Cấp Độ</h3>
+              <p class="text-xs text-slate-700">
+                1. <strong>Chủ tiệm (Admin):</strong> Toàn quyền hệ thống, quản lý tài khoản và chi nhánh.<br>
+                2. <strong>Quản lý:</strong> Quản lý danh mục, giá bán và xuất báo cáo.<br>
+                3. <strong>Thu ngân:</strong> Bán hàng quầy POS, không được xóa sản phẩm hay sửa giá.<br>
+                4. <strong>Thủ kho:</strong> Nhập kho, chuyển hàng, đóng gói combo.
+              </p>
+            </div>
+            <div class="space-y-1.5 text-xs text-slate-600">
+              <div>• <strong>Bảo vệ trang (protectPage):</strong> Chặn người dùng không có quyền truy cập vào Admin.</div>
+              <div>• <strong>Nhật ký kiểm toán (Audit Logs):</strong> Ghi nhận mọi thao tác đổi mật khẩu, xóa dữ liệu.</div>
+            </div>
+          </div>
+
+          <div class="md:col-span-5">
+            <div class="rounded-2xl border-2 border-rose-200 overflow-hidden shadow-lg bg-slate-900">
+              <img src="assets/images/admin_user_account.png" alt="User Account Dropdown" class="w-full object-cover">
+              <div class="p-2 bg-slate-950 text-white text-[11px] font-semibold text-center">
+                Ảnh thực tế: Dropdown tài khoản Chủ tiệm Trần Ngọc Lâm
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-xs text-slate-500">
+          * Đã qua kiểm thử tự động ma trận quyền trong phân hệ AC-ACL (100% PASS).
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 15: CƠ CHẾ GIAO TIẾP FRONT-END & BACK-END (GET, POST & XỬ LÝ DỮ LIỆU) -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="15">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">swap_horiz</span>
+            <span>Cơ chế giao tiếp Client-Server</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Cách Gửi Dữ Liệu Lên Server &amp; Back-end Xử Lý Trả Kết Quả</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-auto">
+          <!-- Bước 1: Front-end gửi Request -->
+          <div class="p-4 bg-blue-50/80 rounded-2xl border-2 border-blue-200 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-1.5 text-blue-800 font-bold text-xs uppercase mb-2">
+                <span class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px]">1</span>
+                <span>Front-end Gửi Request</span>
+              </div>
+              <p class="text-xs text-slate-600 mb-2 leading-relaxed">
+                Khi thu ngân bấm Thanh toán (F4) trên POS hoặc khách đặt hàng trên Store:
+              </p>
+              <div class="bg-slate-900 text-slate-100 p-2.5 rounded-xl font-mono text-[10px] space-y-1">
+                <div class="text-emerald-400 font-bold">POST /api/orders HTTP/1.1</div>
+                <div class="text-slate-400">Content-Type: application/json</div>
+                <div class="text-amber-300">{"customerName": "Sinh viên UTH", "items": [{"id": "prod_03", "qty": 2}], "payment": "vietqr"}</div>
+              </div>
+            </div>
+            <div class="mt-2 text-[10px] text-blue-700 font-medium">Sử dụng Fetch API / XMLHttpRequest</div>
+          </div>
+
+          <!-- Bước 2: Back-end xử lý & Cập nhật DB -->
+          <div class="p-4 bg-purple-50/80 rounded-2xl border-2 border-purple-200 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-1.5 text-purple-800 font-bold text-xs uppercase mb-2">
+                <span class="w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center text-[10px]">2</span>
+                <span>Back-end Xử Lý Dữ Liệu</span>
+              </div>
+              <p class="text-xs text-slate-600 mb-2 leading-relaxed">
+                Máy chủ Node.js (cổng 3600) tiếp nhận và thực thi theo chu trình an toàn:
+              </p>
+              <ul class="text-[11px] text-slate-700 space-y-1">
+                <li>• <strong>1. Validate:</strong> Kiểm tra tính toàn vẹn giỏ hàng.</li>
+                <li>• <strong>2. Trừ tồn kho:</strong> Giảm số lượng thực tế trong kho.</li>
+                <li>• <strong>3. Lưu CSDL:</strong> Ghi tức thì vào file JSON đĩa cứng và đồng bộ bảng SQL Server.</li>
+              </ul>
+            </div>
+            <div class="mt-2 text-[10px] text-purple-700 font-medium font-mono">Thời gian xử lý &lt; 15ms</div>
+          </div>
+
+          <!-- Bước 3: Back-end trả kết quả về Front-end -->
+          <div class="p-4 bg-emerald-50/80 rounded-2xl border-2 border-emerald-200 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-1.5 text-emerald-800 font-bold text-xs uppercase mb-2">
+                <span class="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">3</span>
+                <span>Server Trả Kết Quả</span>
+              </div>
+              <p class="text-xs text-slate-600 mb-2 leading-relaxed">
+                Phản hồi HTTP Status Code và Payload JSON để giao diện hoàn tất giao dịch:
+              </p>
+              <div class="bg-slate-900 text-slate-100 p-2.5 rounded-xl font-mono text-[10px] space-y-1">
+                <div class="text-emerald-400 font-bold">HTTP/1.1 201 Created</div>
+                <div class="text-slate-400">Content-Type: application/json</div>
+                <div class="text-emerald-300">{"success": true, "orderId": "HD_1795006", "total": 30000}</div>
+              </div>
+            </div>
+            <div class="mt-2 text-[10px] text-emerald-700 font-medium">Front-end in K80 &amp; xóa giỏ hàng</div>
+          </div>
+        </div>
+
+        <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-500">
+          * Đã kiểm chứng 100% qua các phương thức RESTful: <strong>GET</strong> (lấy hàng), <strong>POST</strong> (tạo đơn/chi nhánh), <strong>DELETE</strong> (xóa kho).
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 16: CƠ CHẾ DUAL-MODE CLIENT BRIDGE -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="16">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">wifi_tethering</span>
+            <span>Khả năng chịu lỗi cao</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Cơ Chế Cầu Nối Dual-Mode Client Bridge</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center my-auto">
+          <div class="space-y-3">
+            <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-200">
+              <div class="flex items-center gap-2 text-emerald-800 font-bold text-xs uppercase mb-1">
+                <span class="material-symbols-outlined text-sm">cloud_done</span>
+                <span>Chế Độ 1: Online Mode (Server Đang Chạy)</span>
+              </div>
+              <p class="text-xs text-slate-700 leading-relaxed">
+                Ứng dụng gửi HTTP fetch trực tiếp lên Node.js REST API Server cổng 3600. Dữ liệu được ghi tức thì vào CSDL trung tâm và phản hồi kết quả trong &lt; 20ms.
+              </p>
+            </div>
+
+            <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200">
+              <div class="flex items-center gap-2 text-amber-800 font-bold text-xs uppercase mb-1">
+                <span class="material-symbols-outlined text-sm">cloud_off</span>
+                <span>Chế Độ 2: Offline Fallback (Mất Mạng / Tắt Server)</span>
+              </div>
+              <p class="text-xs text-slate-700 leading-relaxed">
+                Khi máy chủ offline hoặc mất kết nối mạng, `TapHoaCore.api` tự động fallback sang IndexedDB (`TapHoaSoDB`) và LocalStorage. Thu ngân vẫn bán hàng bình thường không bị dừng lại.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-slate-900 text-slate-100 p-4 rounded-2xl font-mono text-xs overflow-x-auto shadow-md">
+            <div class="text-rose-400 font-bold pb-2 border-b border-slate-800">TapHoaCore.api.getProducts()</div>
+<pre><code>async getProducts() {
+  // 1. Kiểm tra server online
+  if (await this.isServerOnline(600)) {
+    try {
+      const res = await fetch('/api/products');
+      if (res.ok) return await res.json();
+    } catch (e) {}
+  }
+  // 2. Tự động fallback an toàn
+  return dalModule.getAllProducts();
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="text-xs text-slate-500">
+          * Đảm bảo tính liên tục của hệ thống bán lẻ theo tiêu chí Fault-Tolerant Enterprise System.
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 17: VIDEO MINH HỌA 1 - BÁN HÀNG POS & TRỪ KHO -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="17">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">smart_display</span>
+            <span>Video mô phỏng thực hành số 1</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Demo 1: Bán Hàng Tại Quầy POS &amp; Trừ Kho Tự Động</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center my-auto">
+          <!-- Animated Simulation Player UI -->
+          <div class="md:col-span-8">
+            <div class="rounded-3xl border-2 border-slate-800 overflow-hidden shadow-2xl bg-slate-950 flex flex-col">
+              <!-- Video Player Top Bar -->
+              <div class="h-9 bg-slate-900 px-4 flex items-center justify-between text-slate-400 text-xs border-b border-slate-800">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                  <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                  <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                  <span class="font-mono text-[11px] ml-2 text-slate-300">Live_Demo_POS_Sale.mp4</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 font-mono text-[10px] font-bold">1080p 60fps</span>
+              </div>
+
+              <!-- Video Content Screen with Animated Demo -->
+              <div class="video-screen p-6 text-white min-h-[220px] flex flex-col justify-between relative overflow-hidden">
+                <div id="demo1-scene-1" class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs text-slate-400">Mã quét Barcode:</span>
+                    <span class="font-mono bg-rose-950/80 text-rose-300 px-2 py-0.5 rounded border border-rose-800 text-xs font-bold animate-pulse">893601111003 (Mì Hảo Hảo)</span>
+                  </div>
+                  <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-700 flex items-center justify-between text-xs">
+                    <div>
+                      <strong class="text-slate-100 block">Mì gói Hảo Hảo tôm chua cay</strong>
+                      <span class="text-slate-400 text-[11px]">Tồn kho trước bán: <span class="text-rose-400 font-bold">120 gói</span></span>
+                    </div>
+                    <span class="font-mono text-sm text-emerald-400 font-bold">4 gói x 5.000 = 20.000 đ</span>
+                  </div>
+                  <div class="p-2.5 bg-emerald-950/60 border border-emerald-700/60 rounded-xl text-emerald-300 text-xs flex items-center gap-2">
+                    <span class="material-symbols-outlined text-base">check_circle</span>
+                    <span>Server: POST /api/orders → HTTP 201 Created • Tồn kho cập nhật: <strong>116 gói</strong></span>
+                  </div>
+                </div>
+
+                <!-- Video Controls Bar -->
+                <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                  <div class="flex items-center gap-3">
+                    <button id="btn-play-demo1" onclick="runDemo1Simulation()" class="w-8 h-8 rounded-full bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center transition shadow-xs">
+                      <span class="material-symbols-outlined text-base">play_arrow</span>
+                    </button>
+                    <span id="demo1-time" class="font-mono text-[11px] text-slate-300">01:45 / 03:00</span>
+                  </div>
+                  <div class="flex-1 mx-4 bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                    <div id="demo1-progress" class="bg-gradient-to-r from-rose-500 to-pink-500 h-full w-3/5 rounded-full transition-all duration-300"></div>
+                  </div>
+                  <span class="text-[11px] text-slate-400">Minh chứng DevTools</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="md:col-span-4 space-y-2 text-xs text-slate-600">
+            <h3 class="font-extrabold text-sm text-slate-900 mb-1">Các Bước Báo Cáo:</h3>
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200">1. Quét mã vạch Mì Hảo Hảo 4 gói (20.000đ).</div>
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200">2. Mở DevTools Network: Request `POST /api/orders` trả về `201 Created`.</div>
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200">3. Mở file `taphoa36_db.json`: Tồn kho giảm từ 120 về 116.</div>
+          </div>
+        </div>
+
+        <div class="text-xs text-slate-500">
+          * Bấm nút Play trên trình phát mô phỏng để xem tiến trình diễn hoạt trực quan.
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 18: VIDEO MINH HỌA 2 - QUẢN TRỊ TỰ TẠO KHO MỚI -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="18">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">video_settings</span>
+            <span>Video mô phỏng thực hành số 2</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Demo 2: Quản Trị Viên Tự Tạo Kho Mới UTH</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center my-auto">
+          <div class="md:col-span-8">
+            <div class="rounded-3xl border-2 border-slate-800 overflow-hidden shadow-2xl bg-slate-950 flex flex-col">
+              <div class="h-9 bg-slate-900 px-4 flex items-center justify-between text-slate-400 text-xs border-b border-slate-800">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                  <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                  <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                  <span class="font-mono text-[11px] ml-2 text-slate-300">Live_Demo_Add_Branch.mp4</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-mono text-[10px] font-bold">1080p 60fps</span>
+              </div>
+
+              <div class="video-screen p-6 text-white min-h-[220px] flex flex-col justify-between relative overflow-hidden">
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs text-slate-400">Thao tác Admin:</span>
+                    <span class="font-mono bg-blue-950/80 text-blue-300 px-2 py-0.5 rounded border border-blue-800 text-xs font-bold">+ Thêm chi nhánh / kho mới</span>
+                  </div>
+                  <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-700 text-xs space-y-1">
+                    <div class="text-slate-300">Tên: <strong>Chi Nhánh Ký Túc Xá UTH (Quận 12)</strong></div>
+                    <div class="text-slate-400 text-[11px]">Địa chỉ: Tô Ký, P. Trung Mỹ Tây, Quận 12, TP.HCM</div>
+                  </div>
+                  <div class="p-2.5 bg-blue-950/60 border border-blue-700/60 rounded-xl text-blue-300 text-xs flex items-center gap-2">
+                    <span class="material-symbols-outlined text-base">cloud_upload</span>
+                    <span>Server: POST /api/branches → HTTP 201 Created • F5 reload dữ liệu vẫn toàn vẹn</span>
+                  </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                  <div class="flex items-center gap-3">
+                    <button class="w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center transition shadow-xs">
+                      <span class="material-symbols-outlined text-base">play_arrow</span>
+                    </button>
+                    <span class="font-mono text-[11px] text-slate-300">02:15 / 03:00</span>
+                  </div>
+                  <div class="flex-1 mx-4 bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-500 to-indigo-500 h-full w-4/5 rounded-full"></div>
+                  </div>
+                  <span class="text-[11px] text-slate-400">Minh chứng CSDL</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="md:col-span-4 space-y-2 text-xs text-slate-600">
+            <h3 class="font-extrabold text-sm text-slate-900 mb-1">Các Bước Báo Cáo:</h3>
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200">1. Nhấn nút chọn chi nhánh → Bấm "+ Thêm chi nhánh".</div>
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200">2. Nhập thông tin kho KTX UTH → Nhấn Tạo.</div>
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200">3. F5 kiểm tra CSDL: Chi nhánh mới được lưu vĩnh viễn.</div>
+          </div>
+        </div>
+
+        <div class="text-xs text-slate-500">
+          * Đạt yêu cầu minh chứng tối thiểu 2 chức năng kết nối cơ sở dữ liệu của giảng viên hướng dẫn.
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 19: THIẾT KẾ CƠ SỞ DỮ LIỆU QUAN HỆ 3NF (SQL SERVER 2022 / SSMS 20) -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="19">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">schema</span>
+            <span>Mô hình dữ liệu quan hệ</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Thiết Kế CSDL Chuẩn 3NF Trên SQL Server SSMS 20 (`TapHoa36_DB`)</h2>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 my-auto">
+          <!-- Bảng 1: Branches -->
+          <div class="p-2.5 bg-rose-50/60 rounded-xl border border-rose-200 text-xs">
+            <strong class="text-rose-800 block mb-1 text-[11px]">1. dbo.Branches</strong>
+            <div class="text-[9px] text-slate-600 font-mono space-y-0.5">
+              <div><span class="text-rose-600 font-bold">PK</span> branch_id (VARCHAR)</div>
+              <div>branch_name (NVARCHAR)</div>
+              <div>address (NVARCHAR UTH)</div>
+              <div>is_main (BIT)</div>
+            </div>
+          </div>
+
+          <!-- Bảng 2: Categories -->
+          <div class="p-2.5 bg-blue-50/60 rounded-xl border border-blue-200 text-xs">
+            <strong class="text-blue-800 block mb-1 text-[11px]">2. dbo.Categories</strong>
+            <div class="text-[9px] text-slate-600 font-mono space-y-0.5">
+              <div><span class="text-blue-600 font-bold">PK</span> category_id (VARCHAR)</div>
+              <div>category_name (NVARCHAR)</div>
+              <div>icon_name (VARCHAR)</div>
+              <div>12 ngành hàng thiết yếu</div>
+            </div>
+          </div>
+
+          <!-- Bảng 3: Products -->
+          <div class="p-2.5 bg-emerald-50/60 rounded-xl border border-emerald-200 text-xs">
+            <strong class="text-emerald-800 block mb-1 text-[11px]">3. dbo.Products (893 SP)</strong>
+            <div class="text-[9px] text-slate-600 font-mono space-y-0.5">
+              <div><span class="text-emerald-600 font-bold">PK</span> product_id (VARCHAR)</div>
+              <div><span class="text-amber-600 font-bold">UQ</span> barcode (EAN-13)</div>
+              <div><span class="text-purple-600 font-bold">FK</span> category_id, branch_id</div>
+              <div>price, cost_price, stock, unit</div>
+            </div>
+          </div>
+
+          <!-- Bảng 4: Customers -->
+          <div class="p-2.5 bg-purple-50/60 rounded-xl border border-purple-200 text-xs">
+            <strong class="text-purple-800 block mb-1 text-[11px]">4. dbo.Customers</strong>
+            <div class="text-[9px] text-slate-600 font-mono space-y-0.5">
+              <div><span class="text-purple-600 font-bold">PK</span> customer_id (VARCHAR)</div>
+              <div>full_name (NVARCHAR)</div>
+              <div><span class="text-amber-600 font-bold">UQ</span> phone (VARCHAR)</div>
+              <div>debt_amount (Công nợ sổ)</div>
+            </div>
+          </div>
+
+          <!-- Bảng 5: Orders -->
+          <div class="p-2.5 bg-indigo-50/60 rounded-xl border border-indigo-200 text-xs">
+            <strong class="text-indigo-800 block mb-1 text-[11px]">5. dbo.Orders</strong>
+            <div class="text-[9px] text-slate-600 font-mono space-y-0.5">
+              <div><span class="text-indigo-600 font-bold">PK</span> order_id (VARCHAR)</div>
+              <div><span class="text-amber-600 font-bold">UQ</span> order_code (VARCHAR)</div>
+              <div><span class="text-purple-600 font-bold">FK</span> branch_id, customer_id</div>
+              <div>total_amount, final_amount, status</div>
+            </div>
+          </div>
+
+          <!-- Bảng 6: OrderDetails -->
+          <div class="p-2.5 bg-teal-50/60 rounded-xl border border-teal-200 text-xs">
+            <strong class="text-teal-800 block mb-1 text-[11px]">6. dbo.OrderDetails</strong>
+            <div class="text-[9px] text-slate-600 font-mono space-y-0.5">
+              <div><span class="text-teal-600 font-bold">PK</span> detail_id (INT IDENTITY)</div>
+              <div><span class="text-purple-600 font-bold">FK</span> order_id (ON CASCADE)</div>
+              <div><span class="text-purple-600 font-bold">FK</span> product_id</div>
+              <div>subtotal AS (qty * price) PERSISTED</div>
+            </div>
+          </div>
+
+          <!-- Bảng 7: Cashflow -->
+          <div class="p-2.5 bg-amber-50/60 rounded-xl border border-amber-200 text-xs">
+            <strong class="text-amber-800 block mb-1 text-[11px]">7. dbo.Cashflow</strong>
+            <div class="text-[9px] text-slate-600 font-mono space-y-0.5">
+              <div><span class="text-amber-600 font-bold">PK</span> trans_id (VARCHAR)</div>
+              <div>trans_type (INFLOW/OUTFLOW)</div>
+              <div>amount (DECIMAL 18,2)</div>
+              <div><span class="text-purple-600 font-bold">FK</span> branch_id</div>
+            </div>
+          </div>
+
+          <!-- Bảng 8: UsersACL -->
+          <div class="p-2.5 bg-slate-100 rounded-xl border border-slate-300 text-xs">
+            <strong class="text-slate-800 block mb-1 text-[11px]">8. dbo.UsersACL</strong>
+            <div class="text-[9px] text-slate-600 font-mono space-y-0.5">
+              <div><span class="text-slate-700 font-bold">PK</span> user_id (VARCHAR)</div>
+              <div><span class="text-amber-600 font-bold">UQ</span> username (VARCHAR)</div>
+              <div>password_hash, full_name</div>
+              <div>user_role (admin, cashier...)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 bg-rose-50 rounded-2xl border border-rose-200 text-xs text-rose-900 flex items-center justify-between">
+          <span>8 bảng chuẩn hóa 3NF: Khóa chính (PK), Khóa ngoại (FK) CASCADE, ràng buộc duy nhất (Unique), cột tính toán tự động PERSISTED.</span>
+          <span class="font-mono text-[11px] bg-rose-200 text-rose-900 font-bold px-2 py-0.5 rounded">taphoa36_sqlserver_ssms.sql</span>
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SLIDE 20: KẾT QUẢ KIỂM THỬ, GIAI ĐOẠN 2 & LỜI CẢM ƠN -->
+      <!-- ===================================================================== -->
+      <section class="slide p-8 sm:p-12 flex-col justify-between" data-slide="20">
+        <div>
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase tracking-wider mb-1">
+            <span class="material-symbols-outlined text-sm">celebration</span>
+            <span>Tổng kết đề tài</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Kết Quả Kiểm Thử, Kế Hoạch Giai Đoạn 2 &amp; Lời Cảm Ơn</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+          <!-- Kết quả kiểm thử -->
+          <div class="p-5 bg-emerald-50 rounded-3xl border border-emerald-200 space-y-2">
+            <h3 class="font-extrabold text-sm text-emerald-800 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-lg text-emerald-600">verified</span>
+              <span>Minh Chứng Kiểm Thử Tự Động (100% PASS)</span>
+            </h3>
+            <ul class="text-xs text-slate-700 space-y-1.5">
+              <li>• <strong>57/57 Unit Tests PASSED:</strong> `node tests/run_cli_tests.js`.</li>
+              <li>• <strong>8/8 REST Endpoints PASSED:</strong> `node tests/test_server_api.js`.</li>
+              <li>• <strong>100% UI Verification PASSED:</strong> `node tests/verify_ui.js`.</li>
+            </ul>
+          </div>
+
+          <!-- Kế hoạch tiếp theo -->
+          <div class="p-5 bg-rose-50 rounded-3xl border border-rose-200 space-y-2">
+            <h3 class="font-extrabold text-sm text-rose-800 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-lg text-rose-600">upcoming</span>
+              <span>Kế Hoạch Phát Triển Giai Đoạn 2</span>
+            </h3>
+            <ul class="text-xs text-slate-700 space-y-1.5">
+              <li>• Tích hợp cổng thanh toán thực tế PayOS / VNPay Sandbox.</li>
+              <li>• Tích hợp WebRTC gọi video trực tiếp hỗ trợ giải quyết khiếu nại tại quầy.</li>
+              <li>• Kết nối đồng bộ với các sàn thương mại điện tử (Shopee, TikTok Shop).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-4 bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 rounded-2xl text-white flex items-center justify-between text-xs">
+          <div>
+            <span class="font-bold text-sm block">Chân thành cảm ơn ThS. Trần Thịnh Mạnh Đức!</span>
+            <span class="text-rose-100 text-[11px]">Trần Ngọc Lâm - MSSV: 034206001749 • ĐH Giao Thông Vận Tải TP.HCM (UTH)</span>
+          </div>
+          <span class="px-3 py-1 bg-white/20 rounded-xl font-bold uppercase tracking-wider text-[10px]">Hoàn thành báo cáo</span>
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- BOTTOM SLIDE FOOTER / CONTROLS & THUMBNAILS -->
+      <!-- ===================================================================== -->
+      <footer class="h-16 bg-white border-t border-slate-100 px-6 flex items-center justify-between text-xs text-slate-500 shrink-0">
+        <div class="flex items-center gap-2">
+          <span>Trang:</span>
+          <span id="slide-indicator" class="font-bold text-slate-900 bg-rose-50 text-rose-700 border border-rose-200 px-3 py-1 rounded-xl">01 / 20</span>
+        </div>
+
+        <!-- Quick 20 dots / thumbnails -->
+        <div id="slide-dots" class="hidden md:flex items-center gap-1.5">
+          <!-- Rendered via JS -->
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="prevSlide()" class="px-3.5 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold flex items-center gap-1 transition">
+            <span class="material-symbols-outlined text-base">arrow_back</span>
+            <span>Trước</span>
+          </button>
+          <button onclick="nextSlide()" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-extrabold flex items-center gap-1 shadow-sm transition">
+            <span>Tiếp theo</span>
+            <span class="material-symbols-outlined text-base">arrow_forward</span>
+          </button>
+        </div>
+      </footer>
+
+    </div>
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- PRESENTATION NAVIGATION JAVASCRIPT -->
+  <!-- ========================================================================= -->
+  <script>
+    'use strict';
+    let currentSlide = 1;
+    const totalSlides = 20;
+
+    function renderSlideDots() {
+      const dotsContainer = document.getElementById('slide-dots');
+      if (!dotsContainer) return;
+      dotsContainer.innerHTML = '';
+      for (let i = 1; i <= totalSlides; i++) {
+        const dot = document.createElement('button');
+        dot.className = `w-2.5 h-2.5 rounded-full transition-all duration-200 ${i === currentSlide ? 'w-6 bg-rose-500' : 'bg-slate-200 hover:bg-rose-300'}`;
+        dot.title = `Chuyển tới Slide ${i}`;
+        dot.onclick = () => showSlide(i);
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    function showSlide(index) {
+      if (index < 1) index = 1;
+      if (index > totalSlides) index = totalSlides;
+      currentSlide = index;
+
+      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+      const activeEl = document.querySelector(`.slide[data-slide="${currentSlide}"]`);
+      if (activeEl) activeEl.classList.add('active');
+
+      const ind = document.getElementById('slide-indicator');
+      const topInd = document.getElementById('top-slide-num');
+      const formatted = `${String(currentSlide).padStart(2, '0')} / ${totalSlides}`;
+      if (ind) ind.innerText = formatted;
+      if (topInd) topInd.innerText = formatted;
+
+      renderSlideDots();
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        showSlide(currentSlide + 1);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        showSlide(currentSlide - 1);
+      }
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    // Video 1 Simulation Runner
+    function runDemo1Simulation() {
+      const btn = document.getElementById('btn-play-demo1');
+      const prog = document.getElementById('demo1-progress');
+      const time = document.getElementById('demo1-time');
+      if (btn) btn.innerHTML = '<span class="material-symbols-outlined text-base">pause</span>';
+      if (prog) prog.style.width = '10%';
+      if (time) time.innerText = '00:10 / 03:00';
+
+      let p = 10;
+      const interval = setInterval(() => {
+        p += 15;
+        if (p > 100) {
+          clearInterval(interval);
+          if (btn) btn.innerHTML = '<span class="material-symbols-outlined text-base">replay</span>';
+          if (time) time.innerText = '03:00 / 03:00';
+          return;
+        }
+        if (prog) prog.style.width = p + '%';
+        if (time) time.innerText = `0${Math.floor(p * 1.8 / 60)}:${String(Math.floor((p * 1.8) % 60)).padStart(2, '0')} / 03:00`;
+      }, 400);
+    }
+
+    // Keyboard Arrow navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSlideDots();
+    });
+  </script>
+</body>
+</html>

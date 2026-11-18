@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧪 Tạp Hóa Số - Trình Chạy Kiểm Thử TDD (Test Runner)</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              900: '#14532d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #1e293b; }
+    ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased selection:bg-emerald-500 selection:text-white">
+
+  <!-- Top Header Navigation -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20 text-white font-black text-xl">
+          🧪
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+            Tạp Hóa Số <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">TDD TEST RUNNER</span>
+          </h1>
+          <p class="text-xs text-slate-400">Kiểm chứng 100% Acceptance Criteria theo spec.md | Nhóm 11 - UTH</p>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="flex items-center space-x-3">
+        <button id="btnRunAll" onclick="runAllTests()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-semibold text-sm rounded-lg shadow-lg shadow-emerald-600/30 transition flex items-center gap-2">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          Chạy Lại Tất Cả Test
+        </button>
+        <a href="../store.html" target="_blank" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition border border-slate-700">
+          🛍️ Store
+        </a>
+        <a href="../pos.html" target="_blank" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition border border-slate-700">
+          💻 POS
+        </a>
+        <a href="../admin.html" target="_blank" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition border border-slate-700">
+          ⚙️ Admin
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+
+    <!-- KPI Summary Bento Cards -->
+    <section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <!-- Total Tests -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+        <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Tổng số bài test</span>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span id="kpiTotal" class="text-3xl font-extrabold text-white font-mono">0</span>
+          <span class="text-xs text-slate-500">cases</span>
+        </div>
+      </div>
+
+      <!-- Passed (Green) -->
+      <div class="bg-slate-900 border border-emerald-500/20 bg-emerald-500/5 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+        <span class="text-xs font-medium text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Vượt qua (Passed)
+        </span>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span id="kpiPassed" class="text-3xl font-extrabold text-emerald-400 font-mono">0</span>
+          <span class="text-xs text-emerald-500/70">passed</span>
+        </div>
+      </div>
+
+      <!-- Failed (Red) -->
+      <div class="bg-slate-900 border border-rose-500/20 bg-rose-500/5 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+        <span class="text-xs font-medium text-rose-400 uppercase tracking-wider flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-rose-500"></span> Thất bại (Failed)
+        </span>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span id="kpiFailed" class="text-3xl font-extrabold text-rose-400 font-mono">0</span>
+          <span class="text-xs text-rose-500/70">failed</span>
+        </div>
+      </div>
+
+      <!-- Pending -->
+      <div class="bg-slate-900 border border-amber-500/20 bg-amber-500/5 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+        <span class="text-xs font-medium text-amber-400 uppercase tracking-wider">Đang chờ (Pending)</span>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span id="kpiPending" class="text-3xl font-extrabold text-amber-400 font-mono">0</span>
+          <span class="text-xs text-amber-500/70">waiting</span>
+        </div>
+      </div>
+
+      <!-- Pass Rate -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+        <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Tỷ lệ đạt (Pass Rate)</span>
+        <div class="mt-2 flex items-baseline gap-1">
+          <span id="kpiRate" class="text-3xl font-extrabold text-indigo-400 font-mono">0%</span>
+        </div>
+      </div>
+
+      <!-- Execution Time -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+        <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Thời gian chạy</span>
+        <div class="mt-2 flex items-baseline gap-2">
+          <span id="kpiDuration" class="text-3xl font-extrabold text-teal-400 font-mono">0</span>
+          <span class="text-xs text-slate-500">ms</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress Bar Section -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm space-y-2">
+      <div class="flex items-center justify-between text-xs font-medium text-slate-400">
+        <span id="lblProgressStatus">Trạng thái: Sẵn sàng thực thi</span>
+        <span id="lblProgressPercent" class="font-mono text-emerald-400 font-bold">0% Hoàn thành</span>
+      </div>
+      <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden flex">
+        <div id="barPassed" class="bg-emerald-500 h-full transition-all duration-300" style="width: 0%"></div>
+        <div id="barFailed" class="bg-rose-500 h-full transition-all duration-300" style="width: 0%"></div>
+        <div id="barPending" class="bg-slate-700 h-full transition-all duration-300" style="width: 100%"></div>
+      </div>
+    </div>
+
+    <!-- Filter & Search Controls Bar -->
+    <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 flex flex-wrap gap-4 items-center justify-between">
+      <!-- Status Filter Tabs -->
+      <div class="flex items-center space-x-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+        <button onclick="setFilter('status', 'all')" id="tabAll" class="filter-tab px-3 py-1.5 rounded-lg font-medium text-white bg-slate-800">
+          Tất cả (<span id="cntFilterAll">0</span>)
+        </button>
+        <button onclick="setFilter('status', 'passed')" id="tabPassed" class="filter-tab px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white">
+          Chỉ Đạt (<span id="cntFilterPassed">0</span>)
+        </button>
+        <button onclick="setFilter('status', 'failed')" id="tabFailed" class="filter-tab px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white">
+          Chỉ Lỗi (<span id="cntFilterFailed">0</span>)
+        </button>
+      </div>
+
+      <!-- AC Category Filter Dropdown -->
+      <div class="flex items-center space-x-2 text-xs">
+        <label class="text-slate-400 font-medium">Nhóm AC:</label>
+        <select id="selCategory" onchange="setFilter('category', this.value)" class="bg-slate-950 text-slate-200 border border-slate-800 rounded-lg px-3 py-1.5 focus:outline-none focus:border-emerald-500 font-mono">
+          <option value="all">Tất cả các nhóm AC (100%)</option>
+          <option value="AC-AUTH">AC-AUTH (Xác thực & RBAC)</option>
+          <option value="AC-SYNC">AC-SYNC (Đồng bộ đa tab)</option>
+          <option value="AC-DAL">AC-DAL (IndexedDB & Offline)</option>
+          <option value="AC-CRYPTO">AC-CRYPTO (Web Crypto AES-GCM)</option>
+          <option value="AC-EXPORT">AC-EXPORT (Excel BOM & K80)</option>
+          <option value="AC-AI">AC-AI (NLP & Cô Ba AI)</option>
+          <option value="AC-POS">AC-POS (Bán hàng quầy)</option>
+          <option value="AC-ADMIN">AC-ADMIN (Bento Grid 6 Views)</option>
+        </select>
+      </div>
+
+      <!-- Search Input -->
+      <div class="flex-1 min-w-[200px] max-w-sm">
+        <div class="relative">
+          <input type="text" id="txtSearch" oninput="setFilter('search', this.value)" placeholder="Tìm kiếm tên bài test hoặc mã AC..." class="w-full bg-slate-950 text-slate-200 text-xs rounded-lg pl-8 pr-3 py-2 border border-slate-800 focus:outline-none focus:border-emerald-500 placeholder-slate-500">
+          <svg class="w-4 h-4 text-slate-500 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Test Suites Output Container -->
+    <div id="testOutputContainer" class="space-y-4">
+      <div class="p-8 text-center text-slate-500">
+        <div class="animate-spin w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full mx-auto mb-3"></div>
+        Đang khởi tạo môi trường và chuẩn bị chạy bộ test TDD...
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Load Core Modules and Test Suite -->
+  <script>
+    // Bắt lỗi nếu shared/core.js chưa được tạo (Đúng quy trình TDD Red)
+    window.addEventListener('error', function (e) {
+      if (e.filename && e.filename.includes('core.js')) {
+        console.warn('[TDD RED EXPECTED]: File shared/core.js chưa tồn tại hoặc bị lỗi. @core-dev sẽ triển khai.');
+      }
+    });
+  </script>
+  <!-- Nạp file lõi shared/core.js -->
+  <script src="../shared/core.js" onerror="console.warn('[TDD]: Không thể nạp shared/core.js, các bài test sẽ hiển thị trạng thái Red (Cần cài đặt).')"></script>
+  <!-- Nạp bộ test suite tests/test_suite.js -->
+  <script src="./test_suite.js"></script>
+
+  <!-- Trình thực thi Test Runner và Render Giao diện -->
+  <script>
+    let filterStatus = 'all';
+    let filterCategory = 'all';
+    let filterSearch = '';
+
+    // Khởi chạy tự động sau khi trang nạp xong
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        runAllTests();
+      }, 200);
+    });
+
+    function setFilter(type, value) {
+      if (type === 'status') {
+        filterStatus = value;
+        document.querySelectorAll('.filter-tab').forEach(b => {
+          b.classList.remove('bg-slate-800', 'text-white');
+          b.classList.add('text-slate-400');
+        });
+        if (value === 'all') document.getElementById('tabAll').classList.add('bg-slate-800', 'text-white');
+        if (value === 'passed') document.getElementById('tabPassed').classList.add('bg-slate-800', 'text-white');
+        if (value === 'failed') document.getElementById('tabFailed').classList.add('bg-slate-800', 'text-white');
+      } else if (type === 'category') {
+        filterCategory = value;
+      } else if (type === 'search') {
+        filterSearch = value.toLowerCase().trim();
+      }
+      renderTestSuites();
+    }
+
+    async function runAllTests() {
+      const btn = document.getElementById('btnRunAll');
+      btn.disabled = true;
+      btn.classList.add('opacity-50', 'cursor-not-allowed');
+
+      const registry = window.TAPHOA_TEST_REGISTRY || [];
+      let totalTests = 0;
+      registry.forEach(s => totalTests += s.tests.length);
+
+      // Reset trạng thái
+      registry.forEach(suite => {
+        suite.tests.forEach(test => {
+          test.status = 'pending';
+          test.error = null;
+          test.duration = 0;
+        });
+      });
+
+      updateKPIs(0, 0, totalTests, totalTests, 0);
+      document.getElementById('lblProgressStatus').textContent = 'Đang chạy các bài test...';
+      renderTestSuites();
+
+      const startTime = performance.now();
+      let passedCount = 0;
+      let failedCount = 0;
+      let completedCount = 0;
+
+      for (const suite of registry) {
+        for (const test of suite.tests) {
+          const testStart = performance.now();
+          if (suite.beforeEachFn) {
+            try { await suite.beforeEachFn(); } catch (e) {}
+          }
+
+          try {
+            if (test.fn.length > 0) {
+              // Test bất đồng bộ sử dụng callback done()
+              await new Promise((resolve, reject) => {
+                const timer = setTimeout(() => {
+                  reject(new Error(`Timeout quá 3000ms khi đợi callback done()`));
+                }, 3000);
+                test.fn(function (err) {
+                  clearTimeout(timer);
+                  if (err) reject(err);
+                  else resolve();
+                });
+              });
+            } else {
+              // Test đồng bộ hoặc trả về Promise
+              const res = test.fn();
+              if (res && typeof res.then === 'function') {
+                await res;
+              }
+            }
+            test.status = 'passed';
+            passedCount++;
+          } catch (err) {
+            test.status = 'failed';
+            test.error = err.message || String(err);
+            failedCount++;
+          }
+
+          test.duration = Math.round(performance.now() - testStart);
+          if (suite.afterEachFn) {
+            try { await suite.afterEachFn(); } catch (e) {}
+          }
+
+          completedCount++;
+          const currentTotalElapsed = Math.round(performance.now() - startTime);
+          updateKPIs(passedCount, failedCount, totalTests - completedCount, totalTests, currentTotalElapsed);
+          renderTestSuites();
+        }
+      }
+
+      const totalElapsed = Math.round(performance.now() - startTime);
+      document.getElementById('lblProgressStatus').textContent = failedCount === 0 ? '✅ Hoàn tất: 100% bài test đạt (GREEN)' : '⚠️ Hoàn tất: Có bài test chưa đạt (RED - Cần triển khai mã)';
+      updateKPIs(passedCount, failedCount, 0, totalTests, totalElapsed);
+
+      btn.disabled = false;
+      btn.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+
+    function updateKPIs(passed, failed, pending, total, duration) {
+      document.getElementById('kpiTotal').textContent = total;
+      document.getElementById('kpiPassed').textContent = passed;
+      document.getElementById('kpiFailed').textContent = failed;
+      document.getElementById('kpiPending').textContent = pending;
+      document.getElementById('kpiDuration').textContent = duration;
+
+      const rate = total > 0 ? Math.round((passed / total) * 100) : 0;
+      document.getElementById('kpiRate').textContent = rate + '%';
+
+      const completed = passed + failed;
+      const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+      document.getElementById('lblProgressPercent').textContent = percent + '%';
+
+      const passedPercent = total > 0 ? (passed / total) * 100 : 0;
+      const failedPercent = total > 0 ? (failed / total) * 100 : 0;
+      const pendingPercent = total > 0 ? (pending / total) * 100 : 100;
+
+      document.getElementById('barPassed').style.width = passedPercent + '%';
+      document.getElementById('barFailed').style.width = failedPercent + '%';
+      document.getElementById('barPending').style.width = pendingPercent + '%';
+
+      document.getElementById('cntFilterAll').textContent = total;
+      document.getElementById('cntFilterPassed').textContent = passed;
+      document.getElementById('cntFilterFailed').textContent = failed;
+    }
+
+    function renderTestSuites() {
+      const container = document.getElementById('testOutputContainer');
+      const registry = window.TAPHOA_TEST_REGISTRY || [];
+
+      if (!registry || registry.length === 0) {
+        container.innerHTML = `<div class="p-8 text-center text-rose-400 bg-slate-900 border border-slate-800 rounded-2xl">Không tìm thấy test suite nào trong TAPHOA_TEST_REGISTRY.</div>`;
+        return;
+      }
+
+      let html = '';
+
+      registry.forEach(suite => {
+        // Lọc các bài test trong suite theo tiêu chí
+        const filteredTests = suite.tests.filter(test => {
+          // Lọc theo status
+          if (filterStatus !== 'all' && test.status !== filterStatus) return false;
+          // Lọc theo AC Category
+          if (filterCategory !== 'all' && !test.acCode.startsWith(filterCategory)) return false;
+          // Lọc theo tìm kiếm text
+          if (filterSearch) {
+            const matchTitle = test.title.toLowerCase().includes(filterSearch);
+            const matchAc = test.acCode.toLowerCase().includes(filterSearch);
+            if (!matchTitle && !matchAc) return false;
+          }
+          return true;
+        });
+
+        if (filteredTests.length === 0) return;
+
+        const suitePassed = filteredTests.filter(t => t.status === 'passed').length;
+        const suiteFailed = filteredTests.filter(t => t.status === 'failed').length;
+        const suitePending = filteredTests.filter(t => t.status === 'pending').length;
+
+        html += `
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+            <!-- Suite Header -->
+            <div class="px-5 py-3.5 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <span class="text-sm font-bold text-white">${suite.title}</span>
+                <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">${filteredTests.length} tests</span>
+              </div>
+              <div class="flex items-center space-x-2 text-xs font-mono">
+                <span class="text-emerald-400 font-semibold">${suitePassed} pass</span>
+                <span class="text-slate-600">/</span>
+                <span class="text-rose-400 font-semibold">${suiteFailed} fail</span>
+                ${suitePending > 0 ? `<span class="text-slate-600">/</span><span class="text-amber-400">${suitePending} pend</span>` : ''}
+              </div>
+            </div>
+
+            <!-- Test Cases List -->
+            <div class="divide-y divide-slate-800/60">
+        `;
+
+        filteredTests.forEach(test => {
+          let statusBadge = '';
+          let rowBg = 'hover:bg-slate-800/30';
+
+          if (test.status === 'passed') {
+            statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">PASS</span>`;
+          } else if (test.status === 'failed') {
+            statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20 font-mono">FAIL</span>`;
+            rowBg = 'bg-rose-500/5 hover:bg-rose-500/10';
+          } else {
+            statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">WAIT</span>`;
+          }
+
+          html += `
+            <div class="px-5 py-3 flex flex-col space-y-1.5 transition ${rowBg}">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  ${statusBadge}
+                  <span class="text-xs px-2 py-0.5 rounded bg-slate-800/80 text-teal-400 font-mono border border-slate-700/50">${test.acCode}</span>
+                  <span class="text-xs sm:text-sm font-medium ${test.status === 'failed' ? 'text-rose-200' : 'text-slate-200'}">${escapeHtml(test.title)}</span>
+                </div>
+                <span class="text-xs text-slate-500 font-mono whitespace-nowrap ml-4">${test.duration}ms</span>
+              </div>
+          `;
+
+          // Hiển thị thông báo lỗi chi tiết nếu Failed
+          if (test.status === 'failed' && test.error) {
+            html += `
+              <div class="mt-2 text-xs font-mono bg-rose-950/40 border border-rose-800/40 text-rose-300 p-3 rounded-lg overflow-x-auto whitespace-pre-wrap">
+                <span class="font-bold text-rose-400">✕ Lỗi kiểm thử:</span> ${escapeHtml(test.error)}
+              </div>
+            `;
+          }
+
+          html += `</div>`;
+        });
+
+        html += `
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>

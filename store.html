@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tạp Hóa 36 - Cửa Hàng Tiện Ích & Bán Lẻ UTH</title>
+  <!-- Google Fonts: Be Vietnam Pro & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <!-- Material Symbols Outlined -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Be Vietnam Pro', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Be Vietnam Pro', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    /* Ultra-fast clean layout scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
+
+  <!-- ========================================================================= -->
+  <!-- TOP HEADER & NAVBAR -->
+  <!-- ========================================================================= -->
+  <header class="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-0 z-40 shadow-sm transition">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+      
+      <!-- Brand & Store Info -->
+      <a href="store.html" class="flex items-center space-x-2.5 shrink-0 group">
+        <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold shadow-sm transition">
+          <span class="material-symbols-outlined text-2xl">storefront</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="font-bold text-base sm:text-lg text-slate-900 tracking-tight">Tạp Hóa 36</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200">Giao 2H</span>
+          </div>
+          <p class="text-[11px] text-slate-500 hidden sm:block">02 Võ Oanh, Thạnh Mỹ Tây, Hồ Chí Minh, Việt Nam (UTH) • 1900 6522</p>
+        </div>
+      </a>
+
+      <!-- Search Bar with Voice Search Bridge -->
+      <div class="flex-1 max-w-lg mx-2 relative">
+        <div class="relative flex items-center">
+          <span class="material-symbols-outlined absolute left-3 text-slate-400 text-[20px]">search</span>
+          <input 
+            type="text" 
+            id="txtStoreSearch" 
+            placeholder="Tìm nước mắm, rau củ, mì tôm, bánh kẹo..." 
+            oninput="handleStoreSearch()"
+            class="w-full pl-10 pr-10 py-2 bg-slate-100 hover:bg-slate-50 focus:bg-white text-xs sm:text-sm text-slate-800 placeholder-slate-400 rounded-full border border-slate-300 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition"
+          >
+          <!-- Nút Tìm kiếm bằng giọng nói Web Speech API -->
+          <button 
+            id="btnVoiceSearch" 
+            onclick="startVoiceSearch()" 
+            title="Tìm kiếm bằng giọng nói tiếng Việt" 
+            class="absolute right-2 p-1.5 text-slate-400 hover:text-emerald-600 rounded-full hover:bg-slate-200 transition"
+          >
+            <span class="material-symbols-outlined text-[18px]">mic</span>
+          </button>
+        </div>
+        <!-- Quick search suggestions từ KietVaHuy -->
+        <div class="hidden sm:flex items-center gap-1.5 mt-1 px-2 text-[11px] text-slate-400 overflow-x-auto no-scrollbar">
+          <span class="font-semibold text-slate-500 shrink-0">Gợi ý mua:</span>
+          <button type="button" onclick="quickFillSearch('Sữa tươi')" class="hover:text-emerald-600 hover:underline">Sữa tươi</button>
+          <span>•</span>
+          <button type="button" onclick="quickFillSearch('Trứng gà')" class="hover:text-emerald-600 hover:underline">Trứng gà</button>
+          <span>•</span>
+          <button type="button" onclick="quickFillSearch('Thịt ba chỉ')" class="hover:text-emerald-600 hover:underline">Thịt ba chỉ</button>
+          <span>•</span>
+          <button type="button" onclick="quickFillSearch('Rau muống')" class="hover:text-emerald-600 hover:underline">Rau muống</button>
+          <span>•</span>
+          <button type="button" onclick="quickFillSearch('Mì Hảo Hảo')" class="hover:text-emerald-600 hover:underline">Mì Hảo Hảo</button>
+          <span>•</span>
+          <button type="button" onclick="quickFillSearch('Coca')" class="hover:text-emerald-600 hover:underline">Coca</button>
+        </div>
+      </div>
+
+      <!-- Right Header Actions: Quick Switcher, Auth Profile & Cart -->
+      <div class="flex items-center space-x-2 shrink-0">
+
+        <!-- QUICK SWITCHER CONTAINER (QUY TẮC BẢO MẬT AC-AUTH-04 & AC-AUTH-05) -->
+        <!-- Bị ẩn hoàn toàn đối với khách hàng (customer) hoặc chưa đăng nhập -->
+        <div id="quickSwitcherContainer" class="hidden sm:block">
+          <!-- Rendered via TapHoaCore.auth.renderQuickSwitcher() -->
+        </div>
+
+        <!-- User Authentication & Profile Dropdown -->
+        <div id="authProfileContainer" class="flex items-center">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Cart Button with Counter Badge -->
+        <button 
+          id="btnOpenCart" 
+          onclick="openCartDrawer()" 
+          class="relative p-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-2xl flex items-center gap-1.5 font-bold text-xs sm:text-sm transition shadow-sm"
+        >
+          <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+          <span class="hidden sm:inline">Giỏ hàng</span>
+          <span id="cartCountBadge" class="w-5 h-5 rounded-full bg-emerald-600 text-white font-mono text-[11px] font-bold flex items-center justify-center">0</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- HERO BANNER: CAM KẾT GIAO NHANH 2H & TỐC ĐỘ SIÊU TỐC -->
+  <!-- ========================================================================= -->
+  <section class="bg-slate-900 text-white py-6 sm:py-8 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="space-y-2 text-center md:text-left">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-xs font-medium">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span>Đồng bộ tồn kho trực tiếp từ quầy thu ngân UTH</span>
+        </div>
+        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">
+          Đi Chợ Hẻm Quen, Tươi Ngon Chuẩn Vị
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 max-w-xl leading-relaxed">
+          Đầy đủ 12 ngành hàng tiêu dùng thiết yếu phục vụ sinh viên và cư dân Bình Thạnh. 
+          Giao nhanh trong 2 giờ, <span class="text-emerald-400 font-semibold">miễn phí vận chuyển</span> cho đơn từ 200.000₫.
+        </p>
+      </div>
+
+      <!-- Quick Trust Indicators -->
+      <div class="grid grid-cols-3 gap-3 w-full md:w-auto">
+        <div class="bg-slate-800/80 rounded-xl p-3 text-center border border-slate-700">
+          <span class="material-symbols-outlined text-xl text-emerald-400 block mb-0.5">local_shipping</span>
+          <span class="font-semibold text-xs block text-slate-200">Giao 2 Giờ</span>
+          <span class="text-[10px] text-slate-400">Tận phòng trọ & nhà</span>
+        </div>
+        <div class="bg-slate-800/80 rounded-xl p-3 text-center border border-slate-700">
+          <span class="material-symbols-outlined text-xl text-emerald-400 block mb-0.5">eco</span>
+          <span class="font-semibold text-xs block text-slate-200">Tươi Mới</span>
+          <span class="text-[10px] text-slate-400">Nhập mới mỗi sáng</span>
+        </div>
+        <div class="bg-slate-800/80 rounded-xl p-3 text-center border border-slate-700">
+          <span class="material-symbols-outlined text-xl text-emerald-400 block mb-0.5">qr_code_scanner</span>
+          <span class="font-semibold text-xs block text-slate-200">VietQR / COD</span>
+          <span class="text-[10px] text-slate-400">Napas 247 tức thì</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 12 NGÀNH HÀNG TIÊU DÙNG THIẾT YẾU (HORIZONTAL CHIPS FILTER) -->
+  <!-- ========================================================================= -->
+  <nav class="bg-white border-b border-slate-200 sticky top-16 z-30 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5">
+      <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar text-xs font-semibold" id="categoryChipsContainer">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN WORKSPACE: LƯỚI SẢN PHẨM & CÁC THẺ HÀNG CHUẨN TMĐT -->
+  <!-- ========================================================================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
+
+    <!-- SHOWCASE BANNER: LỄ HỘI NÔNG SẢN & NHU YẾU PHẨM UTH -->
+    <div class="rounded-2xl overflow-hidden bg-gradient-to-r from-emerald-800 via-teal-900 to-slate-900 text-white p-5 sm:p-6 border border-emerald-700/40 shadow-sm relative">
+      <div class="relative z-10 max-w-2xl">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-semibold mb-2">
+          <span class="material-symbols-outlined text-sm">local_fire_department</span>
+          <span>LỄ HỘI NÔNG SẢN & NHU YẾU PHẨM TƯƠI SẠCH UTH</span>
+        </div>
+        <h2 class="text-lg sm:text-2xl font-bold tracking-tight text-white mb-1.5">
+          Đại Tiệc Tạp Hóa 36 - Giảm Đến 40%
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-300 mb-4 leading-relaxed">
+          Nông sản tươi sạch từ vườn, thịt cá trứng chuẩn VietGAP, thực phẩm khô và đồ gia dụng thiết yếu phục vụ sinh viên &amp; giảng viên UTH. Cam kết giao hẻm 2H, đổi trả tức thì nếu không tươi ngon.
+        </p>
+        <div class="flex flex-wrap items-center gap-2.5">
+          <button type="button" onclick="quickFillSearch('Gạo')" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">shopping_basket</span>
+            <span>Gạo &amp; Nông Sản</span>
+          </button>
+          <button type="button" onclick="quickFillSearch('Trứng')" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">egg</span>
+            <span>Trứng &amp; Đậu Hũ</span>
+          </button>
+          <button type="button" onclick="quickFillSearch('Mì Hảo Hảo')" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">ramen_dining</span>
+            <span>Mì Gói &amp; Đồ Khô</span>
+          </button>
+          <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/20 text-emerald-300 text-xs font-mono">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>85 shipper UTH sẵn sàng giao</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Filter & Real-Time Sync Indicator Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm">
+      <div class="flex items-center gap-2 text-xs">
+        <span class="text-slate-500">Đang xem:</span>
+        <span id="lblActiveCategoryTitle" class="font-bold text-slate-800 text-sm">Tất cả sản phẩm</span>
+        <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-mono text-[11px]" id="lblProductCount">36 sản phẩm</span>
+      </div>
+
+      <!-- Real-Time Sync Indicator Badge (AC-SYNC-01, 02) -->
+      <div class="flex items-center gap-1.5 text-xs text-slate-500">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+        <span class="font-mono text-[11px] text-emerald-700 font-semibold">Đồng bộ tồn kho đa tab (<span id="lblSyncLatency">&lt;50ms</span>)</span>
+      </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div id="storeProductGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6 gap-3.5 sm:gap-4">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Empty Results View -->
+    <div id="storeEmptyView" class="hidden py-16 text-center text-slate-400 bg-white rounded-2xl border border-slate-200 p-8">
+      <span class="material-symbols-outlined text-5xl text-slate-300 mb-2 block">search_off</span>
+      <p class="font-bold text-slate-700 text-sm">Không tìm thấy món hàng bạn yêu cầu</p>
+      <p class="text-xs text-slate-400 mt-1">Hãy thử tìm từ khóa khác hoặc nhấn vào micro nói tên sản phẩm</p>
+      <button onclick="resetSearchAndFilter()" class="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-semibold hover:bg-emerald-500 transition">
+        Xem tất cả sản phẩm
+      </button>
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- SLIDE-OUT CART DRAWER (GIỎ HÀNG TRỰC TIẾP) -->
+  <!-- ========================================================================= -->
+  <div id="cartDrawerBackdrop" onclick="closeCartDrawer()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 hidden transition-opacity opacity-0"></div>
+
+  <aside id="cartDrawer" class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+    
+    <!-- Drawer Header -->
+    <div class="p-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-emerald-400">shopping_cart</span>
+        <span class="font-bold text-base">Giỏ Hàng Của Bạn</span>
+        <span id="drawerItemCount" class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-mono">0 món</span>
+      </div>
+      <button onclick="closeCartDrawer()" class="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+    </div>
+
+    <!-- Free Shipping Progress Bar (Goal: 200.000₫) -->
+    <div class="p-3 bg-emerald-50 border-b border-emerald-100 shrink-0 text-xs">
+      <div class="flex justify-between items-center mb-1.5 font-medium text-emerald-900">
+        <span id="lblShippingProgressText">Mua thêm để được Miễn phí giao hàng 2H!</span>
+        <span id="lblShippingProgressPercent" class="font-mono font-bold text-emerald-700">0%</span>
+      </div>
+      <div class="w-full bg-emerald-200 rounded-full h-2 overflow-hidden">
+        <div id="barShippingProgress" class="bg-emerald-600 h-full transition-all duration-300" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <!-- Cart Items Scrollable List -->
+    <div class="flex-1 overflow-y-auto p-4 space-y-3" id="cartDrawerItemsList">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Empty Cart in Drawer -->
+    <div id="cartDrawerEmptyView" class="py-16 text-center text-slate-400">
+      <span class="material-symbols-outlined text-5xl text-slate-300 mb-2 block">remove_shopping_cart</span>
+      <p class="font-bold text-slate-700 text-sm">Giỏ hàng của bạn đang trống</p>
+      <p class="text-xs text-slate-400 mt-1">Hãy chọn các món hàng tươi ngon để đặt giao ngay</p>
+    </div>
+
+    <!-- Drawer Footer: Calculations & Checkout Button -->
+    <div class="p-4 bg-slate-50 border-t border-slate-200 shrink-0 space-y-3">
+      <div class="space-y-1.5 text-xs text-slate-600">
+        <div class="flex justify-between">
+          <span>Tạm tính tiền hàng:</span>
+          <span id="lblDrawerSubtotal" class="font-mono font-bold text-slate-800">0 đ</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Phí giao hàng 2H:</span>
+          <span id="lblDrawerShippingFee" class="font-mono font-semibold text-slate-700">15.000 đ</span>
+        </div>
+        <div class="pt-2 border-t border-slate-200 flex justify-between items-baseline">
+          <span class="text-xs font-bold text-slate-800 uppercase">TỔNG CỘNG:</span>
+          <span id="lblDrawerTotal" class="font-mono font-extrabold text-2xl text-emerald-600">0 đ</span>
+        </div>
+      </div>
+
+      <button 
+        id="btnProceedCheckout" 
+        onclick="openCheckoutModal()" 
+        class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition"
+      >
+        <span>Tiến Hành Đặt Hàng (1 Bước)</span>
+        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: ĐẶT HÀNG 1 BƯỚC (SINGLE-STEP CHECKOUT) -->
+  <!-- ========================================================================= -->
+  <div id="modalCheckout" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden flex flex-col max-h-[90vh]">
+      
+      <!-- Modal Header -->
+      <div class="px-5 py-4 bg-slate-900 text-white flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-emerald-400">local_shipping</span>
+          <span class="font-bold text-base">Xác Nhận Đặt Hàng Giao 2H</span>
+        </div>
+        <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-white">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Modal Body (Scrollable Form) -->
+      <div class="p-5 overflow-y-auto space-y-4 text-xs">
+        
+        <!-- Customer Info Form -->
+        <div class="space-y-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+          <span class="font-bold text-slate-800 text-sm block">1. Thông tin người nhận hàng</span>
+          
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="font-medium text-slate-600 block mb-1">Họ và tên (*):</label>
+              <input type="text" id="txtOrderCustomerName" placeholder="Ví dụ: Chị Lan" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-500 text-xs">
+            </div>
+            <div>
+              <label class="font-medium text-slate-600 block mb-1">Số điện thoại (*):</label>
+              <input type="tel" id="txtOrderCustomerPhone" placeholder="0901xxxxxx" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-500 text-xs font-mono">
+            </div>
+          </div>
+
+          <div>
+            <label class="font-medium text-slate-600 block mb-1">Địa chỉ giao hàng chi tiết (*):</label>
+            <input type="text" id="txtOrderAddress" placeholder="Số nhà, hẻm, tên đường, phường..." class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-500 text-xs">
+          </div>
+
+          <div>
+            <label class="font-medium text-slate-600 block mb-1">Ghi chú cho shipper quen xóm:</label>
+            <input type="text" id="txtOrderNote" placeholder="Ví dụ: Treo trước cổng rào, gọi trước khi đến..." class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-500 text-xs">
+          </div>
+        </div>
+
+        <!-- Payment Method Selection -->
+        <div class="space-y-2 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+          <span class="font-bold text-slate-800 text-sm block">2. Phương thức thanh toán</span>
+          
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <label class="flex items-center gap-2 p-2.5 bg-white rounded-xl border border-slate-200 cursor-pointer hover:border-emerald-500 transition">
+              <input type="radio" name="orderPaymentMethod" value="cod" checked class="text-emerald-600 focus:ring-emerald-500">
+              <div>
+                <span class="font-bold text-slate-800 flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-emerald-600">payments</span> Tiền mặt (COD)</span>
+                <span class="text-[10px] text-slate-400">Trả khi nhận hàng</span>
+              </div>
+            </label>
+
+            <label class="flex items-center gap-2 p-2.5 bg-white rounded-xl border border-slate-200 cursor-pointer hover:border-emerald-500 transition">
+              <input type="radio" name="orderPaymentMethod" value="vietqr" class="text-emerald-600 focus:ring-emerald-500">
+              <div>
+                <span class="font-bold text-slate-800 flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-blue-600">qr_code_2</span> VietQR NAPAS</span>
+                <span class="text-[10px] text-slate-400">Quét mã chuyển khoản</span>
+              </div>
+            </label>
+
+            <label class="flex items-center gap-2 p-2.5 bg-white rounded-xl border border-slate-200 cursor-pointer hover:border-emerald-500 transition">
+              <input type="radio" name="orderPaymentMethod" value="momo" class="text-emerald-600 focus:ring-emerald-500">
+              <div>
+                <span class="font-bold text-slate-800 flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-pink-600">account_balance_wallet</span> Ví MoMo</span>
+                <span class="text-[10px] text-slate-400">Ví điện tử MoMo</span>
+              </div>
+            </label>
+
+            <label class="flex items-center gap-2 p-2.5 bg-white rounded-xl border border-slate-200 cursor-pointer hover:border-emerald-500 transition">
+              <input type="radio" name="orderPaymentMethod" value="zalopay" class="text-emerald-600 focus:ring-emerald-500">
+              <div>
+                <span class="font-bold text-slate-800 flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-cyan-600">flash_on</span> ZaloPay</span>
+                <span class="text-[10px] text-slate-400">Ví ZaloPay nhanh</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Order Summary Review -->
+        <div class="p-3 bg-emerald-50 rounded-2xl border border-emerald-100 flex justify-between items-center text-xs">
+          <div>
+            <span class="text-emerald-900 block font-medium">Tổng tiền thanh toán dự kiến:</span>
+            <span class="text-[11px] text-emerald-700">Đã bao gồm phí ship (nếu có)</span>
+          </div>
+          <span id="lblModalCheckoutTotal" class="font-mono font-extrabold text-xl text-emerald-700">0 đ</span>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer Action -->
+      <div class="p-4 bg-white border-t border-slate-200 flex items-center justify-between gap-3 shrink-0">
+        <button onclick="closeCheckoutModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold">
+          Quay Lại
+        </button>
+        <button 
+          id="btnSubmitOrder" 
+          onclick="submitOnlineOrder()" 
+          class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition"
+        >
+          <span class="material-symbols-outlined text-[18px]">verified</span>
+          <span>Xác Nhận Đặt Hàng</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL THANH TOÁN VIETQR THỰC TẾ (NAPAS 247) -->
+  <!-- ========================================================================= -->
+  <div id="modalVietQRPayment" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
+      <!-- Modal Header -->
+      <div class="p-4 bg-slate-900 text-white flex items-center justify-between shrink-0 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-blue-400 text-xl">qr_code_2</span>
+          <span class="font-bold text-sm">Thanh Toán VietQR NAPAS 247</span>
+        </div>
+        <button onclick="closeStoreVietQRModal()" class="text-slate-400 hover:text-white transition">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-5 space-y-4 text-xs overflow-y-auto">
+        <div class="text-center">
+          <p class="text-slate-600 font-medium">Mở ứng dụng Ngân hàng (MB, VCB, Techcombank, MoMo...) quét mã QR để thanh toán:</p>
+        </div>
+
+        <!-- Real VietQR Image Container -->
+        <div class="w-64 h-64 mx-auto bg-white p-2 rounded-2xl border-2 border-blue-500/30 shadow-md flex items-center justify-center relative">
+          <img id="imgStoreVietQR" src="" alt="Mã VietQR Thanh Toán" class="w-full h-full object-contain rounded-xl">
+        </div>
+
+        <!-- Bank Transfer Details Card with One-Click Copy -->
+        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+          <div class="flex items-center justify-between py-1 border-b border-slate-200/60">
+            <span class="text-slate-500">Ngân hàng:</span>
+            <span class="font-bold text-slate-800">MB Bank (Quân Đội)</span>
+          </div>
+          <div class="flex items-center justify-between py-1 border-b border-slate-200/60">
+            <span class="text-slate-500">Số tài khoản:</span>
+            <div class="flex items-center gap-1.5">
+              <span class="font-mono font-extrabold text-sm text-blue-700" id="lblVietQRAccount">034206001749</span>
+              <button onclick="copyToClipboard('034206001749', 'Đã chép số tài khoản!')" class="p-1 text-slate-400 hover:text-blue-600" title="Sao chép">
+                <span class="material-symbols-outlined text-[15px]">content_copy</span>
+              </button>
+            </div>
+          </div>
+          <div class="flex items-center justify-between py-1 border-b border-slate-200/60">
+            <span class="text-slate-500">Chủ tài khoản:</span>
+            <span class="font-bold text-slate-800 uppercase" id="lblVietQROwner">TRAN NGOC LAM</span>
+          </div>
+          <div class="flex items-center justify-between py-1 border-b border-slate-200/60">
+            <span class="text-slate-500">Số tiền:</span>
+            <div class="flex items-center gap-1.5">
+              <span class="font-mono font-extrabold text-base text-emerald-600" id="lblVietQRAmount">0 đ</span>
+              <button onclick="copyStoreAmount()" class="p-1 text-slate-400 hover:text-emerald-600" title="Sao chép số tiền">
+                <span class="material-symbols-outlined text-[15px]">content_copy</span>
+              </button>
+            </div>
+          </div>
+          <div class="flex items-center justify-between py-1">
+            <span class="text-slate-500">Nội dung chuyển khoản:</span>
+            <div class="flex items-center gap-1.5">
+              <span class="font-mono font-bold text-slate-800" id="lblVietQRMemo">TH36</span>
+              <button onclick="copyStoreMemo()" class="p-1 text-slate-400 hover:text-blue-600" title="Sao chép nội dung">
+                <span class="material-symbols-outlined text-[15px]">content_copy</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 p-2.5 bg-blue-50/80 rounded-xl border border-blue-100 text-[11px] text-blue-900">
+          <span class="material-symbols-outlined text-blue-600 text-base">info</span>
+          <span>Sau khi chuyển khoản thành công trên app ngân hàng, vui lòng bấm nút xác nhận bên dưới.</span>
+        </div>
+      </div>
+
+      <!-- Modal Footer Action -->
+      <div class="p-4 bg-white border-t border-slate-200 flex items-center justify-between gap-3 shrink-0">
+        <button onclick="closeStoreVietQRModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold">
+          Đóng
+        </button>
+        <button onclick="confirmVietQRPaid()" class="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 transition">
+          <span class="material-symbols-outlined text-[18px]">verified</span>
+          <span>Tôi Đã Chuyển Khoản Thành Công</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: ĐĂNG NHẬP MOCK OAUTH2 (GOOGLE & FACEBOOK - AC-AUTH-02) -->
+  <!-- ========================================================================= -->
+  <div id="modalSocialAuth" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full overflow-hidden">
+      
+      <div class="p-5 text-center bg-slate-900 text-white relative">
+        <div class="w-12 h-12 rounded-xl bg-emerald-600 flex items-center justify-center font-bold text-white shadow-sm mx-auto mb-2 text-2xl">
+          <span class="material-symbols-outlined text-2xl">storefront</span>
+        </div>
+        <h3 class="font-bold text-base">Đăng Nhập Tạp Hóa 36</h3>
+        <p class="text-xs text-slate-400 mt-1">Lưu địa chỉ, theo dõi đơn hàng và nhận ưu đãi riêng</p>
+        <button onclick="closeSocialAuthModal()" class="absolute right-3 top-3 text-slate-400 hover:text-white">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-3 text-xs">
+        <!-- Mock Google OAuth2 -->
+        <button 
+          onclick="handleSocialLogin('google')" 
+          class="w-full py-2.5 px-4 bg-white hover:bg-slate-50 border border-slate-300 rounded-xl flex items-center justify-center gap-3 font-semibold text-slate-700 shadow-xs transition"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+          <span>Đăng nhập với Google</span>
+        </button>
+
+        <!-- Mock Facebook OAuth2 -->
+        <button 
+          onclick="handleSocialLogin('facebook')" 
+          class="w-full py-2.5 px-4 bg-[#1877F2] hover:bg-[#166fe5] text-white rounded-xl flex items-center justify-center gap-3 font-semibold shadow-xs transition"
+        >
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          <span>Tiếp tục với Facebook</span>
+        </button>
+
+        <div class="relative py-2">
+          <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200"></div></div>
+          <div class="relative flex justify-center text-[10px] text-slate-400 uppercase"><span class="bg-white px-2">Hoặc tài khoản test</span></div>
+        </div>
+
+        <!-- Fast Test Accounts for Demo / Grading -->
+        <div class="space-y-1.5">
+          <button onclick="loginAsQuick('khachhang1', '123')" class="w-full p-2 bg-slate-50 hover:bg-slate-100 rounded-lg text-left border border-slate-200 flex items-center justify-between">
+            <div>
+              <span class="font-bold text-slate-700 block">Chị Lan (khachhang1)</span>
+              <span class="text-[10px] text-slate-500">Khách hàng thường • Ẩn nút Admin/POS</span>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 text-lg">person</span>
+          </button>
+          <button onclick="loginAsQuick('staff', 'staff123')" class="w-full p-2 bg-slate-50 hover:bg-slate-100 rounded-lg text-left border border-slate-200 flex items-center justify-between">
+            <div>
+              <span class="font-bold text-slate-700 block">Minh Tuấn (staff)</span>
+              <span class="text-[10px] text-emerald-600 font-semibold">Thu ngân • Hiện link POS</span>
+            </div>
+            <span class="material-symbols-outlined text-emerald-600 text-lg">badge</span>
+          </button>
+          <button onclick="loginAsQuick('admin', 'admin123')" class="w-full p-2 bg-slate-50 hover:bg-slate-100 rounded-lg text-left border border-slate-200 flex items-center justify-between">
+            <div>
+              <span class="font-bold text-slate-700 block">Anh Lâm (admin)</span>
+              <span class="text-[10px] text-indigo-600 font-semibold">Quản lý • Hiện Quick Switcher 3 trang</span>
+            </div>
+            <span class="material-symbols-outlined text-indigo-600 text-lg">shield_person</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- FLOATING CHATBOT WIDGET: TAPHOA36 AI TRỢ LÝ (AC-AI-01, 02, 03, 04) -->
+  <!-- ========================================================================= -->
+  <div class="fixed bottom-5 right-5 z-40">
+    <!-- Trigger Floating Button -->
+    <button 
+      id="btnToggleChatbot" 
+      onclick="toggleChatbot()" 
+      class="w-12 h-12 rounded-xl bg-slate-900 hover:bg-slate-800 text-white shadow-md flex items-center justify-center transition active:scale-95 group border border-slate-700"
+      title="Mở Trợ lý ảo TapHoa36 AI"
+    >
+      <span class="material-symbols-outlined text-xl text-rose-400">smart_toy</span>
+      <!-- Online dot -->
+      <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-slate-900"></span>
+    </button>
+
+    <!-- Chatbot Window Box -->
+    <div 
+      id="chatbotWindow" 
+      class="hidden absolute bottom-16 right-0 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden flex flex-col h-[460px] max-h-[80vh] transition-all duration-200"
+    >
+      <!-- Chatbot Header -->
+      <div class="px-4 py-3 bg-slate-900 text-white flex items-center justify-between shrink-0 border-b border-slate-800">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center">
+            <span class="material-symbols-outlined text-rose-400 text-lg">smart_toy</span>
+          </div>
+          <div>
+            <h4 class="font-bold text-xs sm:text-sm text-slate-100">TapHoa36 AI Trợ Lý</h4>
+            <span class="text-[10px] text-slate-400 flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <span>Tư vấn mua sắm 24/7 (NLP Tiếng Việt)</span>
+            </span>
+          </div>
+        </div>
+        <button onclick="toggleChatbot()" class="text-slate-400 hover:text-white transition">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <!-- Quick Prompt Suggestion Chips -->
+      <div class="p-2 bg-slate-50 border-b border-slate-100 flex items-center space-x-1.5 overflow-x-auto no-scrollbar shrink-0 text-[11px]">
+        <button onclick="sendQuickPrompt('Có bán mì Hảo Hảo không?')" class="px-2.5 py-1 bg-white hover:bg-slate-100 rounded-full border border-slate-200 whitespace-nowrap text-slate-700 font-medium transition">Mì Hảo Hảo</button>
+        <button onclick="sendQuickPrompt('Phí ship thế nào shop?')" class="px-2.5 py-1 bg-white hover:bg-slate-100 rounded-full border border-slate-200 whitespace-nowrap text-slate-700 font-medium transition">Phí ship 2H</button>
+        <button onclick="sendQuickPrompt('Hôm nay có khuyến mãi gì?')" class="px-2.5 py-1 bg-white hover:bg-slate-100 rounded-full border border-slate-200 whitespace-nowrap text-slate-700 font-medium transition">Khuyến mãi</button>
+        <button onclick="sendQuickPrompt('Tra cứu đơn hàng')" class="px-2.5 py-1 bg-white hover:bg-slate-100 rounded-full border border-slate-200 whitespace-nowrap text-slate-700 font-medium transition">Tra cứu đơn</button>
+      </div>
+
+      <!-- Chat Messages Scroll Area -->
+      <div id="chatbotMessages" class="flex-1 overflow-y-auto p-3.5 space-y-3 text-xs">
+        <!-- Greeting from TapHoa36 -->
+        <div class="flex items-start gap-2">
+          <div class="w-7 h-7 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-base">smart_toy</span>
+          </div>
+          <div class="bg-rose-50/70 text-slate-800 p-2.5 rounded-2xl rounded-tl-none max-w-[85%] leading-relaxed border border-rose-100/60">
+            Dạ TapHoa36 xin chào quý khách! Tiệm tạp hóa hôm nay có đầy đủ rau củ tươi, thực phẩm, gia vị và đồ hộp thiết yếu. Quý khách muốn tìm món gì hay cần hỗ trợ gì cứ nhắn nhé!
+          </div>
+        </div>
+      </div>
+
+      <!-- Chatbot Input Field -->
+      <div class="p-2.5 bg-white border-t border-slate-200 flex items-center gap-1.5 shrink-0">
+        <input 
+          type="text" 
+          id="txtChatInput" 
+          placeholder="Nhắn tin với TapHoa36 AI..." 
+          onkeydown="handleChatKeyDown(event)"
+          class="flex-1 px-3 py-2 bg-slate-100 rounded-full text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-rose-400 focus:ring-1 focus:ring-rose-400"
+        >
+        <button onclick="sendMessageToAI()" class="p-2 bg-rose-500 hover:bg-rose-600 text-white rounded-full transition shadow-sm">
+          <span class="material-symbols-outlined text-[16px]">send</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-4 left-4 z-50 space-y-2 pointer-events-none"></div>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT LOGIC STOREFRONT TÍCH HỢP VỚI SHARED/CORE.JS -->
+  <!-- ========================================================================= -->
+  <script src="shared/core.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      // =======================================================================
+      // 1. STATE & DATA INITIALIZATION
+      // =======================================================================
+      let catalog = [];
+      let cart = [];
+      let activeCategory = 'all';
+      let searchQuery = '';
+      let currentUser = null;
+
+      const CATEGORIES = [
+        { id: 'all', name: 'Tất cả', icon: 'apps' },
+        { id: 'rau_cu', name: 'Rau củ', icon: 'nutrition' },
+        { id: 'thit_ca', name: 'Thịt cá', icon: 'set_meal' },
+        { id: 'gia_vi', name: 'Gia vị', icon: 'soup_kitchen' },
+        { id: 'mi_goi', name: 'Mì gói', icon: 'ramen_dining' },
+        { id: 'sua_bo', name: 'Sữa bơ', icon: 'local_drink' },
+        { id: 'nuoc_ngot', name: 'Nước ngọt', icon: 'liquor' },
+        { id: 'banh_keo', name: 'Bánh kẹo', icon: 'cookie' },
+        { id: 've_sinh', name: 'Vệ sinh', icon: 'cleaning_services' },
+        { id: 'me_be', name: 'Mẹ & Bé', icon: 'child_care' },
+        { id: 'nhu_yeu_pham', name: 'Nhu yếu phẩm', icon: 'shopping_bag' },
+        { id: 'hang_tuoi', name: 'Hàng tươi', icon: 'eco' },
+        { id: 'web_doc_quyen', name: 'Web độc quyền', icon: 'star' }
+      ];
+
+      // =======================================================================
+      // 2. KHỞI CHẠY (INITIALIZATION)
+      // =======================================================================
+      window.addEventListener('DOMContentLoaded', async () => {
+        currentUser = TapHoaCore.auth.getCurrentUser();
+        updateAuthAndQuickSwitcherUI();
+        renderCategoryChips();
+        await loadStoreCatalog();
+        setupRealtimeSync();
+      });
+
+      // Cập nhật giao diện xác thực & Quick Switcher (AC-AUTH-04 & AC-AUTH-05)
+      function updateAuthAndQuickSwitcherUI() {
+        currentUser = TapHoaCore.auth.getCurrentUser();
+        
+        // 1. Render Quick Switcher theo quyền RBAC
+        const switcherContainer = document.getElementById('quickSwitcherContainer');
+        if (switcherContainer) {
+          // TapHoaCore.auth.renderQuickSwitcher tự động ẩn hoàn toàn nếu role là customer hoặc null
+          TapHoaCore.auth.renderQuickSwitcher('quickSwitcherContainer');
+        }
+
+        // 2. Render Avatar & Thông tin tài khoản
+        const authContainer = document.getElementById('authProfileContainer');
+        if (!authContainer) return;
+
+        if (currentUser) {
+          authContainer.innerHTML = `
+            <div class="flex items-center gap-2 p-1.5 bg-slate-100 rounded-2xl border border-slate-200 text-xs">
+              <span class="text-base">${currentUser.avatar || '👤'}</span>
+              <div class="hidden md:flex flex-col text-left leading-tight">
+                <span class="font-bold text-slate-800 truncate max-w-[100px]">${currentUser.name || currentUser.username}</span>
+                <span class="text-[10px] text-emerald-600 font-semibold uppercase font-mono">${currentUser.role}</span>
+              </div>
+              <button onclick="logoutStore()" title="Đăng xuất" class="p-1 text-slate-400 hover:text-rose-600 rounded-lg transition">
+                <span class="material-symbols-outlined text-[16px]">logout</span>
+              </button>
+            </div>
+          `;
+        } else {
+          authContainer.innerHTML = `
+            <button onclick="openSocialAuthModal()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm transition">
+              <span class="material-symbols-outlined text-[16px]">account_circle</span>
+              <span>Đăng nhập</span>
+            </button>
+          `;
+        }
+      }
+
+      window.logoutStore = function () {
+        TapHoaCore.auth.logout();
+        currentUser = null;
+        updateAuthAndQuickSwitcherUI();
+        showToast('Đã đăng xuất tài khoản', 'info');
+      };
+
+      // =======================================================================
+      // 3. NẠP VÀ HIỂN THỊ DANH MỤC HÀNG HÓA
+      // =======================================================================
+      async function loadStoreCatalog() {
+        catalog = await TapHoaCore.dal.getProducts();
+        if (!catalog || catalog.length === 0) {
+          catalog = await TapHoaCore.dal.seedProducts();
+        }
+        renderCatalog();
+      }
+
+      function renderCategoryChips() {
+        const container = document.getElementById('categoryChipsContainer');
+        if (!container) return;
+
+        container.innerHTML = CATEGORIES.map(c => `
+          <button 
+            onclick="setStoreCategory('${c.id}')" 
+            class="px-3 py-1.5 rounded-full transition flex items-center gap-1.5 whitespace-nowrap ${c.id === activeCategory ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}"
+          >
+            <span class="material-symbols-outlined text-[16px]">${c.icon}</span>
+            <span>${c.name}</span>
+          </button>
+        `).join('');
+      }
+
+      window.setStoreCategory = function (catId) {
+        activeCategory = catId;
+        renderCategoryChips();
+        renderCatalog();
+        const cat = CATEGORIES.find(c => c.id === catId);
+        const titleEl = document.getElementById('lblActiveCategoryTitle');
+        if (titleEl && cat) titleEl.textContent = cat.name;
+      };
+
+      function renderCatalog() {
+        const grid = document.getElementById('storeProductGrid');
+        const emptyView = document.getElementById('storeEmptyView');
+        const countEl = document.getElementById('lblProductCount');
+
+        if (!grid) return;
+
+        const cleanSearch = TapHoaCore.ai.removeAccents(searchQuery);
+
+        const filtered = catalog.filter(p => {
+          if (activeCategory !== 'all' && p.category !== activeCategory) return false;
+          if (cleanSearch) {
+            const cleanName = TapHoaCore.ai.removeAccents(p.name);
+            const matchName = cleanName.includes(cleanSearch);
+            const matchBarcode = String(p.barcode).includes(searchQuery);
+            if (!matchName && !matchBarcode) return false;
+          }
+          return true;
+        });
+
+        if (countEl) countEl.textContent = `${filtered.length} sản phẩm`;
+
+        if (filtered.length === 0) {
+          grid.innerHTML = '';
+          if (emptyView) emptyView.classList.remove('hidden');
+          return;
+        }
+
+        if (emptyView) emptyView.classList.add('hidden');
+
+        grid.innerHTML = filtered.map(p => {
+          const isOutOfStock = p.stock <= 0;
+          const discountPercent = p.originalPrice && p.originalPrice > p.price 
+            ? Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100) 
+            : 0;
+
+          return `
+            <div id="productCard_${p.id}" class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition flex flex-col justify-between group">
+              
+              <!-- Card Top: Image & Badge -->
+              <div class="p-3 pb-0">
+                <div class="h-28 bg-slate-50 rounded-xl flex items-center justify-center relative overflow-hidden">
+                  <span class="text-4xl select-none">${p.image || '📦'}</span>
+                  ${discountPercent > 0 ? `
+                    <span class="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-rose-500 text-white font-mono text-[10px] font-bold">
+                      -${discountPercent}%
+                    </span>
+                  ` : ''}
+                  <!-- Real-time Stock Badge -->
+                  <span id="stockBadge_${p.id}" class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md text-[10px] font-semibold font-mono flex items-center gap-1 ${isOutOfStock ? 'bg-rose-50 text-rose-700 border border-rose-200' : (p.stock <= 5 ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200')}">
+                    <span class="w-1.5 h-1.5 rounded-full ${isOutOfStock ? 'bg-rose-500' : (p.stock <= 5 ? 'bg-amber-500' : 'bg-emerald-500')}"></span>
+                    ${isOutOfStock ? 'Tạm hết' : `Còn ${p.stock}`}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Card Content: Name, Rating & Price -->
+              <div class="p-3 flex-1 flex flex-col justify-between space-y-2">
+                <div>
+                  <div class="flex items-center gap-1 text-[11px] text-amber-600 font-medium mb-1">
+                    <span class="flex items-center gap-0.5"><span class="material-symbols-outlined text-amber-500 text-[13px]">star</span><span class="font-mono text-slate-700 font-semibold">${p.rating || 4.8}</span></span>
+                    <span class="text-slate-400 font-normal">(${p.sales || 50}+ đã bán)</span>
+                  </div>
+                  <h3 class="font-bold text-xs text-slate-800 line-clamp-2 leading-snug group-hover:text-emerald-700 transition">
+                    ${p.name}
+                  </h3>
+                  <span class="text-[11px] text-slate-400 block mt-0.5">${p.unit || 'Đơn vị'}</span>
+                </div>
+
+                <div class="pt-2 border-t border-slate-100">
+                  <div class="flex items-baseline gap-1.5">
+                    <span class="font-mono font-extrabold text-sm text-emerald-600">
+                      ${TapHoaCore.formatCurrency(p.price)}
+                    </span>
+                    ${p.originalPrice && p.originalPrice > p.price ? `
+                      <span class="font-mono text-[11px] text-slate-400 line-through">
+                        ${TapHoaCore.formatNumber(p.originalPrice)}
+                      </span>
+                    ` : ''}
+                  </div>
+
+                  <!-- Add to Cart Action Button (Disabled if stock = 0 AC-SYNC-03) -->
+                  <button 
+                    id="btnAddToCart_${p.id}" 
+                    onclick="addToStoreCart('${p.id}')" 
+                    ${isOutOfStock ? 'disabled' : ''} 
+                    class="w-full mt-2 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition ${isOutOfStock ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-60' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm'}"
+                  >
+                    <span class="material-symbols-outlined text-[16px]">${isOutOfStock ? 'block' : 'add_shopping_cart'}</span>
+                    <span>${isOutOfStock ? 'Hết hàng' : 'Thêm giỏ'}</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          `;
+        }).join('');
+      }
+
+      window.handleStoreSearch = function () {
+        searchQuery = document.getElementById('txtStoreSearch')?.value.trim() || '';
+        renderCatalog();
+      };
+
+      window.quickFillSearch = function (term) {
+        const input = document.getElementById('txtStoreSearch');
+        if (input) {
+          input.value = term;
+          window.handleStoreSearch();
+          input.focus();
+        }
+      };
+
+      window.resetSearchAndFilter = function () {
+        searchQuery = '';
+        activeCategory = 'all';
+        const txt = document.getElementById('txtStoreSearch');
+        if (txt) txt.value = '';
+        renderCategoryChips();
+        renderCatalog();
+      };
+
+      // Tìm kiếm bằng giọng nói Web Speech API
+      window.startVoiceSearch = function () {
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRec) {
+          showToast('Trình duyệt chưa hỗ trợ nhận diện giọng nói Web Speech API', 'warning');
+          return;
+        }
+
+        const recognition = new SpeechRec();
+        recognition.lang = 'vi-VN';
+        recognition.interimResults = false;
+
+        const micBtn = document.getElementById('btnVoiceSearch');
+        if (micBtn) micBtn.classList.add('text-rose-500', 'animate-pulse');
+        showToast('🎙️ Đang nghe giọng nói tiếng Việt... Hãy nói tên món hàng!', 'info');
+
+        recognition.onresult = (event) => {
+          const text = event.results[0][0].transcript;
+          if (micBtn) micBtn.classList.remove('text-rose-500', 'animate-pulse');
+          const searchInput = document.getElementById('txtStoreSearch');
+          if (searchInput) {
+            searchInput.value = text;
+            searchQuery = text;
+            renderCatalog();
+            showToast(`🎙️ Đã nhận diện: "${text}"`, 'success');
+          }
+        };
+
+        recognition.onerror = () => {
+          if (micBtn) micBtn.classList.remove('text-rose-500', 'animate-pulse');
+          showToast('Không thể thu âm giọng nói, vui lòng thử lại', 'error');
+        };
+
+        recognition.start();
+      };
+
+      // =======================================================================
+      // 4. REAL-TIME STOCK SYNC ENGINE (<50ms Latency) (AC-SYNC-01, 02, 03)
+      // =======================================================================
+      function setupRealtimeSync() {
+        TapHoaCore.sync.on('PRODUCT_STOCK_CHANGED', (payload) => {
+          const startSync = performance.now();
+          if (!payload || !payload.productId) return;
+
+          // Tìm sản phẩm trong danh mục
+          const product = catalog.find(p => p.id === payload.productId);
+          if (product) {
+            product.stock = payload.newStock;
+
+            // Cập nhật ngay trong DOM tức thì mà không cần reload trang (< 50ms)
+            const badge = document.getElementById(`stockBadge_${product.id}`);
+            const btn = document.getElementById(`btnAddToCart_${product.id}`);
+
+            if (badge) {
+              if (product.stock <= 0) {
+                badge.className = 'absolute bottom-2 right-2 px-2 py-0.5 rounded-md text-[10px] font-semibold font-mono flex items-center gap-1 bg-rose-50 text-rose-700 border border-rose-200';
+                badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>Tạm hết';
+              } else if (product.stock <= 5) {
+                badge.className = 'absolute bottom-2 right-2 px-2 py-0.5 rounded-md text-[10px] font-semibold font-mono flex items-center gap-1 bg-amber-50 text-amber-700 border border-amber-200';
+                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>Còn ${product.stock}`;
+              } else {
+                badge.className = 'absolute bottom-2 right-2 px-2 py-0.5 rounded-md text-[10px] font-semibold font-mono flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200';
+                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Còn ${product.stock}`;
+              }
+            }
+
+            if (btn) {
+              // Vô hiệu hóa nút mua khi tồn = 0 (AC-SYNC-03)
+              if (product.stock <= 0) {
+                btn.disabled = true;
+                btn.className = 'w-full mt-2 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition bg-slate-100 text-slate-400 cursor-not-allowed opacity-60';
+                btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">block</span><span>Hết hàng</span>`;
+              } else {
+                btn.disabled = false;
+                btn.className = 'w-full mt-2 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm';
+                btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">add_shopping_cart</span><span>Thêm giỏ</span>`;
+              }
+            }
+
+            // Đồng thời giới hạn lại số lượng trong giỏ hàng nếu vượt quá tồn mới
+            const cartItem = cart.find(i => i.id === product.id);
+            if (cartItem && cartItem.quantity > product.stock) {
+              cartItem.quantity = Math.max(0, product.stock);
+              if (cartItem.quantity === 0) {
+                cart = cart.filter(i => i.id !== product.id);
+              }
+              renderCartDrawer();
+            }
+
+            const latency = Math.round(performance.now() - startSync);
+            const latencyEl = document.getElementById('lblSyncLatency');
+            if (latencyEl) latencyEl.textContent = `${latency}ms`;
+          }
+        });
+
+        // Lắng nghe thay đổi tài khoản
+        TapHoaCore.sync.on('USER_AUTH_CHANGED', (payload) => {
+          currentUser = payload.user;
+          updateAuthAndQuickSwitcherUI();
+        });
+
+        // Lắng nghe sự kiện làm mới/xóa sạch dữ liệu từ Admin
+        TapHoaCore.sync.on('DATA_CLEARED', async () => {
+          await loadStoreCatalog();
+          cart = [];
+          renderCartDrawer();
+          showToast('🔄 Danh mục cửa hàng vừa được cập nhật!', 'info');
+        });
+      }
+
+      // =======================================================================
+      // 5. NGHIỆP VỤ GIỎ HÀNG (CART LOGIC & DRAWER)
+      // =======================================================================
+      window.addToStoreCart = function (productId) {
+        const product = catalog.find(p => p.id === productId);
+        if (!product) return;
+        if (product.stock <= 0) {
+          showToast(`Sản phẩm "${product.name}" đã hết hàng!`, 'error');
+          return;
+        }
+
+        const found = cart.find(i => i.id === product.id);
+        if (found) {
+          if (found.quantity >= product.stock) {
+            showToast(`Bạn đã chọn tối đa số lượng tồn kho (${product.stock})!`, 'warning');
+            return;
+          }
+          found.quantity += 1;
+        } else {
+          cart.push({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            unit: product.unit,
+            quantity: 1,
+            stock: product.stock
+          });
+        }
+
+        updateCartBadge();
+        renderCartDrawer();
+        showToast(`Đã thêm "${product.name}" vào giỏ hàng!`, 'success');
+      };
+
+      function updateCartBadge() {
+        const badge = document.getElementById('cartCountBadge');
+        const drawerCount = document.getElementById('drawerItemCount');
+        const totalQty = cart.reduce((sum, i) => sum + i.quantity, 0);
+        if (badge) badge.textContent = totalQty;
+        if (drawerCount) drawerCount.textContent = `${totalQty} món`;
+      }
+
+      window.openCartDrawer = function () {
+        const drawer = document.getElementById('cartDrawer');
+        const backdrop = document.getElementById('cartDrawerBackdrop');
+        if (drawer && backdrop) {
+          backdrop.classList.remove('hidden');
+          setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+          drawer.classList.remove('translate-x-full');
+        }
+        renderCartDrawer();
+      };
+
+      window.closeCartDrawer = function () {
+        const drawer = document.getElementById('cartDrawer');
+        const backdrop = document.getElementById('cartDrawerBackdrop');
+        if (drawer && backdrop) {
+          drawer.classList.add('translate-x-full');
+          backdrop.classList.add('opacity-0');
+          setTimeout(() => backdrop.classList.add('hidden'), 300);
+        }
+      };
+
+      function renderCartDrawer() {
+        const listContainer = document.getElementById('cartDrawerItemsList');
+        const emptyView = document.getElementById('cartDrawerEmptyView');
+        const btnCheckout = document.getElementById('btnProceedCheckout');
+        const subtotalEl = document.getElementById('lblDrawerSubtotal');
+        const shippingFeeEl = document.getElementById('lblDrawerShippingFee');
+        const totalEl = document.getElementById('lblDrawerTotal');
+
+        if (!listContainer) return;
+
+        const subtotal = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+        const isFreeShipping = subtotal >= 200000;
+        const shippingFee = cart.length === 0 ? 0 : (isFreeShipping ? 0 : 15000);
+        const finalTotal = subtotal + shippingFee;
+
+        // Cập nhật thanh tiến trình Free Shipping
+        const progressPercent = Math.min(100, Math.round((subtotal / 200000) * 100));
+        const progressBar = document.getElementById('barShippingProgress');
+        const progressText = document.getElementById('lblShippingProgressText');
+        const progressPctText = document.getElementById('lblShippingProgressPercent');
+
+        if (progressBar) progressBar.style.width = `${progressPercent}%`;
+        if (progressPctText) progressPctText.textContent = `${progressPercent}%`;
+        if (progressText) {
+          if (subtotal >= 200000) {
+            progressText.textContent = '🎉 Đơn hàng được MIỄN PHÍ GIAO HÀNG 2H!';
+          } else {
+            const needMore = 200000 - subtotal;
+            progressText.textContent = `Mua thêm ${TapHoaCore.formatCurrency(needMore)} để được Free Ship!`;
+          }
+        }
+
+        if (subtotalEl) subtotalEl.textContent = TapHoaCore.formatCurrency(subtotal);
+        if (shippingFeeEl) {
+          shippingFeeEl.textContent = isFreeShipping ? 'Miễn phí (0 đ)' : TapHoaCore.formatCurrency(shippingFee);
+          shippingFeeEl.className = isFreeShipping ? 'font-mono font-bold text-emerald-600' : 'font-mono font-semibold text-slate-700';
+        }
+        if (totalEl) totalEl.textContent = TapHoaCore.formatCurrency(finalTotal);
+
+        if (cart.length === 0) {
+          listContainer.innerHTML = '';
+          if (emptyView) emptyView.style.display = 'block';
+          if (btnCheckout) {
+            btnCheckout.disabled = true;
+            btnCheckout.classList.add('opacity-50', 'cursor-not-allowed');
+          }
+          return;
+        }
+
+        if (emptyView) emptyView.style.display = 'none';
+        if (btnCheckout) {
+          btnCheckout.disabled = false;
+          btnCheckout.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        listContainer.innerHTML = cart.map(item => `
+          <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+              <span class="text-2xl">${item.image || '📦'}</span>
+              <div>
+                <h4 class="font-bold text-xs text-slate-800 line-clamp-1">${item.name}</h4>
+                <span class="font-mono text-emerald-600 font-bold text-xs">${TapHoaCore.formatCurrency(item.price)}</span>
+              </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+              <div class="inline-flex items-center border border-slate-300 rounded-lg bg-white overflow-hidden">
+                <button onclick="changeDrawerQuantity('${item.id}', -1)" class="w-6 h-6 hover:bg-slate-100 flex items-center justify-center font-bold text-slate-600">-</button>
+                <span class="w-7 text-center font-mono font-bold text-xs text-slate-800">${item.quantity}</span>
+                <button onclick="changeDrawerQuantity('${item.id}', 1)" class="w-6 h-6 hover:bg-slate-100 flex items-center justify-center font-bold text-slate-600">+</button>
+              </div>
+              <button onclick="removeFromStoreCart('${item.id}')" class="text-slate-400 hover:text-rose-600 transition">
+                <span class="material-symbols-outlined text-[18px]">delete</span>
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        updateCartBadge();
+      }
+
+      window.changeDrawerQuantity = function (id, delta) {
+        const item = cart.find(i => i.id === id);
+        if (!item) return;
+
+        const product = catalog.find(p => p.id === id);
+        const maxStock = product ? product.stock : 999;
+
+        const newQty = item.quantity + delta;
+        if (newQty <= 0) {
+          removeFromStoreCart(id);
+          return;
+        }
+        if (newQty > maxStock) {
+          showToast(`Chỉ còn ${maxStock} sản phẩm trong kho!`, 'warning');
+          return;
+        }
+
+        item.quantity = newQty;
+        renderCartDrawer();
+      };
+
+      window.removeFromStoreCart = function (id) {
+        cart = cart.filter(i => i.id !== id);
+        renderCartDrawer();
+      };
+
+      // =======================================================================
+      // 6. QUY TRÌNH ĐẶT HÀNG 1 BƯỚC (SINGLE-STEP CHECKOUT)
+      // =======================================================================
+      window.openCheckoutModal = function () {
+        if (cart.length === 0) return;
+        closeCartDrawer();
+
+        const modal = document.getElementById('modalCheckout');
+        if (modal) modal.classList.remove('hidden');
+
+        // Pre-fill thông tin nếu người dùng đã đăng nhập
+        if (currentUser) {
+          const nameInput = document.getElementById('txtOrderCustomerName');
+          const phoneInput = document.getElementById('txtOrderCustomerPhone');
+          if (nameInput && !nameInput.value) nameInput.value = currentUser.name || '';
+          if (phoneInput && !phoneInput.value) phoneInput.value = currentUser.phone || '';
+        }
+
+        const subtotal = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+        const shippingFee = subtotal >= 200000 ? 0 : 15000;
+        const total = subtotal + shippingFee;
+        const totalEl = document.getElementById('lblModalCheckoutTotal');
+        if (totalEl) totalEl.textContent = TapHoaCore.formatCurrency(total);
+      };
+
+      window.closeCheckoutModal = function () {
+        const modal = document.getElementById('modalCheckout');
+        if (modal) modal.classList.add('hidden');
+      };
+
+      window.submitOnlineOrder = async function () {
+        const name = document.getElementById('txtOrderCustomerName')?.value.trim();
+        const phone = document.getElementById('txtOrderCustomerPhone')?.value.trim();
+        const address = document.getElementById('txtOrderAddress')?.value.trim();
+        const note = document.getElementById('txtOrderNote')?.value.trim();
+        const paymentRadio = document.querySelector('input[name="orderPaymentMethod"]:checked');
+        const paymentMethod = paymentRadio ? paymentRadio.value : 'cod';
+
+        if (!name) {
+          showToast('Vui lòng nhập họ và tên người nhận!', 'error');
+          document.getElementById('txtOrderCustomerName')?.focus();
+          return;
+        }
+        if (!phone) {
+          showToast('Vui lòng nhập số điện thoại để shipper liên hệ!', 'error');
+          document.getElementById('txtOrderCustomerPhone')?.focus();
+          return;
+        }
+        if (!address) {
+          showToast('Vui lòng nhập địa chỉ giao hàng cụ thể!', 'error');
+          document.getElementById('txtOrderAddress')?.focus();
+          return;
+        }
+
+        const subtotal = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+        const shippingFee = subtotal >= 200000 ? 0 : 15000;
+        const finalTotal = subtotal + shippingFee;
+        const orderId = '#DH-' + Date.now().toString().slice(-6);
+
+        const orderData = {
+          id: orderId,
+          orderId: orderId,
+          orderType: 'store',
+          customerName: name,
+          customerPhone: phone,
+          deliveryAddress: address,
+          note: note,
+          paymentMethod: paymentMethod,
+          items: cart.map(i => ({
+            id: i.id,
+            name: i.name,
+            price: i.price,
+            quantity: i.quantity,
+            subtotal: i.price * i.quantity
+          })),
+          subtotal: subtotal,
+          shippingFee: shippingFee,
+          total: finalTotal,
+          status: 'PENDING_DELIVERY',
+          timestamp: new Date().toISOString()
+        };
+
+        // 1. Lưu vào IndexedDB / Offline Queue qua DAL
+        await TapHoaCore.dal.saveOrder(orderData);
+
+        // 2. Trừ tồn kho và đồng bộ sang POS & Admin (< 50ms)
+        for (const item of cart) {
+          const product = catalog.find(p => p.id === item.id);
+          if (product) {
+            product.stock = Math.max(0, product.stock - item.quantity);
+            TapHoaCore.sync.broadcast('PRODUCT_STOCK_CHANGED', {
+              productId: product.id,
+              newStock: product.stock,
+              delta: -item.quantity,
+              source: 'store'
+            });
+          }
+        }
+
+        // 3. Phát sóng sự kiện đơn hàng mới sang Admin Dashboard
+        TapHoaCore.sync.broadcast('ORDER_CREATED', {
+          orderId: orderData.id,
+          orderType: 'store',
+          total: orderData.total,
+          customerName: orderData.customerName,
+          timestamp: orderData.timestamp
+        });
+
+        closeCheckoutModal();
+        cart = [];
+        renderCartDrawer();
+        renderCatalog();
+
+        if (paymentMethod === 'vietqr') {
+          openStoreVietQRModal(orderData);
+          showToast(`Đã tạo đơn ${orderData.id}. Vui lòng quét mã VietQR để hoàn tất!`, 'info');
+        } else {
+          // Hiển thị thông báo thành công cho COD hoặc phương thức khác
+          alert(`🎉 ĐẶT HÀNG THÀNH CÔNG!\n\nMã đơn: ${orderData.id}\nNgười nhận: ${name} (${phone})\nĐịa chỉ: ${address}\nTổng thanh toán: ${TapHoaCore.formatCurrency(finalTotal)}\nPhương thức: ${paymentMethod === 'cod' ? 'Thanh toán khi nhận hàng (COD)' : paymentMethod}\n\n🛵 Đội giao quen xóm cam kết giao đến cửa nhà bạn trong vòng 2 GIỜ!`);
+          showToast(`Đã tạo thành công đơn hàng ${orderData.id}`, 'success');
+        }
+      };
+
+      // =======================================================================
+      // 6.2 XỬ LÝ THANH TOÁN VIETQR THỰC TẾ (NAPAS 247)
+      // =======================================================================
+      let currentPendingOrder = null;
+
+      window.copyToClipboard = function (text, successMsg) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            showToast(successMsg || 'Đã sao chép vào bộ nhớ tạm!', 'success');
+          }).catch(() => {
+            prompt('Sao chép nội dung bên dưới:', text);
+          });
+        } else {
+          prompt('Sao chép nội dung bên dưới:', text);
+        }
+      };
+
+      window.copyStoreAmount = function () {
+        if (currentPendingOrder && currentPendingOrder.total) {
+          copyToClipboard(currentPendingOrder.total.toString(), 'Đã sao chép số tiền: ' + TapHoaCore.formatCurrency(currentPendingOrder.total));
+        }
+      };
+
+      window.copyStoreMemo = function () {
+        if (currentPendingOrder && currentPendingOrder.id) {
+          copyToClipboard(currentPendingOrder.id, 'Đã sao chép nội dung chuyển khoản: ' + currentPendingOrder.id);
+        }
+      };
+
+      window.openStoreVietQRModal = function (orderData) {
+        currentPendingOrder = orderData;
+        const qrUrl = `https://img.vietqr.io/image/970422-034206001749-compact2.png?amount=${orderData.total}&addInfo=${encodeURIComponent(orderData.id)}&accountName=TRAN%20NGOC%20LAM`;
+        const imgEl = document.getElementById('imgStoreVietQR');
+        if (imgEl) imgEl.src = qrUrl;
+
+        const lblAmount = document.getElementById('lblVietQRAmount');
+        if (lblAmount) lblAmount.textContent = TapHoaCore.formatCurrency(orderData.total);
+
+        const lblMemo = document.getElementById('lblVietQRMemo');
+        if (lblMemo) lblMemo.textContent = orderData.id;
+
+        const modal = document.getElementById('modalVietQRPayment');
+        if (modal) modal.classList.remove('hidden');
+      };
+
+      window.closeStoreVietQRModal = function () {
+        const modal = document.getElementById('modalVietQRPayment');
+        if (modal) modal.classList.add('hidden');
+      };
+
+      window.confirmVietQRPaid = async function () {
+        if (!currentPendingOrder) return;
+        currentPendingOrder.paymentStatus = 'PAID';
+        currentPendingOrder.status = 'CONFIRMED';
+        await TapHoaCore.dal.saveOrder(currentPendingOrder);
+
+        TapHoaCore.sync.broadcast('ORDER_PAID', {
+          orderId: currentPendingOrder.id,
+          paymentMethod: 'vietqr',
+          amount: currentPendingOrder.total,
+          timestamp: new Date().toISOString()
+        });
+
+        const completedOrderId = currentPendingOrder.id;
+        closeStoreVietQRModal();
+        showToast(`Xác nhận thanh toán thành công đơn hàng ${completedOrderId}!`, 'success');
+        alert(`✅ THANH TOÁN VIETQR THÀNH CÔNG!\n\nĐơn hàng ${completedOrderId} đã được thanh toán qua MB Bank.\nCửa Hàng Chính - Tạp Hóa 36 (UTH) đang tiến hành soạn hàng và giao ngay.`);
+        currentPendingOrder = null;
+      };
+
+      // =======================================================================
+      // 7. XÁC THỰC MOCK OAUTH2 (GOOGLE & FACEBOOK - AC-AUTH-02)
+      // =======================================================================
+      window.openSocialAuthModal = function () {
+        document.getElementById('modalSocialAuth')?.classList.remove('hidden');
+      };
+
+      window.closeSocialAuthModal = function () {
+        document.getElementById('modalSocialAuth')?.classList.add('hidden');
+      };
+
+      window.handleSocialLogin = async function (provider) {
+        showToast(`Đang kết nối giả lập OAuth2 ${provider.toUpperCase()}...`, 'info');
+        const user = await TapHoaCore.auth.loginOAuth(provider);
+        if (user) {
+          currentUser = user;
+          updateAuthAndQuickSwitcherUI();
+          closeSocialAuthModal();
+          showToast(`🎉 Xin chào ${user.name}! Đã đăng nhập bằng ${provider.toUpperCase()}`, 'success');
+        }
+      };
+
+      window.loginAsQuick = function (username, password) {
+        const u = TapHoaCore.auth.login(username, password);
+        if (u) {
+          currentUser = u;
+          updateAuthAndQuickSwitcherUI();
+          closeSocialAuthModal();
+          showToast(`Đã đăng nhập: ${u.name} (Vai trò: ${u.role})`, 'success');
+        }
+      };
+
+      // =======================================================================
+      // 8. TRỢ LÝ ẢO THÔNG MINH CÔ BA AI (NLP TIẾNG VIỆT - AC-AI-01 -> 04)
+      // =======================================================================
+      window.toggleChatbot = function () {
+        const win = document.getElementById('chatbotWindow');
+        if (win) {
+          win.classList.toggle('hidden');
+          if (!win.classList.contains('hidden')) {
+            document.getElementById('txtChatInput')?.focus();
+          }
+        }
+      };
+
+      window.sendQuickPrompt = function (text) {
+        const input = document.getElementById('txtChatInput');
+        if (input) {
+          input.value = text;
+          sendMessageToAI();
+        }
+      };
+
+      window.handleChatKeyDown = function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          sendMessageToAI();
+        }
+      };
+
+      window.sendMessageToAI = function () {
+        const input = document.getElementById('txtChatInput');
+        const query = input?.value.trim();
+        if (!query) return;
+
+        appendChatMessage('user', query);
+        input.value = '';
+
+        // Giả lập TapHoa36 AI đang gõ tin nhắn
+        setTimeout(() => {
+          generateTapHoa36AIResponse(query);
+        }, 300);
+      };
+
+      function appendChatMessage(sender, text, actionButton = null) {
+        const container = document.getElementById('chatbotMessages');
+        if (!container) return;
+
+        const isUser = sender === 'user';
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `flex items-start gap-2 ${isUser ? 'justify-end' : ''}`;
+
+        msgDiv.innerHTML = `
+          ${!isUser ? '<div class="w-7 h-7 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-base">smart_toy</span></div>' : ''}
+          <div class="${isUser ? 'bg-rose-500 text-white rounded-tr-none' : 'bg-rose-50/70 text-slate-800 rounded-tl-none border border-rose-100/60'} p-2.5 rounded-2xl max-w-[85%] leading-relaxed">
+            ${text}
+            ${actionButton ? `<div class="mt-2">${actionButton}</div>` : ''}
+          </div>
+          ${isUser ? '<div class="w-7 h-7 rounded-lg bg-slate-200 text-slate-700 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-base">person</span></div>' : ''}
+        `;
+
+        container.appendChild(msgDiv);
+        container.scrollTop = container.scrollHeight;
+      }
+
+      function generateTapHoa36AIResponse(query) {
+        // Phân loại ý định người dùng bằng TapHoaCore.ai.classifyIntent (AC-AI-02)
+        const intentResult = TapHoaCore.ai.classifyIntent(query);
+        const intent = intentResult ? intentResult.intent : 'FIND_PRODUCT';
+
+        // Bóc tách thực thể sản phẩm bằng TapHoaCore.ai.extractEntities (AC-AI-03)
+        const entities = TapHoaCore.ai.extractEntities(query, catalog);
+
+        let reply = '';
+        let actionBtn = null;
+
+        switch (intent) {
+          case 'GREETING':
+            reply = 'Dạ xin chào quý khách! Hệ thống Tạp Hóa 36 mở cửa từ 6h sáng đến 21h tối nha. Quý khách cần tìm mua gì hôm nay ạ?';
+            break;
+
+          case 'FIND_PRODUCT':
+          case 'PRICE_INQUIRY':
+            if (entities.length > 0) {
+              const p = entities[0];
+              if (p.stock > 0) {
+                reply = `Dạ có ạ! "${p.name}" tiệm đang bán giá ${TapHoaCore.formatCurrency(p.price)}/${p.unit || 'món'}, trong kho hiện còn ${p.stock} sản phẩm nha!`;
+                actionBtn = `<button onclick="addToStoreCart('${p.id}')" class="px-3 py-1 bg-rose-500 text-white rounded-lg text-xs font-bold hover:bg-rose-600 transition shadow-xs">Thêm vào giỏ luôn</button>`;
+              } else {
+                reply = `Món "${p.name}" đợt này bà con mua ủng hộ nhiều nên tạm thời hết hàng rồi ạ. Tầm chiều tối mai mối quen giao thêm quý khách ghé mua nha!`;
+              }
+            } else {
+              reply = 'Quý khách muốn tìm món gì ạ? Quý khách cứ gõ rõ tên như "mì hảo hảo", "nước mắm", "trứng gà", "gạo ST25"... TapHoa36 kiểm tra kho báo liền ạ!';
+            }
+            break;
+
+          case 'SHIPPING_POLICY':
+            reply = 'Tạp Hóa 36 có đội giao quen xóm cam kết giao nhanh trong vòng 2 GIỜ tận ngõ hẻm luôn ạ! Đơn từ 200.000₫ trở lên là hệ thống miễn phí ship hoàn toàn nha!';
+            break;
+
+          case 'PAYMENT_METHODS':
+            reply = 'Quý khách có thể thanh toán bằng tiền mặt khi nhận hàng (COD), quét mã VietQR ngân hàng, MoMo hay ZaloPay đều được hỗ trợ thuận tiện!';
+            break;
+
+          case 'PROMOTION_DEALS':
+            reply = 'Hôm nay Tạp Hóa 36 đang có ưu đãi Flash Sale giảm giá nhiều mặt hàng thực phẩm tươi sống và tặng mã Miễn phí giao hàng cho đơn từ 200k đó ạ!';
+            break;
+
+          case 'CHECK_ORDER':
+            reply = 'Quý khách muốn kiểm tra đơn nào cứ nhắn mã đơn dạng #DH-XXXXXX hoặc số điện thoại, TapHoa36 kiểm tra shipper đã xuất phát chưa cho quý khách nha!';
+            break;
+
+          case 'DEBT_INQUIRY':
+            reply = 'Dạ sổ nợ quen xóm được mã hóa an toàn AES-GCM ở quầy thu ngân. Khách quen chỉ cần báo tên hoặc ghé quầy POS là đối chiếu chính xác ngay ạ!';
+            break;
+
+          case 'RETURN_POLICY':
+            reply = 'Hàng tươi sống hay trứng nếu có bị dập nát do vận chuyển, quý khách cứ thông báo là Tạp Hóa 36 đổi món mới hoặc hoàn tiền ngay trong ngày ạ!';
+            break;
+
+          case 'THANKS':
+            reply = 'Dạ không có chi ạ! Cần mua thêm gì quý khách cứ nhắn nhé, Tạp Hóa 36 chúc quý khách một ngày vui vẻ và ngon miệng!';
+            break;
+
+          default:
+            reply = 'TapHoa36 sẵn sàng hỗ trợ quý khách! Tiệm có rau củ quả, thực phẩm, mì gói, gia vị đầy đủ. Quý khách muốn tìm món nào cứ bảo nhé!';
+            break;
+        }
+
+        appendChatMessage('taphoa36', reply, actionBtn);
+      }
+
+      // =======================================================================
+      // 9. UTILITIES (TOAST)
+      // =======================================================================
+      function showToast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+
+        const colors = {
+          success: 'bg-emerald-600 text-white',
+          error: 'bg-rose-600 text-white',
+          warning: 'bg-amber-500 text-white',
+          info: 'bg-slate-900 text-white'
+        };
+
+        const toast = document.createElement('div');
+        toast.className = `px-4 py-2.5 rounded-xl text-xs font-semibold shadow-xl flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0 ${colors[type] || colors.info}`;
+        toast.innerHTML = `<span>${message}</span>`;
+        container.appendChild(toast);
+
+        setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 10);
+        setTimeout(() => {
+          toast.classList.add('opacity-0', 'translate-y-2');
+          setTimeout(() => toast.remove(), 300);
+        }, 2500);
+      }
+
+    })();
+  </script>
+</body>
+</html>
