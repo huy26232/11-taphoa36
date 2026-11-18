@@ -44,6 +44,18 @@
   ],
   "products": [
     {
+      "id": "SP0036",
+      "name": "bún gạo",
+      "barcode": "SP0036",
+      "category": "mi_goi",
+      "costPrice": 375000,
+      "price": 500000,
+      "stock": 47,
+      "unit": "Gói",
+      "expiryDays": 180,
+      "branchId": "branch_main"
+    },
+    {
       "id": "893601999888",
       "name": "Bánh gạo One One Vị Bò Nướng Tươi (Gói 150g)",
       "barcode": "893601999888",
@@ -63,7 +75,7 @@
       "costPrice": 11500,
       "price": 15000,
       "originalPrice": 16500,
-      "stock": 21,
+      "stock": 17,
       "unit": "ly",
       "rating": 4.5,
       "sales": 50,
@@ -14403,6 +14415,106 @@
   ],
   "orders": [
     {
+      "id": "HD_1795019080021",
+      "branchId": "branch_main",
+      "items": [
+        {
+          "id": "SP_0001",
+          "barcode": "SP_0001",
+          "name": "Omachi Mì ly hải sản chua cay 66gr",
+          "price": 15000,
+          "quantity": 1,
+          "unit": "ly"
+        }
+      ],
+      "total": 14250,
+      "paymentMethod": "cash",
+      "customerName": "Khách Tại Quầy UTH",
+      "customerPhone": "",
+      "debtAmount": 0,
+      "createdAt": "2026-11-18T16:24:40.022Z"
+    },
+    {
+      "id": "HD_1795018942847",
+      "branchId": "branch_main",
+      "items": [
+        {
+          "id": "SP_0001",
+          "barcode": "SP_0001",
+          "name": "Omachi Mì ly hải sản chua cay 66gr",
+          "price": 15000,
+          "quantity": 1,
+          "unit": "ly"
+        }
+      ],
+      "total": 14250,
+      "paymentMethod": "cash",
+      "customerName": "Khách Tại Quầy UTH",
+      "customerPhone": "",
+      "debtAmount": 0,
+      "createdAt": "2026-11-18T16:22:22.854Z"
+    },
+    {
+      "id": "#DH-862893",
+      "branchId": "branch_main",
+      "items": [
+        {
+          "id": "SP0036",
+          "barcode": "SP0036",
+          "name": "bún gạo",
+          "price": 500000,
+          "quantity": 3,
+          "unit": "Gói"
+        }
+      ],
+      "total": 1500000,
+      "paymentMethod": "cash",
+      "customerName": "Trần Ngọc Lâm (Anh Lâm - Chủ tiệm)",
+      "customerPhone": "0900000036",
+      "debtAmount": 0,
+      "createdAt": "2026-11-18T16:21:02.944Z"
+    },
+    {
+      "id": "#DH-390141",
+      "branchId": "branch_main",
+      "items": [
+        {
+          "id": "SP0036",
+          "barcode": "SP0036",
+          "name": "bún gạo",
+          "price": 500000,
+          "quantity": 1,
+          "unit": "Gói"
+        }
+      ],
+      "total": 500000,
+      "paymentMethod": "cash",
+      "customerName": "Trần Ngọc Lâm (Anh Lâm - Chủ tiệm)",
+      "customerPhone": "0900000036",
+      "debtAmount": 0,
+      "createdAt": "2026-11-18T16:13:10.156Z"
+    },
+    {
+      "id": "#DH-981184",
+      "branchId": "branch_main",
+      "items": [
+        {
+          "id": "SP_0001",
+          "barcode": "SP_0001",
+          "name": "Omachi Mì ly hải sản chua cay 66gr",
+          "price": 15000,
+          "quantity": 2,
+          "unit": "ly"
+        }
+      ],
+      "total": 45000,
+      "paymentMethod": "cash",
+      "customerName": "Trần Ngọc Lâm (Anh Lâm - Chủ tiệm)",
+      "customerPhone": "0900000036",
+      "debtAmount": 0,
+      "createdAt": "2026-11-18T16:06:21.211Z"
+    },
+    {
       "id": "#DH-326526",
       "branchId": "branch_main",
       "items": [
@@ -14523,24 +14635,6 @@
       "createdAt": "2026-11-18T15:25:28.282Z"
     },
     {
-      "id": "HD_1795013626198",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-18T14:53:46.198Z"
-    },
-    {
       "id": "HD_WEB_603406",
       "branchId": "branch_main",
       "items": [
@@ -14557,294 +14651,6 @@
       "customerPhone": "",
       "debtAmount": 0,
       "createdAt": "2026-11-18T14:53:23.457Z"
-    },
-    {
-      "id": "HD_1795008039275",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-18T13:20:39.275Z"
-    },
-    {
-      "id": "HD_1795006918509",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-18T13:01:58.509Z"
-    },
-    {
-      "id": "HD_1795006781427",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-18T12:59:41.427Z"
-    },
-    {
-      "id": "HD_1795000941948",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-18T11:22:21.948Z"
-    },
-    {
-      "id": "HD_1794999585923",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-18T10:59:45.923Z"
-    },
-    {
-      "id": "HD_1794999580750",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-18T10:59:40.750Z"
-    },
-    {
-      "id": "HD_1794999523641",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-18T10:58:43.641Z"
-    },
-    {
-      "id": "HD_1794995782863",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-18T09:56:22.863Z"
-    },
-    {
-      "id": "HD_1794991742773",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-18T08:49:02.773Z"
-    },
-    {
-      "id": "HD_1794989993177",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-18T08:19:53.177Z"
-    },
-    {
-      "id": "HD_1794988499188",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-18T07:54:59.188Z"
-    },
-    {
-      "id": "HD_1794988281202",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-18T07:51:21.202Z"
-    },
-    {
-      "id": "HD_1794979868233",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-18T05:31:08.233Z"
-    },
-    {
-      "id": "HD_1794979835614",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-18T05:30:35.614Z"
-    },
-    {
-      "id": "HD_1794979560955",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-18T05:26:00.955Z"
-    },
-    {
-      "id": "HD_1794979538737",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-18T05:25:38.737Z"
     }
   ]
 }

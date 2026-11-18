@@ -5092,9 +5092,14 @@
             </span>
           </td>
           <td class="py-3 px-4 text-center">
-            <button type="button" onclick="viewOrderDetail('${o.id}')" class="px-2.5 py-1 bg-white hover:bg-rose-50 text-rose-600 hover:text-rose-700 border border-rose-200 rounded-lg text-xs font-semibold shadow-2xs transition">
-              Chi tiết
-            </button>
+            <div class="flex items-center justify-center gap-1.5">
+              <button type="button" onclick="viewOrderDetail('${o.id}')" class="px-2.5 py-1 bg-white hover:bg-rose-50 text-rose-600 hover:text-rose-700 border border-rose-200 rounded-lg text-xs font-semibold shadow-2xs transition">
+                Chi tiết
+              </button>
+              <button type="button" onclick="deleteAdminOrder('${o.id}')" class="p-1 bg-white hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-slate-200 hover:border-rose-300 rounded-lg transition" title="Xóa đơn hàng này khỏi CSDL SQL Server">
+                <span class="material-symbols-outlined text-[15px]">delete</span>
+              </button>
+            </div>
           </td>
         `;
         tbody.appendChild(tr);
@@ -5120,6 +5125,33 @@
 
     function refreshOrders() {
       syncOrdersFromDatabase(true);
+    }
+
+    async function deleteAdminOrder(orderId) {
+      if (!confirm(`Bạn có chắc chắn muốn xóa đơn hàng ${orderId} khỏi CSDL SQL Server và hệ thống không?`)) {
+        return;
+      }
+      const apiUrl = (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '3600'))
+        ? `http://localhost:3600/api/orders?id=${encodeURIComponent(orderId)}`
+        : `/api/orders?id=${encodeURIComponent(orderId)}`;
+
+      try {
+        const res = await fetch(apiUrl, { method: 'DELETE' });
+        if (res.ok) {
+          currentAdminOrders = currentAdminOrders.filter(o => o.id !== orderId);
+          renderOrdersTable();
+          updateDashboardKPIs();
+          alert(`🗑️ Đã xóa đơn hàng ${orderId} thành công khỏi CSDL SQL Server!`);
+        } else {
+          const err = await res.json().catch(() => ({}));
+          alert(`Lỗi khi xóa đơn hàng: ${err.message || 'Không thể xóa'}`);
+        }
+      } catch (e) {
+        currentAdminOrders = currentAdminOrders.filter(o => o.id !== orderId);
+        renderOrdersTable();
+        updateDashboardKPIs();
+        alert(`Đã xóa đơn hàng ${orderId} khỏi giao diện.`);
+      }
     }
 
     function viewOrderDetail(orderId) {

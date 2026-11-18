@@ -513,6 +513,24 @@ const server = http.createServer(async (req, res) => {
         return;
       }
     }
+    if (method === 'DELETE') {
+      const orderId = parsedUrl.searchParams.get('id') || '';
+      if (!orderId) {
+        sendJSON(res, 400, { success: false, message: 'Thiếu mã đơn hàng cần xóa' });
+        return;
+      }
+      const existingIdx = db.orders.findIndex(o => o.id === orderId);
+      if (existingIdx !== -1) {
+        const removed = db.orders.splice(existingIdx, 1)[0];
+        writeDatabase(db);
+        const maHD = (removed.id || orderId).substring(0, 20).replace(/'/g, "''");
+        querySqlServer(`SET NOCOUNT ON; DELETE FROM dbo.CHI_TIET_HOA_DON WHERE MaHD = '${maHD}'; DELETE FROM dbo.HOA_DON WHERE MaHD = '${maHD}';`);
+        sendJSON(res, 200, { success: true, message: 'Đã xóa đơn hàng thành công', id: orderId });
+        return;
+      }
+      sendJSON(res, 404, { success: false, message: 'Không tìm thấy đơn hàng' });
+      return;
+    }
   }
 
   // 5. Branches Endpoints (Tự tạo và quản lý chi nhánh UTH)
