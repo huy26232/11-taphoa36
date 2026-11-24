@@ -3326,6 +3326,109 @@
       </form>
     </div>
   </div>
+  <!-- ======================================================================= -->
+  <!-- MODAL IN TEM MÃ VẠCH DÁN KỆ HÀNG LOẠT (SHELF LABELS 35x22mm)           -->
+  <!-- ======================================================================= -->
+  <div id="modal-shelf-labels" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center hidden z-50 p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden border border-rose-200/80 animate-in fade-in zoom-in duration-200">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 bg-gradient-to-r from-rose-50 to-indigo-50 border-b border-rose-100 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-indigo-600 text-2xl">barcode_scanner</span>
+          <div>
+            <h3 class="font-bold text-sm text-slate-800">Studio In Tem Mã Vạch Dán Kệ (Decal 35x22mm)</h3>
+            <p class="text-[11px] text-slate-500">Chuẩn in tem dán kệ hàng tạp hóa: Tên tiệm TẠP HÓA 36, Giá bán to đậm, Barcode vector SVG Code128</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal('modal-shelf-labels')" class="w-8 h-8 rounded-full hover:bg-rose-100 text-slate-500 hover:text-rose-700 flex items-center justify-center transition">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto flex-1 space-y-5 text-xs">
+        
+        <!-- Controls & Options -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Quy cách in tem:</label>
+            <select id="shelf-label-format" onchange="renderShelfLabelPreviews()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl font-semibold text-slate-800">
+              <option value="decal_35x22">Cuộn Decal nhiệt 35mm x 22mm (1 tem/hàng)</option>
+              <option value="a4_grid">Trang A4 Decal (Lưới 3 cột x 10 hàng = 30 tem)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Số lượng tem mỗi sản phẩm:</label>
+            <input type="number" id="shelf-label-qty-default" value="2" min="1" max="100" onchange="updateAllLabelQuantities(this.value)" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl font-bold text-slate-800">
+          </div>
+          <div class="flex items-end gap-2">
+            <button type="button" onclick="selectAllProductsForLabels(true)" class="flex-1 py-1.5 bg-slate-200 hover:bg-slate-300 rounded-xl font-semibold text-slate-700 transition">
+              Chọn tất cả
+            </button>
+            <button type="button" onclick="selectAllProductsForLabels(false)" class="flex-1 py-1.5 bg-slate-200 hover:bg-slate-300 rounded-xl font-semibold text-slate-700 transition">
+              Bỏ chọn
+            </button>
+          </div>
+        </div>
+
+        <!-- Product Selector Table -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-slate-800">Chọn mặt hàng in tem (<span id="lbl-selected-count">0</span> đã chọn):</span>
+            <input type="text" id="shelf-label-search" oninput="filterLabelProductList(this.value)" placeholder="Lọc tìm sản phẩm..." class="px-3 py-1 bg-slate-100 border border-slate-200 rounded-lg text-xs w-52">
+          </div>
+          <div class="max-h-48 overflow-y-auto border border-slate-200 rounded-2xl">
+            <table class="w-full text-left">
+              <thead class="bg-slate-100 text-[11px] font-bold text-slate-600 sticky top-0">
+                <tr>
+                  <th class="p-2.5 text-center w-10"><input type="checkbox" id="chk-label-all" onchange="toggleSelectAllLabels(this.checked)"></th>
+                  <th class="p-2.5">Sản phẩm</th>
+                  <th class="p-2.5">Mã Barcode</th>
+                  <th class="p-2.5 text-right">Giá bán</th>
+                  <th class="p-2.5 text-center w-24">Số lượng tem</th>
+                </tr>
+              </thead>
+              <tbody id="shelf-label-product-tbody" class="divide-y divide-slate-100">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Live Label Preview Area -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-slate-800 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-rose-600 text-sm">visibility</span>
+              <span>Xem trước bản in tem dán kệ:</span>
+            </span>
+            <span class="text-[11px] text-slate-500">Kích thước thực: 35mm x 22mm</span>
+          </div>
+          <div id="shelf-label-preview-container" class="p-4 bg-slate-100/70 border border-slate-300 rounded-2xl min-h-[140px] flex flex-wrap gap-2.5 items-center justify-center overflow-x-auto">
+            <p class="text-slate-400 italic">Chọn ít nhất một sản phẩm để xem trước tem nhãn...</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+        <span class="text-slate-500 text-[11px]">Tip: Chọn máy in nhiệt khổ 35x22mm hoặc A4 trong hộp thoại in.</span>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeModal('modal-shelf-labels')" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 rounded-xl font-bold text-slate-700 transition">
+            Đóng
+          </button>
+          <button type="button" onclick="executePrintShelfLabels()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-md transition flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-base">print</span>
+            <span>In hàng loạt (Print)</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <script>
     'use strict';
 
@@ -5275,110 +5378,9 @@
             <hr />
             <p class="center" style="font-size: 10px; margin: 4px 0;">Cảm ơn quý khách & Hẹn gặp lại!</p>
           
-  <!-- ======================================================================= -->
-  <!-- MODAL IN TEM MÃ VẠCH DÁN KỆ HÀNG LOẠT (SHELF LABELS 35x22mm)           -->
-  <!-- ======================================================================= -->
-  <div id="modal-shelf-labels" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center hidden z-50 p-4">
-    <div class="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden border border-rose-200/80 animate-in fade-in zoom-in duration-200">
-      
-      <!-- Modal Header -->
-      <div class="px-6 py-4 bg-gradient-to-r from-rose-50 to-indigo-50 border-b border-rose-100 flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
-          <span class="material-symbols-outlined text-indigo-600 text-2xl">barcode_scanner</span>
-          <div>
-            <h3 class="font-bold text-sm text-slate-800">Studio In Tem Mã Vạch Dán Kệ (Decal 35x22mm)</h3>
-            <p class="text-[11px] text-slate-500">Chuẩn in tem dán kệ hàng tạp hóa: Tên tiệm TẠP HÓA 36, Giá bán to đậm, Barcode vector SVG Code128</p>
-          </div>
-        </div>
-        <button type="button" onclick="closeModal('modal-shelf-labels')" class="w-8 h-8 rounded-full hover:bg-rose-100 text-slate-500 hover:text-rose-700 flex items-center justify-center transition">
-          <span class="material-symbols-outlined text-lg">close</span>
-        </button>
-      </div>
-
-      <!-- Modal Body -->
-      <div class="p-6 overflow-y-auto flex-1 space-y-5 text-xs">
-        
-        <!-- Controls & Options -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Quy cách in tem:</label>
-            <select id="shelf-label-format" onchange="renderShelfLabelPreviews()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl font-semibold text-slate-800">
-              <option value="decal_35x22">Cuộn Decal nhiệt 35mm x 22mm (1 tem/hàng)</option>
-              <option value="a4_grid">Trang A4 Decal (Lưới 3 cột x 10 hàng = 30 tem)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Số lượng tem mỗi sản phẩm:</label>
-            <input type="number" id="shelf-label-qty-default" value="2" min="1" max="100" onchange="updateAllLabelQuantities(this.value)" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl font-bold text-slate-800">
-          </div>
-          <div class="flex items-end gap-2">
-            <button type="button" onclick="selectAllProductsForLabels(true)" class="flex-1 py-1.5 bg-slate-200 hover:bg-slate-300 rounded-xl font-semibold text-slate-700 transition">
-              Chọn tất cả
-            </button>
-            <button type="button" onclick="selectAllProductsForLabels(false)" class="flex-1 py-1.5 bg-slate-200 hover:bg-slate-300 rounded-xl font-semibold text-slate-700 transition">
-              Bỏ chọn
-            </button>
-          </div>
-        </div>
-
-        <!-- Product Selector Table -->
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <span class="font-bold text-slate-800">Chọn mặt hàng in tem (<span id="lbl-selected-count">0</span> đã chọn):</span>
-            <input type="text" id="shelf-label-search" oninput="filterLabelProductList(this.value)" placeholder="Lọc tìm sản phẩm..." class="px-3 py-1 bg-slate-100 border border-slate-200 rounded-lg text-xs w-52">
-          </div>
-          <div class="max-h-48 overflow-y-auto border border-slate-200 rounded-2xl">
-            <table class="w-full text-left">
-              <thead class="bg-slate-100 text-[11px] font-bold text-slate-600 sticky top-0">
-                <tr>
-                  <th class="p-2.5 text-center w-10"><input type="checkbox" id="chk-label-all" onchange="toggleSelectAllLabels(this.checked)"></th>
-                  <th class="p-2.5">Sản phẩm</th>
-                  <th class="p-2.5">Mã Barcode</th>
-                  <th class="p-2.5 text-right">Giá bán</th>
-                  <th class="p-2.5 text-center w-24">Số lượng tem</th>
-                </tr>
-              </thead>
-              <tbody id="shelf-label-product-tbody" class="divide-y divide-slate-100">
-                <!-- Injected via JavaScript -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Live Label Preview Area -->
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <span class="font-bold text-slate-800 flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-rose-600 text-sm">visibility</span>
-              <span>Xem trước bản in tem dán kệ:</span>
-            </span>
-            <span class="text-[11px] text-slate-500">Kích thước thực: 35mm x 22mm</span>
-          </div>
-          <div id="shelf-label-preview-container" class="p-4 bg-slate-100/70 border border-slate-300 rounded-2xl min-h-[140px] flex flex-wrap gap-2.5 items-center justify-center overflow-x-auto">
-            <p class="text-slate-400 italic">Chọn ít nhất một sản phẩm để xem trước tem nhãn...</p>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Modal Footer -->
-      <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
-        <span class="text-slate-500 text-[11px]">Tip: Chọn máy in nhiệt khổ 35x22mm hoặc A4 trong hộp thoại in.</span>
-        <div class="flex items-center gap-2">
-          <button type="button" onclick="closeModal('modal-shelf-labels')" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 rounded-xl font-bold text-slate-700 transition">
-            Đóng
-          </button>
-          <button type="button" onclick="executePrintShelfLabels()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-md transition flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-base">print</span>
-            <span>In hàng loạt (Print)</span>
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-</body>
+              <hr />
+            <p class="center" style="font-size: 10px; margin: 4px 0;">Cảm ơn quý khách & Hẹn gặp lại!</p>
+          </body>
           </html>
         `);
         printWindow.document.close();
@@ -5945,16 +5947,12 @@
           </head>
           <body>
             ${printHtml}
-            <script>
-              window.onload = function() {
-                window.print();
-                setTimeout(() => window.close(), 500);
-              };
-            <\/script>
           </body>
           </html>
         `);
         printWindow.document.close();
+        printWindow.focus();
+        setTimeout(() => { printWindow.print(); }, 300);
       }
     }
 

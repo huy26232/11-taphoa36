@@ -53,7 +53,7 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased overflow-x-hidden">
 
   <!-- ========================================================================= -->
   <!-- PWA INSTALL PROMPT BANNER -->
@@ -99,7 +99,7 @@
       </a>
 
       <!-- Search Bar with Voice Search Bridge -->
-      <div class="flex-1 max-w-lg mx-2 relative">
+      <div class="flex-1 max-w-lg min-w-0 mx-1 sm:mx-2 relative">
         <div class="relative flex items-center">
           <span class="material-symbols-outlined absolute left-3 text-slate-400 text-[20px]">search</span>
           <input 
@@ -141,7 +141,7 @@
 
         <!-- QUICK SWITCHER CONTAINER (QUY TẮC BẢO MẬT AC-AUTH-04 & AC-AUTH-05) -->
         <!-- Bị ẩn hoàn toàn đối với khách hàng (customer) hoặc chưa đăng nhập -->
-        <div id="quickSwitcherContainer" class="hidden sm:block">
+        <div id="quickSwitcherContainer" class="hidden lg:block">
           <!-- Rendered via TapHoaCore.auth.renderQuickSwitcher() -->
         </div>
 
