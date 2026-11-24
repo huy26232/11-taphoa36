@@ -1292,4 +1292,249 @@
 
   });
 
+  /* ==========================================================================
+   * SUITE 11: PROGRESSIVE WEB APP & OFFLINE-FIRST (AC-PWA)
+   * ========================================================================== */
+  describe('Phân hệ 11: Progressive Web App & Offline-First (AC-PWA)', function () {
+
+    it('AC-PWA-01: File manifest.json đầy đủ thông tin chuẩn PWA và cấu hình standalone', function () {
+      const core = getCore();
+      expect(core.pwa).toBeDefined();
+      expect(core.pwa.getManifestConfig).toBeDefined();
+
+      const manifest = core.pwa.getManifestConfig();
+      expect(manifest.name).toContain('Tạp Hóa 36');
+      expect(manifest.short_name).toBe('TapHoa36');
+      expect(manifest.display).toBe('standalone');
+      expect(manifest.theme_color).toBe('#0284c7');
+      expect(manifest.background_color).toBe('#f8fafc');
+      expect(Array.isArray(manifest.icons)).toBe(true);
+      expect(manifest.icons.length).toBeGreaterThanOrEqual(2);
+      expect(Array.isArray(manifest.shortcuts)).toBe(true);
+    });
+
+    it('AC-PWA-02: Cấu hình Service Worker sw.js precaching App Shell đảm bảo mở trang offline', async function () {
+      const core = getCore();
+      expect(core.pwa).toBeDefined();
+      expect(core.pwa.getPrecacheUrls).toBeDefined();
+
+      const precacheList = core.pwa.getPrecacheUrls();
+      expect(Array.isArray(precacheList)).toBe(true);
+      expect(precacheList.some(u => u.includes('store.html'))).toBe(true);
+      expect(precacheList.some(u => u.includes('pos.html'))).toBe(true);
+      expect(precacheList.some(u => u.includes('admin.html'))).toBe(true);
+      expect(precacheList.some(u => u.includes('shared/core.js'))).toBe(true);
+    });
+
+    it('AC-PWA-03: Caching Strategy Stale-While-Revalidate và Hàng đợi Offline Mutation Retry Queue', async function () {
+      const core = getCore();
+      expect(core.pwa).toBeDefined();
+      expect(core.pwa.queueOfflineMutation).toBeDefined();
+      expect(core.pwa.processOfflineMutationQueue).toBeDefined();
+
+      // Giả lập đưa mutation đơn hàng vào hàng đợi khi offline
+      const mockMutation = {
+        type: 'CREATE_ORDER',
+        payload: { orderId: 'DH-PWA-TEST-01', total: 150000 },
+        retryCount: 0,
+        createdAt: Date.now()
+      };
+
+      const qResult = core.pwa.queueOfflineMutation(mockMutation);
+      expect(qResult.queued).toBe(true);
+
+      const queue = core.pwa.getOfflineMutationQueue();
+      expect(queue.length).toBeGreaterThan(0);
+      expect(queue.some(m => m.payload.orderId === 'DH-PWA-TEST-01')).toBe(true);
+    });
+
+  });
+
+  /* ==========================================================================
+   * SUITE 12: SINH TEM MÃ VẠCH DÁN KỆ HÀNG (AC-LABEL)
+   * ========================================================================== */
+  describe('Phân hệ 12: Sinh Tem Mã Vạch Dán Kệ Hàng (AC-LABEL)', function () {
+
+    it('AC-LABEL-01: Barcode SVG Generator sinh mã vạch vector thuần chuẩn Code 128 / EAN-13', function () {
+      const core = getCore();
+      expect(core.barcode).toBeDefined();
+      expect(core.barcode.generateSVG).toBeDefined();
+
+      const svgString = core.barcode.generateSVG('8935001701234', {
+        format: 'CODE128',
+        width: 2,
+        height: 40,
+        displayValue: true
+      });
+
+      expect(typeof svgString).toBe('string');
+      expect(svgString.includes('<svg')).toBe(true);
+      expect(svgString.includes('</svg>')).toBe(true);
+      expect(svgString.includes('<rect') || svgString.includes('<path')).toBe(true);
+      // Dung lượng nhẹ < 2KB (2048 bytes)
+      expect(svgString.length).toBeLessThan(2048);
+    });
+
+    it('AC-LABEL-02: Định dạng tem nhãn dán kệ 35x22mm chứa tên tiệm, giá bán to đậm và mã vạch', function () {
+      const core = getCore();
+      expect(core.barcode).toBeDefined();
+      expect(core.barcode.formatShelfLabelHtml).toBeDefined();
+
+      const sampleProduct = {
+        id: 'SP_LABEL_01',
+        name: 'Nước khoáng LaVie 500ml',
+        barcode: '8934567890123',
+        price: 6000,
+        unit: 'Chai'
+      };
+
+      const labelHtml = core.barcode.formatShelfLabelHtml(sampleProduct, {
+        storeName: 'TẠP HÓA 36',
+        size: '35x22mm'
+      });
+
+      expect(labelHtml).toContain('TẠP HÓA 36');
+      expect(labelHtml).toContain('Nước khoáng LaVie 500ml');
+      expect(labelHtml).toContain('6.000');
+      expect(labelHtml).toContain('Chai');
+      expect(labelHtml).toContain('<svg');
+      expect(labelHtml).toContain('35mm');
+      expect(labelHtml).toContain('22mm');
+    });
+
+    it('AC-LABEL-03: Dàn trang in hàng loạt tem nhãn dán kệ (Batch Shelf Label Printing)', function () {
+      const core = getCore();
+      expect(core.barcode).toBeDefined();
+      expect(core.barcode.formatBatchLabelsHtml).toBeDefined();
+
+      const printItems = [
+        { product: { id: 'SP1', name: 'Mì Omachi Xốt Bò Hầm', barcode: '8936011770012', price: 9500, unit: 'Gói' }, quantity: 3 },
+        { product: { id: 'SP2', name: 'Cà phê Highlands Lon 235ml', barcode: '8936079010023', price: 16000, unit: 'Lon' }, quantity: 2 }
+      ];
+
+      const batchHtml = core.barcode.formatBatchLabelsHtml(printItems, { layout: 'a4_grid' });
+      expect(batchHtml).toContain('@media print');
+      expect(batchHtml).toContain('Mì Omachi');
+      expect(batchHtml).toContain('Cà phê Highlands');
+      // Tổng số tem tạo ra phải bằng 3 + 2 = 5 tem
+      const labelCount = (batchHtml.match(/shelf-label-card/g) || []).length;
+      expect(labelCount).toBe(5);
+    });
+
+  });
+
+  /* ==========================================================================
+   * SUITE 13: QUẢN LÝ ĐƠN NHẬP HÀNG NHÀ CUNG CẤP (AC-PO)
+   * ========================================================================== */
+  describe('Phân hệ 13: Quản Lý Đơn Nhập Hàng Nhà Cung Cấp (AC-PO)', function () {
+
+    it('AC-PO-01: Tạo đơn nhập hàng Nhà cung cấp tính toán chính xác tổng tiền, trả trước và công nợ', async function () {
+      const core = getCore();
+      expect(core.po).toBeDefined();
+      expect(core.po.createPurchaseOrder).toBeDefined();
+
+      const poData = {
+        supplierId: 'NCC_UNILEVER',
+        supplierName: 'Unilever Việt Nam',
+        items: [
+          { productId: 'SP_OMO_01', productName: 'Bột giặt Omo 3kg', quantity: 20, importPrice: 120000 },
+          { productId: 'SP_SUN_01', productName: 'Nước rửa chén Sunlight 750g', quantity: 30, importPrice: 25000 }
+        ],
+        paidAmount: 2000000,
+        paymentMethod: 'CASH',
+        note: 'Nhập hàng đầu tháng 12/2026'
+      };
+
+      const po = await core.po.createPurchaseOrder(poData);
+      expect(po.id).toBeDefined();
+      expect(po.status).toBe('ordered');
+      // Tổng tiền = (20 * 120k) + (30 * 25k) = 2.400.000 + 750.000 = 3.150.000 đ
+      expect(po.totalAmount).toBe(3150000);
+      expect(po.paidAmount).toBe(2000000);
+      // Nợ NCC = 3.150.000 - 2.000.000 = 1.150.000 đ
+      expect(po.debtAmount).toBe(1150000);
+    });
+
+    it('AC-PO-02: Cập nhật tồn kho và tính lại giá vốn bình quân gia quyền khi PO chuyển sang received', async function () {
+      const core = getCore();
+      expect(core.po).toBeDefined();
+      expect(core.po.receivePurchaseOrder).toBeDefined();
+
+      // Giả sử SP_TEST_WAC có tồn kho cũ 10 cái, giá vốn cũ 50.000đ
+      // Nhập thêm 20 cái, giá nhập 56.000đ
+      // Giá vốn mới = (10 * 50.000 + 20 * 56.000) / (10 + 20) = (500.000 + 1.120.000) / 30 = 1.620.000 / 30 = 54.000đ
+      const testPo = await core.po.createPurchaseOrder({
+        supplierId: 'NCC_TEST',
+        supplierName: 'Nhà phân phối An Bình',
+        items: [
+          { productId: 'SP_TEST_WAC', productName: 'Hạt nêm Knorr 400g', quantity: 20, importPrice: 56000 }
+        ],
+        paidAmount: 1120000,
+        paymentMethod: 'BANK'
+      });
+
+      const receiveResult = await core.po.receivePurchaseOrder(testPo.id, {
+        initialStockMap: { 'SP_TEST_WAC': { stock: 10, costPrice: 50000 } }
+      });
+
+      expect(receiveResult.success).toBe(true);
+      expect(receiveResult.items['SP_TEST_WAC'].newStock).toBe(30);
+      expect(receiveResult.items['SP_TEST_WAC'].newCostPrice).toBe(54000);
+    });
+
+    it('AC-PO-03: Tự động hạch toán phiếu Chi trong Sổ Quỹ tiền mặt khi thanh toán PO', async function () {
+      const core = getCore();
+      expect(core.po).toBeDefined();
+      expect(core.po.recordPurchaseOrderPayment).toBeDefined();
+
+      const paymentRes = await core.po.recordPurchaseOrderPayment({
+        poId: 'PO-20261124-001',
+        supplierName: 'Công ty Cổ phần Sữa Việt Nam (Vinamilk)',
+        amount: 5000000,
+        paymentMethod: 'CASH',
+        note: 'Thanh toán tiền nhập sữa đặc và sữa chua kỳ 2'
+      });
+
+      expect(paymentRes.success).toBe(true);
+      expect(paymentRes.voucherId).toBeDefined();
+      expect(paymentRes.amount).toBe(5000000);
+
+      // Sổ quỹ tiền mặt phải ghi nhận một phiếu Chi
+      const flows = core.dal.getCashFlows ? await core.dal.getCashFlows() : [];
+      const found = flows.find(f => f.type === 'OUT' && f.amount === 5000000);
+      expect(found).toBeDefined();
+    });
+
+  });
+
+  /* ==========================================================================
+   * SUITE 14: CÂN ĐIỆN TỬ POS & HÀNG BÁN THEO TRỌNG LƯỢNG (AC-SCALE)
+   * ========================================================================== */
+  describe('Phân hệ 14: Cân Điện Tử POS & Hàng Bán Theo Trọng Lượng (AC-SCALE)', function () {
+
+    it('AC-SCALE-01: Bóc tách mã vạch cân điện tử GS1 tiền tố 20/21 trích xuất mã hàng, trọng lượng và tính thành tiền', function () {
+      const core = getCore();
+      expect(core.pos).toBeDefined();
+      expect(core.pos.parseWeighingBarcode).toBeDefined();
+
+      const mockScaleCatalog = [
+        { id: 'SP_THIT_HEO', itemCode: '00123', name: 'Thịt Ba Rọi Rút Sườn', pricePerKg: 160000, unit: 'kg' },
+        { id: 'SP_RAU_MUONG', itemCode: '00456', name: 'Rau Muống Nước', pricePerKg: 20000, unit: 'kg' }
+      ];
+
+      // Mã vạch cân điện tử: 20 + 00123 (mã hàng) + 01500 (1.500 kg) + 8 (checksum)
+      const parsed = core.pos.parseWeighingBarcode('2000123015008', mockScaleCatalog);
+
+      expect(parsed).toBeDefined();
+      expect(parsed.isWeighingItem).toBe(true);
+      expect(parsed.productId).toBe('SP_THIT_HEO');
+      expect(parsed.productName).toBe('Thịt Ba Rọi Rút Sườn');
+      expect(parsed.weightKg).toBe(1.5);
+      // Thành tiền = 1.5 * 160.000 = 240.000 đ
+      expect(parsed.subtotal).toBe(240000);
+      expect(parsed.pricePerKg).toBe(160000);
+    });
+
+  });
+
 })(typeof window !== 'undefined' ? window : global);

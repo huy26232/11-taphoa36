@@ -47,7 +47,10 @@ const posChecks = {
   'K80 80mm print size CSS': '@page',
   'Hotkeys F1-F4 & ESC': 'TapHoaCore.pos.handleHotkey',
   'Back to Admin button guarded': 'TapHoaCore.pos.canAccessAdminButton',
-  'Real-time sync broadcast on sale': 'PRODUCT_STOCK_CHANGED'
+  'Real-time sync broadcast on sale': 'PRODUCT_STOCK_CHANGED',
+  'Electronic scale barcode parser integration': 'parseWeighingBarcode',
+  'F8 return order backend sync': 'HD_TRA_',
+  'PWA Manifest link': 'manifest.json'
 };
 
 const storeChecks = {
@@ -64,7 +67,11 @@ const storeChecks = {
   'Quick Switcher guarded for Customer': 'TapHoaCore.auth.renderQuickSwitcher',
   'Floating Chatbot TapHoa36 AI': 'btnToggleChatbot',
   'TapHoa36 AI classifyIntent': 'TapHoaCore.ai.classifyIntent',
-  'TapHoa36 AI extractEntities': 'TapHoaCore.ai.extractEntities'
+  'TapHoa36 AI extractEntities': 'TapHoaCore.ai.extractEntities',
+  'Price Range Slider element': 'priceRangeSlider',
+  'LocalStorage customer info persistence': 'taphoa36_saved_customer',
+  'PWA Install Prompt Banner': 'pwaInstallBanner',
+  'PWA Manifest link': 'manifest.json'
 };
 
 const adminCoreChecks = {
@@ -87,12 +94,24 @@ const adminCoreChecks = {
   'No junk text: No Chào Cô Ba': (c) => !c.includes('Chào Cô Ba!'),
   'No junk text: No Bác Bảy Hẻm 128': (c) => !c.includes('Bác Bảy (Hẻm 128)'),
   'No junk text: No TM02 31 Ung Văn Khiêm in navbar': (c) => !c.includes('TM02 - 31 Ung Văn Khiêm'),
-  'Navbar does not clip dropdowns with overflow-x-auto': (c) => !c.includes('overflow-x-auto no-scrollbar py-1')
+  'Navbar does not clip dropdowns with overflow-x-auto': (c) => !c.includes('overflow-x-auto no-scrollbar py-1'),
+  'Studio in tem mã vạch dán kệ 35x22mm': 'modal-shelf-labels',
+  'Quản lý Đơn nhập hàng PO': (c) => c.includes('createPurchaseOrder') || c.includes('receivePurchaseOrder'),
+  'PWA Manifest link': 'manifest.json'
 };
 
 const posOk = verifyHTML('pos.html', posChecks);
 const storeOk = verifyHTML('store.html', storeChecks);
 const adminOk = verifyHTML('admin.html', adminCoreChecks);
+
+// Also verify grocery-app mirror files
+let mirrorOk = true;
+if (fs.existsSync('grocery-app/pos.html')) {
+  mirrorOk = verifyHTML('grocery-app/pos.html', posChecks) && mirrorOk;
+}
+if (fs.existsSync('grocery-app/store.html')) {
+  mirrorOk = verifyHTML('grocery-app/store.html', storeChecks) && mirrorOk;
+}
 
 // Verify AGENTS.md Project Rules
 let ruleOk = true;
@@ -116,5 +135,5 @@ if (fs.existsSync('AGENTS.md')) {
   ruleOk = false;
 }
 
-console.log('\nVERIFICATION RESULT: POS=' + (posOk ? 'PASS' : 'FAIL') + ' | STORE=' + (storeOk ? 'PASS' : 'FAIL') + ' | ADMIN=' + (adminOk ? 'PASS' : 'FAIL') + ' | RULES=' + (ruleOk ? 'PASS' : 'FAIL'));
-if (!posOk || !storeOk || !adminOk || !ruleOk) process.exit(1);
+console.log('\nVERIFICATION RESULT: POS=' + (posOk ? 'PASS' : 'FAIL') + ' | STORE=' + (storeOk ? 'PASS' : 'FAIL') + ' | ADMIN=' + (adminOk ? 'PASS' : 'FAIL') + ' | MIRROR=' + (mirrorOk ? 'PASS' : 'FAIL') + ' | RULES=' + (ruleOk ? 'PASS' : 'FAIL'));
+if (!posOk || !storeOk || !adminOk || !mirrorOk || !ruleOk) process.exit(1);

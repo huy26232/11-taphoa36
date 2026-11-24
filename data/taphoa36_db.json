@@ -56,6 +56,18 @@
       "branchId": "branch_main"
     },
     {
+      "id": "893601119819",
+      "name": "Nước tăng lực Sting Dâu 330ml",
+      "barcode": "893601119819",
+      "category": "Đồ uống",
+      "costPrice": 9000,
+      "price": 12000,
+      "stock": 48,
+      "unit": "món",
+      "expiryDays": 180,
+      "branchId": "branch_main"
+    },
+    {
       "id": "SP0036",
       "name": "bún gạo",
       "barcode": "SP0036",
@@ -14426,24 +14438,6 @@
     }
   ],
   "orders": [
-    {
-      "id": "HD_1795526901719",
-      "branchId": "branch_main",
-      "items": [
-        {
-          "id": "prod_03",
-          "name": "Mì gói Hảo Hảo",
-          "price": 5000,
-          "quantity": 4
-        }
-      ],
-      "total": 20000,
-      "paymentMethod": "vietqr",
-      "customerName": "Sinh viên UTH Võ Oanh",
-      "customerPhone": "0988776655",
-      "debtAmount": 0,
-      "createdAt": "2026-11-24T13:28:21.719Z"
-    },
     {
       "id": "HD_1795019080021",
       "branchId": "branch_main",

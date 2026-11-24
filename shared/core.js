@@ -15221,6 +15221,61 @@
 
     async getAllProducts() {
       return this.getProducts();
+    },
+
+    async saveCashFlow(voucher) {
+      if (!this._cashFlows) this._cashFlows = [];
+      this._cashFlows.push(voucher);
+      if (isBrowser && window.localStorage) {
+        try {
+          const list = JSON.parse(window.localStorage.getItem('taphoaso_cash_flows') || '[]');
+          list.push(voucher);
+          window.localStorage.setItem('taphoaso_cash_flows', JSON.stringify(list));
+        } catch (e) {}
+      }
+      try {
+        const db = await this.initDB();
+        if (db && db.transaction && typeof indexedDB !== 'undefined') {
+          await new Promise((resolve) => {
+            const tx = db.transaction(['cash_flows'], 'readwrite');
+            tx.objectStore('cash_flows').put(voucher);
+            tx.oncomplete = () => resolve();
+            tx.onerror = () => resolve();
+          });
+        }
+      } catch (e) {}
+      return voucher;
+    },
+
+    async getCashFlows() {
+      if (this._cashFlows && this._cashFlows.length > 0) {
+        return this._cashFlows;
+      }
+      if (isBrowser && window.localStorage) {
+        try {
+          const saved = window.localStorage.getItem('taphoaso_cash_flows');
+          if (saved) {
+            this._cashFlows = JSON.parse(saved);
+            return this._cashFlows;
+          }
+        } catch (e) {}
+      }
+      try {
+        const db = await this.initDB();
+        if (db && db.transaction && typeof indexedDB !== 'undefined') {
+          const flows = await new Promise((resolve) => {
+            const tx = db.transaction(['cash_flows'], 'readonly');
+            const req = tx.objectStore('cash_flows').getAll();
+            req.onsuccess = () => resolve(req.result || []);
+            req.onerror = () => resolve([]);
+          });
+          if (flows && flows.length > 0) {
+            this._cashFlows = flows;
+            return flows;
+          }
+        }
+      } catch (e) {}
+      return this._cashFlows || [];
     }
   };
 
@@ -15792,6 +15847,41 @@
 
     canAccessAdminButton(user) {
       return Boolean(user && user.role === 'admin');
+    },
+
+    parseWeighingBarcode(barcode, catalog = []) {
+      const code = String(barcode || '').trim();
+      if ((code.startsWith('20') || code.startsWith('21')) && code.length === 13) {
+        const itemCode = code.slice(2, 7);
+        const weightGrams = parseInt(code.slice(7, 12), 10);
+        const weightKg = Number((weightGrams / 1000).toFixed(3));
+
+        const matched = catalog.find(p =>
+          p.itemCode === itemCode ||
+          String(p.barcode) === itemCode ||
+          p.id === itemCode
+        );
+
+        if (matched) {
+          const pricePerKg = Number(matched.pricePerKg || matched.price || 0);
+          const subtotal = Math.round(weightKg * pricePerKg);
+          return {
+            isWeighingItem: true,
+            productId: matched.id,
+            productName: matched.name,
+            itemCode: itemCode,
+            weightKg: weightKg,
+            weightGrams: weightGrams,
+            pricePerKg: pricePerKg,
+            subtotal: subtotal,
+            unit: matched.unit || 'kg'
+          };
+        }
+      }
+
+      return {
+        isWeighingItem: false
+      };
     }
   };
 
@@ -16449,6 +16539,411 @@
     }
   };
 
+  // ==========================================================================
+  // PHÂN HỆ 11: PROGRESSIVE WEB APP & OFFLINE MUTATION RETRY QUEUE (AC-PWA)
+  // ==========================================================================
+  let offlineMutationQueue = [];
+  if (isBrowser && window.localStorage) {
+    try {
+      const q = window.localStorage.getItem('taphoa_offline_mutations');
+      if (q) offlineMutationQueue = JSON.parse(q);
+    } catch (e) {}
+  }
+
+  const pwaModule = {
+    getManifestConfig() {
+      return {
+        name: 'Tạp Hóa 36 - Cửa Hàng Bán Lẻ & POS Thông Minh UTH',
+        short_name: 'TapHoa36',
+        description: 'Hệ thống quản trị bán lẻ tạp hóa, điểm bán POS siêu tốc và cửa hàng trực tuyến chuẩn dân cư UTH',
+        start_url: './store.html',
+        scope: './',
+        display: 'standalone',
+        background_color: '#f8fafc',
+        theme_color: '#0284c7',
+        orientation: 'any',
+        icons: [
+          {
+            src: 'icons/icon-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any maskable'
+          },
+          {
+            src: 'icons/icon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable'
+          }
+        ],
+        shortcuts: [
+          {
+            name: 'Bán hàng POS (F1)',
+            url: './pos.html',
+            description: 'Mở màn hình thu ngân bán lẻ tại quầy',
+            icons: [{ src: 'icons/pos-icon.png', sizes: '96x96' }]
+          },
+          {
+            name: 'Quản trị Admin',
+            url: './admin.html',
+            description: 'Bảng điều khiển quản trị Bento Grid',
+            icons: [{ src: 'icons/admin-icon.png', sizes: '96x96' }]
+          },
+          {
+            name: 'Cửa hàng Online',
+            url: './store.html',
+            description: 'Cửa hàng mua sắm trực tuyến dân cư',
+            icons: [{ src: 'icons/store-icon.png', sizes: '96x96' }]
+          }
+        ]
+      };
+    },
+
+    getPrecacheUrls() {
+      return [
+        './',
+        './index.html',
+        './store.html',
+        './pos.html',
+        './admin.html',
+        './manifest.json',
+        './shared/core.js',
+        './sw.js'
+      ];
+    },
+
+    queueOfflineMutation(mutation) {
+      const item = {
+        id: mutation.id || 'MUT-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+        type: mutation.type || 'CREATE_ORDER',
+        payload: mutation.payload || {},
+        retryCount: mutation.retryCount || 0,
+        createdAt: mutation.createdAt || Date.now()
+      };
+      offlineMutationQueue.push(item);
+      if (isBrowser && window.localStorage) {
+        try {
+          window.localStorage.setItem('taphoa_offline_mutations', JSON.stringify(offlineMutationQueue));
+        } catch (e) {}
+      }
+      return { queued: true, id: item.id };
+    },
+
+    getOfflineMutationQueue() {
+      return offlineMutationQueue;
+    },
+
+    async processOfflineMutationQueue() {
+      if (offlineMutationQueue.length === 0) return { processed: 0, failed: 0 };
+      const pending = [...offlineMutationQueue];
+      let processed = 0;
+      let remaining = [];
+
+      for (const item of pending) {
+        try {
+          if (apiModule && await apiModule.isServerOnline()) {
+            if (item.type === 'CREATE_ORDER') {
+              await apiModule.createOrder(item.payload);
+            }
+          }
+          processed++;
+        } catch (err) {
+          item.retryCount = (item.retryCount || 0) + 1;
+          remaining.push(item);
+        }
+      }
+
+      offlineMutationQueue = remaining;
+      if (isBrowser && window.localStorage) {
+        try {
+          window.localStorage.setItem('taphoa_offline_mutations', JSON.stringify(offlineMutationQueue));
+        } catch (e) {}
+      }
+      return { processed, failed: remaining.length };
+    }
+  };
+
+  // ==========================================================================
+  // PHÂN HỆ 12: SINH TEM MÃ VẠCH DÁN KỆ HÀNG (AC-LABEL)
+  // ==========================================================================
+  const CODE128_PATTERNS = [
+    '212222','222122','222221','121223','121322','131222','122213','122312','132212','221213',
+    '221312','231212','112232','122132','122231','113222','123122','123221','223211','221132',
+    '221231','213212','223112','312131','311222','321122','321221','312212','322112','322211',
+    '212123','212321','232121','111323','131123','131321','112313','132113','132311','211313',
+    '231113','231311','112133','112331','132131','113123','113321','133121','313121','211331',
+    '231131','213113','213311','213131','311123','311321','331121','312113','312311','332111',
+    '314111','221411','431111','111224','111422','121124','121421','141122','141221','112214',
+    '112412','122114','122411','142112','142211','241211','221114','413111','241112','134111',
+    '111242','121142','121241','114212','124112','124211','411212','421112','421211','212141',
+    '214121','412121','111143','111341','131141','114113','114311','411113','411311','113141',
+    '114131','311141','411131','211412','211214','211232','2331112'
+  ];
+
+  function encodeCode128B(text) {
+    let codes = [104];
+    let checksum = 104;
+    for (let i = 0; i < text.length; i++) {
+      const code = text.charCodeAt(i) - 32;
+      const validCode = code >= 0 && code <= 94 ? code : 0;
+      codes.push(validCode);
+      checksum += validCode * (i + 1);
+    }
+    codes.push(checksum % 103);
+    codes.push(106);
+    let bars = '';
+    for (const c of codes) {
+      const pat = CODE128_PATTERNS[c] || CODE128_PATTERNS[0];
+      for (let j = 0; j < pat.length; j++) {
+        const width = parseInt(pat[j], 10);
+        bars += (j % 2 === 0 ? '1' : '0').repeat(width);
+      }
+    }
+    return bars;
+  }
+
+  const barcodeModule = {
+    generateSVG(text, options = {}) {
+      const val = String(text || '').trim();
+      const bars = encodeCode128B(val);
+      const widthPerBar = options.width || 2;
+      const height = options.height || 40;
+      const displayValue = options.displayValue !== false;
+      const svgWidth = bars.length * widthPerBar;
+      const svgHeight = height + (displayValue ? 14 : 0);
+
+      let pathD = '';
+      let currentRun = 0;
+      let runStart = 0;
+      for (let i = 0; i < bars.length; i++) {
+        if (bars[i] === '1') {
+          if (currentRun === 0) runStart = i;
+          currentRun++;
+        } else {
+          if (currentRun > 0) {
+            pathD += 'M' + (runStart * widthPerBar) + ' 0h' + (currentRun * widthPerBar) + 'v' + height + 'h-' + (currentRun * widthPerBar) + 'z';
+            currentRun = 0;
+          }
+        }
+      }
+      if (currentRun > 0) {
+        pathD += 'M' + (runStart * widthPerBar) + ' 0h' + (currentRun * widthPerBar) + 'v' + height + 'h-' + (currentRun * widthPerBar) + 'z';
+      }
+
+      const textElement = displayValue
+        ? '<text x="' + (svgWidth / 2) + '" y="' + (height + 11) + '" text-anchor="middle" font-family="monospace" font-size="10" fill="#000">' + val + '</text>'
+        : '';
+
+      return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + svgWidth + ' ' + svgHeight + '" width="' + svgWidth + '" height="' + svgHeight + '"><path d="' + pathD + '" fill="#000"/>' + textElement + '</svg>';
+    },
+
+    formatShelfLabelHtml(product, options = {}) {
+      const storeName = options.storeName || 'TẠP HÓA 36';
+      const priceFormatted = formatNumber(product.price);
+      const barcodeSvg = this.generateSVG(product.barcode || product.id, {
+        format: 'CODE128',
+        width: 1.2,
+        height: 24,
+        displayValue: true
+      });
+
+      return `
+        <div class="shelf-label-card" style="width: 35mm; height: 22mm; padding: 1.5mm; box-sizing: border-box; border: 1px dashed #cbd5e1; background: #fff; font-family: 'Inter', system-ui, sans-serif; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; page-break-inside: avoid;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 7.5px; font-weight: bold; color: #0f172a;">
+            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 70%;">${storeName}</span>
+            <span style="font-size: 7px; color: #64748b;">${product.unit || 'Cái'}</span>
+          </div>
+          <div style="font-size: 8px; font-weight: 600; line-height: 1.1; color: #1e293b; max-height: 18px; overflow: hidden; margin: 1px 0;">
+            ${product.name}
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div style="font-size: 11px; font-weight: 800; color: #b91c1c; line-height: 1;">
+              ${priceFormatted} <span style="font-size: 7px; font-weight: normal;">đ</span>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: center; margin-top: 1px; max-height: 18px; overflow: hidden;">
+            ${barcodeSvg}
+          </div>
+        </div>
+      `;
+    },
+
+    formatBatchLabelsHtml(printItems = [], options = {}) {
+      let labelsHtml = '';
+      for (const item of printItems) {
+        const qty = item.quantity || 1;
+        for (let i = 0; i < qty; i++) {
+          labelsHtml += this.formatShelfLabelHtml(item.product, options);
+        }
+      }
+
+      return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>In Tem Dán Kệ Hàng - TapHoa36</title>
+          <style>
+            @media print {
+              @page { size: A4 portrait; margin: 8mm; }
+              body { margin: 0; padding: 0; background: #fff !important; }
+              .no-print { display: none !important; }
+            }
+            body { font-family: 'Inter', system-ui, sans-serif; margin: 0; padding: 10px; background: #f8fafc; }
+            .batch-grid {
+              display: grid;
+              grid-template-columns: repeat(5, 35mm);
+              grid-gap: 2.5mm;
+              justify-content: center;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="batch-grid">
+            ${labelsHtml}
+          </div>
+        </body>
+        </html>
+      `;
+    }
+  };
+
+  // ==========================================================================
+  // PHÂN HỆ 13: QUẢN LÝ ĐƠN NHẬP HÀNG NHÀ CUNG CẤP (AC-PO)
+  // ==========================================================================
+  let purchaseOrdersList = [];
+  if (isBrowser && window.localStorage) {
+    try {
+      const saved = window.localStorage.getItem('taphoa_purchase_orders');
+      if (saved) purchaseOrdersList = JSON.parse(saved);
+    } catch (e) {}
+  }
+
+  const poModule = {
+    getPurchaseOrders() {
+      return purchaseOrdersList;
+    },
+
+    async createPurchaseOrder(poData) {
+      const items = (poData.items || []).map(i => {
+        const qty = Number(i.quantity || 0);
+        const price = Number(i.importPrice || 0);
+        return {
+          productId: i.productId,
+          productName: i.productName || '',
+          quantity: qty,
+          importPrice: price,
+          subtotal: qty * price
+        };
+      });
+
+      const totalAmount = items.reduce((sum, i) => sum + i.subtotal, 0);
+      const paidAmount = Number(poData.paidAmount || 0);
+      const debtAmount = Math.max(0, totalAmount - paidAmount);
+
+      const po = {
+        id: poData.id || 'PO-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' + Math.floor(100 + Math.random() * 900),
+        supplierId: poData.supplierId || 'NCC_DEFAULT',
+        supplierName: poData.supplierName || 'Nhà cung cấp',
+        items: items,
+        totalAmount: totalAmount,
+        paidAmount: paidAmount,
+        debtAmount: debtAmount,
+        status: 'ordered',
+        paymentMethod: poData.paymentMethod || 'CASH',
+        note: poData.note || '',
+        createdAt: new Date().toISOString()
+      };
+
+      purchaseOrdersList.push(po);
+      if (isBrowser && window.localStorage) {
+        try {
+          window.localStorage.setItem('taphoa_purchase_orders', JSON.stringify(purchaseOrdersList));
+        } catch (e) {}
+      }
+
+      syncModule.broadcast('PURCHASE_ORDER_CREATED', po);
+      return po;
+    },
+
+    async receivePurchaseOrder(poId, options = {}) {
+      const po = purchaseOrdersList.find(p => p.id === poId);
+      const itemsResult = {};
+
+      const poItems = po ? po.items : [];
+      for (const item of poItems) {
+        const pId = item.productId;
+        const initial = (options.initialStockMap && options.initialStockMap[pId]) || { stock: 0, costPrice: 0 };
+        const oldStock = Number(initial.stock || 0);
+        const oldCostPrice = Number(initial.costPrice || 0);
+        const importQty = Number(item.quantity || 0);
+        const importPrice = Number(item.importPrice || 0);
+
+        const newStock = oldStock + importQty;
+        const newCostPrice = newStock > 0
+          ? Math.round(((oldStock * oldCostPrice) + (importQty * importPrice)) / newStock)
+          : importPrice;
+
+        itemsResult[pId] = {
+          newStock: newStock,
+          newCostPrice: newCostPrice,
+          importQty: importQty,
+          importPrice: importPrice
+        };
+
+        try {
+          if (dalModule && dalModule.quickAddStock) {
+            await dalModule.quickAddStock(pId, importQty);
+          }
+        } catch (e) {}
+      }
+
+      if (po) {
+        po.status = 'received';
+        po.receivedAt = new Date().toISOString();
+        if (isBrowser && window.localStorage) {
+          try {
+            window.localStorage.setItem('taphoa_purchase_orders', JSON.stringify(purchaseOrdersList));
+          } catch (e) {}
+        }
+      }
+
+      syncModule.broadcast('PURCHASE_ORDER_RECEIVED', { poId, items: itemsResult });
+      return {
+        success: true,
+        poId: poId,
+        items: itemsResult
+      };
+    },
+
+    async recordPurchaseOrderPayment(paymentData) {
+      const amount = Number(paymentData.amount || 0);
+      const voucherId = 'PC-' + Date.now();
+
+      const voucher = {
+        id: voucherId,
+        type: 'OUT',
+        category: 'Nhập hàng',
+        amount: amount,
+        date: new Date().toISOString().slice(0, 10),
+        time: new Date().toLocaleTimeString('vi-VN'),
+        supplierName: paymentData.supplierName || 'Nhà cung cấp',
+        note: paymentData.note || ('Thanh toán đơn nhập hàng ' + (paymentData.poId || '')),
+        paymentMethod: paymentData.paymentMethod || 'CASH'
+      };
+
+      if (dalModule) {
+        await dalModule.saveCashFlow(voucher);
+      }
+
+      return {
+        success: true,
+        voucherId: voucherId,
+        amount: amount
+      };
+    }
+  };
+
   const TapHoaCore = {
     version: '2.5.0',
     auth: authModule,
@@ -16464,6 +16959,9 @@
     suppliers: suppliersModule,
     finance: financeModule,
     api: apiModule,
+    pwa: pwaModule,
+    barcode: barcodeModule,
+    po: poModule,
     clearAllData: () => dalModule.clearAllData(),
     initCleanStoreState: async () => {
       await dalModule.clearAllData();

@@ -95,6 +95,8 @@
   <!-- Core & ACL Scripts -->
   <script src="shared/core.js"></script>
   <script src="shared/acl_engine.js"></script>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#e11d48">
 </head>
 <body class="bg-[#fff8fa] text-slate-800 font-sans min-h-full flex flex-col antialiased selection:bg-rose-100 selection:text-rose-700">
 
@@ -601,13 +603,38 @@
             </div>
 
             <div>
-              <span class="font-bold text-slate-800 block mb-1">Tồn kho</span>
-              <span class="text-[11px] text-slate-400 block mb-1.5">Tiêu chí tồn</span>
+              <span class="font-bold text-slate-800 block mb-1">Tồn kho đa chiều</span>
+              <span class="text-[11px] text-slate-400 block mb-1.5">Tiêu chí mức tồn kho</span>
               <select id="flt-prod-stock" onchange="applyProductFilters()" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-blue-500 focus:outline-none transition">
-                <option value="all">Tất cả</option>
-                <option value="low">Dưới định mức (Cảnh báo hết)</option>
-                <option value="in_stock">Còn hàng (Tồn > 0)</option>
-                <option value="out_of_stock">Hết hàng (Tồn = 0)</option>
+                <option value="all">Tất cả mức tồn</option>
+                <option value="low_10">⚠️ Sắp hết tồn kho (< 10 món)</option>
+                <option value="low_5">🔴 Cảnh báo đỏ (< 5 món)</option>
+                <option value="out_of_stock">❌ Hết hàng (Tồn = 0)</option>
+                <option value="in_stock">🟢 Còn hàng (> 0)</option>
+                <option value="high">📦 Dồi dào (> 20 món)</option>
+              </select>
+            </div>
+
+            <div>
+              <span class="font-bold text-slate-800 block mb-1">Hạn sử dụng (Date)</span>
+              <span class="text-[11px] text-slate-400 block mb-1.5">Lọc hàng theo độ tươi</span>
+              <select id="flt-prod-expiry" onchange="applyProductFilters()" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-blue-500 focus:outline-none transition">
+                <option value="all">Tất cả hạn dùng</option>
+                <option value="near_expiry_7">⏰ Cận date (<= 7 ngày)</option>
+                <option value="near_expiry_3">🔥 Gấp: Cận date (<= 3 ngày)</option>
+                <option value="safe">✅ Hạn dài an toàn (> 30 ngày)</option>
+              </select>
+            </div>
+
+            <div>
+              <span class="font-bold text-slate-800 block mb-1">Khoảng giá bán</span>
+              <span class="text-[11px] text-slate-400 block mb-1.5">Mức giá sinh viên UTH</span>
+              <select id="flt-prod-price" onchange="applyProductFilters()" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-blue-500 focus:outline-none transition">
+                <option value="all">Tất cả mức giá</option>
+                <option value="under_20k">Dưới 20.000 đ</option>
+                <option value="20k_50k">20.000 đ - 50.000 đ</option>
+                <option value="50k_100k">50.000 đ - 100.000 đ</option>
+                <option value="over_100k">Trên 100.000 đ</option>
               </select>
             </div>
 
@@ -1448,6 +1475,10 @@
           </select>
         </div>
         <div class="flex items-center gap-2">
+          <button type="button" onclick="openShelfLabelsModal()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-xs transition flex items-center gap-1" title="In tem mã vạch dán kệ 35x22mm">
+            <span class="material-symbols-outlined text-base">barcode_scanner</span>
+            <span>In tem dán kệ</span>
+          </button>
           <button onclick="openProductModal()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-semibold shadow-xs transition flex items-center gap-1">
             <span class="material-symbols-outlined text-base">add</span>
             <span>+ Thêm hàng hóa</span>
@@ -5243,7 +5274,111 @@
             <p style="margin: 2px 0; font-size: 10px; color: #555;">CSDL: Microsoft SQL Server 2022 (dbo.HOA_DON)</p>
             <hr />
             <p class="center" style="font-size: 10px; margin: 4px 0;">Cảm ơn quý khách & Hẹn gặp lại!</p>
-          </body>
+          
+  <!-- ======================================================================= -->
+  <!-- MODAL IN TEM MÃ VẠCH DÁN KỆ HÀNG LOẠT (SHELF LABELS 35x22mm)           -->
+  <!-- ======================================================================= -->
+  <div id="modal-shelf-labels" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center hidden z-50 p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden border border-rose-200/80 animate-in fade-in zoom-in duration-200">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 bg-gradient-to-r from-rose-50 to-indigo-50 border-b border-rose-100 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-indigo-600 text-2xl">barcode_scanner</span>
+          <div>
+            <h3 class="font-bold text-sm text-slate-800">Studio In Tem Mã Vạch Dán Kệ (Decal 35x22mm)</h3>
+            <p class="text-[11px] text-slate-500">Chuẩn in tem dán kệ hàng tạp hóa: Tên tiệm TẠP HÓA 36, Giá bán to đậm, Barcode vector SVG Code128</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal('modal-shelf-labels')" class="w-8 h-8 rounded-full hover:bg-rose-100 text-slate-500 hover:text-rose-700 flex items-center justify-center transition">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto flex-1 space-y-5 text-xs">
+        
+        <!-- Controls & Options -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Quy cách in tem:</label>
+            <select id="shelf-label-format" onchange="renderShelfLabelPreviews()" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl font-semibold text-slate-800">
+              <option value="decal_35x22">Cuộn Decal nhiệt 35mm x 22mm (1 tem/hàng)</option>
+              <option value="a4_grid">Trang A4 Decal (Lưới 3 cột x 10 hàng = 30 tem)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Số lượng tem mỗi sản phẩm:</label>
+            <input type="number" id="shelf-label-qty-default" value="2" min="1" max="100" onchange="updateAllLabelQuantities(this.value)" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl font-bold text-slate-800">
+          </div>
+          <div class="flex items-end gap-2">
+            <button type="button" onclick="selectAllProductsForLabels(true)" class="flex-1 py-1.5 bg-slate-200 hover:bg-slate-300 rounded-xl font-semibold text-slate-700 transition">
+              Chọn tất cả
+            </button>
+            <button type="button" onclick="selectAllProductsForLabels(false)" class="flex-1 py-1.5 bg-slate-200 hover:bg-slate-300 rounded-xl font-semibold text-slate-700 transition">
+              Bỏ chọn
+            </button>
+          </div>
+        </div>
+
+        <!-- Product Selector Table -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-slate-800">Chọn mặt hàng in tem (<span id="lbl-selected-count">0</span> đã chọn):</span>
+            <input type="text" id="shelf-label-search" oninput="filterLabelProductList(this.value)" placeholder="Lọc tìm sản phẩm..." class="px-3 py-1 bg-slate-100 border border-slate-200 rounded-lg text-xs w-52">
+          </div>
+          <div class="max-h-48 overflow-y-auto border border-slate-200 rounded-2xl">
+            <table class="w-full text-left">
+              <thead class="bg-slate-100 text-[11px] font-bold text-slate-600 sticky top-0">
+                <tr>
+                  <th class="p-2.5 text-center w-10"><input type="checkbox" id="chk-label-all" onchange="toggleSelectAllLabels(this.checked)"></th>
+                  <th class="p-2.5">Sản phẩm</th>
+                  <th class="p-2.5">Mã Barcode</th>
+                  <th class="p-2.5 text-right">Giá bán</th>
+                  <th class="p-2.5 text-center w-24">Số lượng tem</th>
+                </tr>
+              </thead>
+              <tbody id="shelf-label-product-tbody" class="divide-y divide-slate-100">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Live Label Preview Area -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-slate-800 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-rose-600 text-sm">visibility</span>
+              <span>Xem trước bản in tem dán kệ:</span>
+            </span>
+            <span class="text-[11px] text-slate-500">Kích thước thực: 35mm x 22mm</span>
+          </div>
+          <div id="shelf-label-preview-container" class="p-4 bg-slate-100/70 border border-slate-300 rounded-2xl min-h-[140px] flex flex-wrap gap-2.5 items-center justify-center overflow-x-auto">
+            <p class="text-slate-400 italic">Chọn ít nhất một sản phẩm để xem trước tem nhãn...</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+        <span class="text-slate-500 text-[11px]">Tip: Chọn máy in nhiệt khổ 35x22mm hoặc A4 trong hộp thoại in.</span>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeModal('modal-shelf-labels')" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 rounded-xl font-bold text-slate-700 transition">
+            Đóng
+          </button>
+          <button type="button" onclick="executePrintShelfLabels()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-md transition flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-base">print</span>
+            <span>In hàng loạt (Print)</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
           </html>
         `);
         printWindow.document.close();
@@ -5602,6 +5737,354 @@
         window.location.href = 'store.html';
       }
     }
+  
+    // =======================================================================
+    // PWA SERVICE WORKER REGISTRATION (MARATHON PWA)
+    // =======================================================================
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('[PWA] Service Worker registered with scope:', reg.scope))
+          .catch(err => console.log('[PWA] Service Worker reg failed:', err));
+      });
+    }
+
+    // =======================================================================
+    // STUDIO IN TEM MÃ VẠCH DÁN KỆ (AC-LABEL-01..03)
+    // =======================================================================
+    let labelSelectedMap = {}; // { productId: quantity }
+
+    function openShelfLabelsModal() {
+      // Khởi tạo danh sách sản phẩm
+      const tbody = document.getElementById('shelf-label-product-tbody');
+      if (!tbody) return;
+
+      tbody.innerHTML = '';
+      labelSelectedMap = {};
+
+      currentAdminProducts.forEach((p, idx) => {
+        // Mặc định chọn 5 sản phẩm đầu tiên
+        const isDefaultChecked = idx < 5;
+        if (isDefaultChecked) labelSelectedMap[p.id] = 2;
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 transition';
+        tr.innerHTML = `
+          <td class="p-2.5 text-center">
+            <input type="checkbox" class="chk-label-item rounded" data-id="${p.id}" ${isDefaultChecked ? 'checked' : ''} onchange="handleLabelItemCheck('${p.id}', this.checked)">
+          </td>
+          <td class="p-2.5 font-bold text-slate-800">
+            ${p.name}
+            <span class="block text-[10px] text-slate-400 font-normal">${p.category || 'Tạp hóa'}</span>
+          </td>
+          <td class="p-2.5 font-mono text-slate-600">${p.barcode || '89350017' + (1000 + idx)}</td>
+          <td class="p-2.5 text-right font-bold text-rose-600">${p.price.toLocaleString('vi-VN')} đ</td>
+          <td class="p-2.5 text-center">
+            <input type="number" min="1" max="100" value="2" id="qty-label-${p.id}" onchange="handleLabelQtyChange('${p.id}', this.value)" class="w-14 text-center px-2 py-1 bg-white border border-slate-200 rounded-lg font-bold">
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      updateSelectedCountDisplay();
+      renderShelfLabelPreviews();
+      openModal('modal-shelf-labels');
+    }
+
+    function handleLabelItemCheck(id, isChecked) {
+      if (isChecked) {
+        const qtyEl = document.getElementById('qty-label-' + id);
+        labelSelectedMap[id] = qtyEl ? parseInt(qtyEl.value, 10) || 2 : 2;
+      } else {
+        delete labelSelectedMap[id];
+      }
+      updateSelectedCountDisplay();
+      renderShelfLabelPreviews();
+    }
+
+    function handleLabelQtyChange(id, qty) {
+      const q = parseInt(qty, 10) || 1;
+      if (labelSelectedMap[id]) {
+        labelSelectedMap[id] = q;
+        renderShelfLabelPreviews();
+      }
+    }
+
+    function updateAllLabelQuantities(qty) {
+      const q = parseInt(qty, 10) || 1;
+      Object.keys(labelSelectedMap).forEach(id => {
+        labelSelectedMap[id] = q;
+        const input = document.getElementById('qty-label-' + id);
+        if (input) input.value = q;
+      });
+      renderShelfLabelPreviews();
+    }
+
+    function selectAllProductsForLabels(selectAll) {
+      const checkboxes = document.querySelectorAll('.chk-label-item');
+      checkboxes.forEach(cb => {
+        cb.checked = selectAll;
+        const id = cb.getAttribute('data-id');
+        if (selectAll) {
+          const qtyInput = document.getElementById('qty-label-' + id);
+          labelSelectedMap[id] = qtyInput ? parseInt(qtyInput.value, 10) || 2 : 2;
+        } else {
+          delete labelSelectedMap[id];
+        }
+      });
+      const allMaster = document.getElementById('chk-label-all');
+      if (allMaster) allMaster.checked = selectAll;
+      updateSelectedCountDisplay();
+      renderShelfLabelPreviews();
+    }
+
+    function toggleSelectAllLabels(isChecked) {
+      selectAllProductsForLabels(isChecked);
+    }
+
+    function updateSelectedCountDisplay() {
+      const countEl = document.getElementById('lbl-selected-count');
+      if (countEl) countEl.innerText = Object.keys(labelSelectedMap).length;
+    }
+
+    function filterLabelProductList(query) {
+      const q = query.toLowerCase().trim();
+      const rows = document.querySelectorAll('#shelf-label-product-tbody tr');
+      rows.forEach(r => {
+        const txt = r.textContent.toLowerCase();
+        r.style.display = txt.includes(q) ? '' : 'none';
+      });
+    }
+
+    function renderShelfLabelPreviews() {
+      const container = document.getElementById('shelf-label-preview-container');
+      if (!container) return;
+
+      const selectedIds = Object.keys(labelSelectedMap);
+      if (selectedIds.length === 0) {
+        container.innerHTML = '<p class="text-slate-400 italic">Chọn ít nhất một sản phẩm để xem trước tem nhãn...</p>';
+        return;
+      }
+
+      const items = selectedIds.map(id => {
+        const prod = currentAdminProducts.find(p => p.id === id);
+        return {
+          product: prod || { name: 'Sản phẩm', price: 10000, barcode: '8935001700001', unit: 'Món' },
+          quantity: labelSelectedMap[id] || 1
+        };
+      });
+
+      if (window.TapHoaCore && window.TapHoaCore.barcode) {
+        const batchHtml = TapHoaCore.barcode.formatBatchLabelsHtml(items, {
+          storeName: 'TẠP HÓA 36',
+          size: '35x22mm'
+        });
+        container.innerHTML = batchHtml;
+      } else {
+        // Fallback preview
+        container.innerHTML = items.map(item => `
+          <div style="width: 140px; height: 90px; border: 1px dashed #cbd5e1; background: #fff; padding: 6px; border-radius: 8px; font-family: sans-serif; font-size: 10px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="font-size: 8px; font-weight: bold; color: #e11d48; text-transform: uppercase;">TẠP HÓA 36</div>
+            <div style="font-weight: bold; color: #1e293b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.product.name}</div>
+            <div style="font-size: 13px; font-weight: 900; color: #000;">${item.product.price.toLocaleString('vi-VN')} đ</div>
+            <div style="font-size: 8px; color: #64748b;">Mã: ${item.product.barcode || '8935001700001'} (x${item.quantity})</div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function executePrintShelfLabels() {
+      const selectedIds = Object.keys(labelSelectedMap);
+      if (selectedIds.length === 0) {
+        alert('Vui lòng chọn ít nhất 1 sản phẩm để in tem dán kệ!');
+        return;
+      }
+
+      const items = selectedIds.map(id => {
+        const prod = currentAdminProducts.find(p => p.id === id);
+        return {
+          product: prod || { name: 'Sản phẩm', price: 10000, barcode: '8935001700001', unit: 'Món' },
+          quantity: labelSelectedMap[id] || 1
+        };
+      });
+
+      let printHtml = '';
+      if (window.TapHoaCore && window.TapHoaCore.barcode) {
+        printHtml = TapHoaCore.barcode.formatBatchLabelsHtml(items, {
+          storeName: 'TẠP HÓA 36',
+          size: '35x22mm'
+        });
+      } else {
+        printHtml = document.getElementById('shelf-label-preview-container').innerHTML;
+      }
+
+      const printWindow = window.open('', '_blank', 'width=800,height=600');
+      if (printWindow) {
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <title>In Tem Dán Kệ - Tạp Hóa 36</title>
+            <style>
+              @page {
+                size: 35mm 22mm;
+                margin: 0;
+              }
+              body {
+                margin: 0;
+                padding: 0;
+                background: #fff;
+              }
+              @media print {
+                .shelf-label-tag {
+                  page-break-inside: avoid;
+                }
+              }
+            </style>
+          </head>
+          <body>
+            ${printHtml}
+            <script>
+              window.onload = function() {
+                window.print();
+                setTimeout(() => window.close(), 500);
+              };
+            <\/script>
+          </body>
+          </html>
+        `);
+        printWindow.document.close();
+      }
+    }
+
+    // =======================================================================
+    // NÂNG CẤP BỘ LỌC ĐA CHIỀU (MULTI-DIMENSIONAL FILTERS)
+    // =======================================================================
+    const originalApplyProductFilters = applyProductFilters;
+    applyProductFilters = function() {
+      const cat = document.getElementById('flt-prod-category')?.value || '';
+      const stockCriteria = document.getElementById('flt-prod-stock')?.value || 'all';
+      const expiryCriteria = document.getElementById('flt-prod-expiry')?.value || 'all';
+      const priceCriteria = document.getElementById('flt-prod-price')?.value || 'all';
+      const supplierQuery = (document.getElementById('flt-prod-supplier')?.value || '').toLowerCase().trim();
+      const searchInput = (document.getElementById('product-search-input')?.value || '').toLowerCase().trim();
+
+      const filtered = currentAdminProducts.filter(p => {
+        // Lọc Tên & Mã
+        const matchName = !searchInput || (p.name || '').toLowerCase().includes(searchInput) || (p.barcode || '').includes(searchInput);
+        
+        // Lọc Ngành hàng
+        const matchCat = !cat || p.category === cat;
+        
+        // Lọc Nhà cung cấp
+        const matchSupplier = !supplierQuery || (p.supplier || '').toLowerCase().includes(supplierQuery);
+
+        // Lọc Tồn kho đa chiều
+        let matchStock = true;
+        if (stockCriteria === 'low_10') matchStock = (p.stock < 10);
+        else if (stockCriteria === 'low_5') matchStock = (p.stock < 5 && p.stock > 0);
+        else if (stockCriteria === 'out_of_stock') matchStock = (p.stock === 0);
+        else if (stockCriteria === 'in_stock') matchStock = (p.stock > 0);
+        else if (stockCriteria === 'high') matchStock = (p.stock > 20);
+
+        // Lọc Hạn sử dụng (Date)
+        let matchExpiry = true;
+        const daysLeft = p.daysUntilExpiry !== undefined ? p.daysUntilExpiry : (p.expiryDays !== undefined ? p.expiryDays : 45);
+        if (expiryCriteria === 'near_expiry_7') matchExpiry = (daysLeft <= 7);
+        else if (expiryCriteria === 'near_expiry_3') matchExpiry = (daysLeft <= 3);
+        else if (expiryCriteria === 'safe') matchExpiry = (daysLeft > 30);
+
+        // Lọc Khoảng giá bán
+        let matchPrice = true;
+        const price = Number(p.price || 0);
+        if (priceCriteria === 'under_20k') matchPrice = (price < 20000);
+        else if (priceCriteria === '20k_50k') matchPrice = (price >= 20000 && price <= 50000);
+        else if (priceCriteria === '50k_100k') matchPrice = (price > 50000 && price <= 100000);
+        else if (priceCriteria === 'over_100k') matchPrice = (price > 100000);
+
+        return matchName && matchCat && matchSupplier && matchStock && matchExpiry && matchPrice;
+      });
+
+      renderProductTable(filtered);
+    };
+
+    // =======================================================================
+    // NÂNG CẤP PURCHASE ORDER WORKFLOW VỚI TAPHOA_CORE.PO
+    // =======================================================================
+    const originalHandleQuickStockInSubmit = handleQuickStockInSubmit;
+    handleQuickStockInSubmit = async function(e) {
+      e.preventDefault();
+      const supplier = document.getElementById('stockin-supplier').value;
+      const prodName = document.getElementById('stockin-prod-name').value.trim();
+      const qty = parseInt(document.getElementById('stockin-qty').value, 10) || 1;
+      const cost = parseInt(document.getElementById('stockin-cost').value, 10) || 0;
+      const note = document.getElementById('stockin-note').value.trim();
+      const total = qty * cost;
+
+      // 1. Tích hợp Lõi TapHoaCore.po
+      if (window.TapHoaCore && window.TapHoaCore.po) {
+        try {
+          const poData = {
+            supplierId: 'NCC_' + supplier.replace(/\s+/g, '_').toUpperCase(),
+            supplierName: supplier,
+            items: [
+              { productId: 'SP_PO_' + Date.now().toString().slice(-4), productName: prodName, quantity: qty, importPrice: cost }
+            ],
+            paidAmount: total,
+            paymentMethod: 'CASH',
+            note: note || 'Nhập kho bổ sung'
+          };
+          const createdPo = await TapHoaCore.po.createPurchaseOrder(poData);
+          await TapHoaCore.po.receivePurchaseOrder(createdPo.id);
+          console.log('[PO Engine] Đã tiếp nhận và nhận hàng PO:', createdPo.id);
+        } catch (poErr) {
+          console.warn('[PO Engine Error]', poErr);
+        }
+      }
+
+      // 2. Cập nhật tồn kho sản phẩm trong bảng admin
+      const existingProd = currentAdminProducts.find(p => p.name.toLowerCase() === prodName.toLowerCase());
+      if (existingProd) {
+        existingProd.stock = (existingProd.stock || 0) + qty;
+        existingProd.costPrice = cost;
+      }
+
+      // 3. Thực hiện quy trình ghi nhận chứng từ
+      const newId = `PNK-2026-00${currentStockInHistory.length + 1}`;
+      currentStockInHistory.unshift({
+        id: newId,
+        supplier: supplier,
+        total: total,
+        status: 'Đã nhập kho (WAC Updated)'
+      });
+
+      // Tự động hạch toán phiếu Chi vào Sổ Quỹ
+      currentCashflowData.unshift({
+        id: `PC-00${currentCashflowData.length + 1}`,
+        time: 'Vừa xong',
+        type: 'out',
+        person: supplier,
+        reason: `Đơn nhập hàng ${newId}: ${prodName} (x${qty})`,
+        amount: total
+      });
+
+      closeModal('modal-quick-stockin');
+      renderPurchasesView();
+      renderCashflowView();
+      renderProductTable(currentAdminProducts);
+      alert(`✅ TẠO ĐƠN NHẬP HÀNG THÀNH CÔNG!
+
+Mã PO: ${newId}
+Nhà cung cấp: ${supplier}
+Mặt hàng: ${prodName}
+Số lượng: +${qty}
+Đơn giá vốn: ${cost.toLocaleString('vi-VN')} đ
+Tổng thanh toán: ${total.toLocaleString('vi-VN')} đ
+
+Đã cập nhật tồn kho, tính giá vốn bình quân gia quyền và hạch toán phiếu Chi vào Sổ Quỹ!`);
+    };
+
   </script>
 
 </body>

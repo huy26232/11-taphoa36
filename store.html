@@ -10,6 +10,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <!-- Material Symbols Outlined -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <!-- Web App Manifest & PWA Meta -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#065f46">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="description" content="Tạp Hóa 36 - Ứng dụng đặt hàng trực tuyến tiện lợi, tải siêu tốc, giao nhanh 2H tại cơ sở UTH">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -48,6 +54,29 @@
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
+
+  <!-- ========================================================================= -->
+  <!-- PWA INSTALL PROMPT BANNER -->
+  <!-- ========================================================================= -->
+  <div id="pwaInstallBanner" class="hidden bg-slate-900 text-white px-4 py-2 text-xs shadow-md border-b border-slate-800 transition-all z-50">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <span class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-base">📱</span>
+        <div>
+          <span class="font-bold text-white">Cài đặt Tạp Hóa 36 PWA App:</span>
+          <span class="text-slate-300 hidden sm:inline ml-1">Mua sắm siêu tốc, dùng offline khi mất mạng và nhận thông báo khuyến mãi!</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <button id="btnPwaInstall" onclick="installPwaApp()" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg transition shadow-xs">
+          Cài đặt ngay
+        </button>
+        <button onclick="dismissPwaBanner()" class="text-slate-400 hover:text-white p-1" title="Đóng">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- ========================================================================= -->
   <!-- TOP HEADER & NAVBAR -->
@@ -226,12 +255,32 @@
       </div>
     </div>
 
-    <!-- Active Filter & Real-Time Sync Indicator Bar -->
+    <!-- Active Filter, Price Slider & Real-Time Sync Indicator Bar -->
     <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm">
       <div class="flex items-center gap-2 text-xs">
         <span class="text-slate-500">Đang xem:</span>
         <span id="lblActiveCategoryTitle" class="font-bold text-slate-800 text-sm">Tất cả sản phẩm</span>
         <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-mono text-[11px]" id="lblProductCount">36 sản phẩm</span>
+      </div>
+
+      <!-- Price Range Slider (Bộ lọc trượt khoảng giá) -->
+      <div class="flex items-center gap-2.5 text-xs bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200">
+        <span class="material-symbols-outlined text-slate-400 text-[18px]">tune</span>
+        <span class="text-slate-600 font-medium hidden sm:inline">Giá tối đa:</span>
+        <input 
+          type="range" 
+          id="priceRangeSlider" 
+          min="5000" 
+          max="500000" 
+          step="5000" 
+          value="500000"
+          oninput="handlePriceSliderChange(this.value)"
+          class="w-24 sm:w-36 accent-emerald-600 cursor-pointer"
+        />
+        <span id="lblPriceSliderValue" class="font-mono font-bold text-emerald-700 text-xs min-w-[70px] text-right">500.000 đ</span>
+        <button onclick="resetPriceSlider()" title="Đặt lại khoảng giá" class="text-slate-400 hover:text-slate-600 transition flex items-center">
+          <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+        </button>
       </div>
 
       <!-- Real-Time Sync Indicator Badge (AC-SYNC-01, 02) -->
@@ -372,6 +421,17 @@
           <div>
             <label class="font-medium text-slate-600 block mb-1">Ghi chú cho shipper quen xóm:</label>
             <input type="text" id="txtOrderNote" placeholder="Ví dụ: Treo trước cổng rào, gọi trước khi đến..." class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-500 text-xs">
+          </div>
+
+          <!-- LocalStorage Customer Info Persistence -->
+          <div class="pt-1 flex items-center justify-between">
+            <label class="flex items-center gap-2 text-[11px] text-slate-600 cursor-pointer select-none">
+              <input type="checkbox" id="chkRememberCustomerInfo" checked class="rounded text-emerald-600 focus:ring-emerald-500 w-3.5 h-3.5">
+              <span>Ghi nhớ thông tin giao hàng khách quen (LocalStorage)</span>
+            </label>
+            <button type="button" onclick="clearSavedCustomerInfo()" class="text-[10px] text-slate-400 hover:text-rose-500 transition">
+              Xóa thông tin đã lưu
+            </button>
           </div>
         </div>
 
@@ -694,6 +754,7 @@
       let cart = [];
       let activeCategory = 'all';
       let searchQuery = '';
+      let maxFilterPrice = 500000;
       let currentUser = null;
 
       const CATEGORIES = [
@@ -847,6 +908,8 @@
 
         const filtered = catalog.filter(p => {
           if (activeCategory !== 'all' && p.category !== activeCategory) return false;
+          // Bộ lọc trượt khoảng giá (Price Range Slider)
+          if (p.price > maxFilterPrice) return false;
           if (cleanSearch) {
             const cleanName = TapHoaCore.ai.removeAccents(p.name);
             const matchName = cleanName.includes(cleanSearch);
@@ -949,11 +1012,28 @@
         }
       };
 
+      window.handlePriceSliderChange = function (val) {
+        maxFilterPrice = Number(val) || 500000;
+        const lbl = document.getElementById('lblPriceSliderValue');
+        if (lbl) lbl.textContent = TapHoaCore.formatCurrency(maxFilterPrice);
+        renderCatalog();
+      };
+
+      window.resetPriceSlider = function () {
+        maxFilterPrice = 500000;
+        const slider = document.getElementById('priceRangeSlider');
+        if (slider) slider.value = '500000';
+        const lbl = document.getElementById('lblPriceSliderValue');
+        if (lbl) lbl.textContent = TapHoaCore.formatCurrency(500000);
+        renderCatalog();
+      };
+
       window.resetSearchAndFilter = function () {
         searchQuery = '';
         activeCategory = 'all';
         const txt = document.getElementById('txtStoreSearch');
         if (txt) txt.value = '';
+        window.resetPriceSlider();
         renderCategoryChips();
         renderCatalog();
       };
@@ -1249,7 +1329,22 @@
         const modal = document.getElementById('modalCheckout');
         if (modal) modal.classList.remove('hidden');
 
-        // Pre-fill thông tin nếu người dùng đã đăng nhập
+        // Pre-fill thông tin từ LocalStorage (Ghi nhớ khách quen) hoặc User đăng nhập
+        try {
+          const savedData = localStorage.getItem('taphoa36_saved_customer');
+          if (savedData) {
+            const parsed = JSON.parse(savedData);
+            const nameInput = document.getElementById('txtOrderCustomerName');
+            const phoneInput = document.getElementById('txtOrderCustomerPhone');
+            const addrInput = document.getElementById('txtOrderAddress');
+            const noteInput = document.getElementById('txtOrderNote');
+            if (nameInput && !nameInput.value && parsed.name) nameInput.value = parsed.name;
+            if (phoneInput && !phoneInput.value && parsed.phone) phoneInput.value = parsed.phone;
+            if (addrInput && !addrInput.value && parsed.address) addrInput.value = parsed.address;
+            if (noteInput && !noteInput.value && parsed.note) noteInput.value = parsed.note;
+          }
+        } catch (e) {}
+
         if (currentUser) {
           const nameInput = document.getElementById('txtOrderCustomerName');
           const phoneInput = document.getElementById('txtOrderCustomerPhone');
@@ -1382,6 +1477,19 @@
           customerName: orderData.customerName,
           timestamp: orderData.timestamp
         });
+
+        // 4. Ghi nhớ thông tin khách quen vào LocalStorage
+        const chkRemember = document.getElementById('chkRememberCustomerInfo');
+        if (chkRemember && chkRemember.checked) {
+          try {
+            localStorage.setItem('taphoa36_saved_customer', JSON.stringify({
+              name: name,
+              phone: phone,
+              address: address,
+              note: note
+            }));
+          } catch (e) {}
+        }
 
         closeCheckoutModal();
         cart = [];
@@ -1629,6 +1737,67 @@
 
         appendChatMessage('taphoa36', reply, actionBtn);
       }
+
+      // Xóa thông tin khách quen đã lưu trong LocalStorage
+      window.clearSavedCustomerInfo = function () {
+        try {
+          localStorage.removeItem('taphoa36_saved_customer');
+          const nameInput = document.getElementById('txtOrderCustomerName');
+          const phoneInput = document.getElementById('txtOrderCustomerPhone');
+          const addrInput = document.getElementById('txtOrderAddress');
+          const noteInput = document.getElementById('txtOrderNote');
+          if (nameInput) nameInput.value = '';
+          if (phoneInput) phoneInput.value = '';
+          if (addrInput) addrInput.value = '';
+          if (noteInput) noteInput.value = '';
+          showToast('Đã xóa thông tin khách quen đã lưu trong LocalStorage', 'info');
+        } catch (e) {}
+      };
+
+      // =======================================================================
+      // 10. PWA SERVICE WORKER REGISTRATION & INSTALL BANNER PROMPT
+      // =======================================================================
+      let deferredPwaPrompt = null;
+
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js').then(reg => {
+            console.log('[PWA Store] Service Worker đăng ký thành công:', reg.scope);
+          }).catch(err => {
+            console.log('[PWA Store] Service Worker registration failed:', err);
+          });
+        });
+      }
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPwaPrompt = e;
+        const dismissed = sessionStorage.getItem('taphoa36_pwa_dismissed');
+        if (!dismissed) {
+          const banner = document.getElementById('pwaInstallBanner');
+          if (banner) banner.classList.remove('hidden');
+        }
+      });
+
+      window.installPwaApp = async function () {
+        if (!deferredPwaPrompt) {
+          showToast('Ứng dụng đã sẵn sàng hoặc hãy dùng menu trình duyệt để "Thêm vào màn hình chính"', 'info');
+          return;
+        }
+        deferredPwaPrompt.prompt();
+        const { outcome } = await deferredPwaPrompt.userChoice;
+        if (outcome === 'accepted') {
+          showToast('Cảm ơn bạn đã cài đặt Tạp Hóa 36 PWA App!', 'success');
+        }
+        deferredPwaPrompt = null;
+        dismissPwaBanner();
+      };
+
+      window.dismissPwaBanner = function () {
+        const banner = document.getElementById('pwaInstallBanner');
+        if (banner) banner.classList.add('hidden');
+        sessionStorage.setItem('taphoa36_pwa_dismissed', 'true');
+      };
 
       // =======================================================================
       // 9. UTILITIES (TOAST)

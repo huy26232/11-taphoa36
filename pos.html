@@ -7,6 +7,10 @@
   <!-- Google Fonts: Be Vietnam Pro & JetBrains Mono -->
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <!-- PWA Manifest & Meta -->
+  <link rel="manifest" href="manifest.json"/>
+  <meta name="theme-color" content="#0070e0"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
   
   <style>
     @layer base {
@@ -1669,6 +1673,18 @@
 
         const normQuery = removeVietnameseTones(query);
 
+        // Bóc tách mã vạch cân điện tử GS1 (AC-SCALE-01: tiền tố 20 hoặc 21)
+        if (window.TapHoaCore && TapHoaCore.pos && typeof TapHoaCore.pos.parseWeighingBarcode === 'function' && (query.startsWith('20') || query.startsWith('21')) && query.length === 13) {
+          const parsed = TapHoaCore.pos.parseWeighingBarcode(query, Object.values(PRODUCTS));
+          if (parsed && parsed.isWeighingItem) {
+            posAddItem(parsed.productId, parsed.weightKg);
+            e.target.value = '';
+            hideLiveSearchDropdown();
+            showNotification(`⚖️ Cân điện tử: ${parsed.productName} (${parsed.weightKg}kg) = ${formatMoney(parsed.subtotal)}`);
+            return;
+          }
+        }
+
         // First attempt scanBarcode logic from TapHoaCore.pos
         if (window.TapHoaCore && TapHoaCore.pos && typeof TapHoaCore.pos.scanBarcode === 'function') {
           const res = TapHoaCore.pos.scanBarcode(query, Object.values(PRODUCTS), orderTabs[activeTabIdx].cart);
@@ -1889,42 +1905,101 @@
       const emptyEl = document.getElementById('returnEmptyNotice');
       const btnConfirm = document.getElementById('btnConfirmReturn');
 
-      const found = currentShift.orders.find(o => o.id === invId) || {
-        id: invId || 'HD_MOCK2026',
-        time: 'Hôm nay',
-        total: 100000,
-        items: [
+      const renderReturnUI = (order) => {
+        currentReturnOrder = order;
+        document.getElementById('returnInvoiceIdDisplay').innerText = order.id;
+        document.getElementById('returnInvoiceDateDisplay').innerText = order.time || (order.createdAt ? new Date(order.createdAt).toLocaleDateString('vi-VN') : 'Hôm nay');
+        document.getElementById('returnInvoiceTotalDisplay').innerText = formatMoney(order.total || 0);
+
+        const items = order.items && order.items.length > 0 ? order.items : [
           { id: 'sp1', name: 'Mì tôm Hảo Hảo tôm chua cay', price: 4500, unit: 'gói', qty: 5 },
           { id: 'sp8', name: 'Sữa tươi Vinamilk 100% 1L', price: 36000, unit: 'hộp', qty: 2 }
-        ]
-      };
+        ];
 
-      currentReturnOrder = found;
-      document.getElementById('returnInvoiceIdDisplay').innerText = found.id;
-      document.getElementById('returnInvoiceDateDisplay').innerText = found.time;
-      document.getElementById('returnInvoiceTotalDisplay').innerText = formatMoney(found.total);
-
-      const itemsListEl = document.getElementById('returnItemsList');
-      itemsListEl.innerHTML = found.items.map((it, idx) => `
-        <div class="p-2.5 flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <input type="checkbox" id="chkReturn_${idx}" class="rounded text-tertiary focus:ring-tertiary" checked />
-            <div class="flex flex-col">
-              <span class="text-xs font-bold text-slate-800">${it.name}</span>
-              <span class="text-[11px] text-slate-500">${formatMoney(it.price)} / ${it.unit}</span>
+        const itemsListEl = document.getElementById('returnItemsList');
+        itemsListEl.innerHTML = items.map((it, idx) => `
+          <div class="p-2.5 flex items-center justify-between border-b border-slate-100 last:border-0">
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="chkReturn_${idx}" class="rounded text-tertiary focus:ring-tertiary" checked />
+              <div class="flex flex-col">
+                <span class="text-xs font-bold text-slate-800">${it.name}</span>
+                <span class="text-[11px] text-slate-500">${formatMoney(it.price)} / ${it.unit || 'món'}</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-500">Trả:</span>
+              <input type="number" id="qtyReturn_${idx}" value="1" min="1" max="${it.qty || it.quantity || 1}" class="w-14 px-2 py-1 text-xs border rounded-lg text-center font-mono" />
+              <span class="text-xs text-slate-400">/${it.qty || it.quantity || 1}</span>
             </div>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs text-slate-500">Trả:</span>
-            <input type="number" id="qtyReturn_${idx}" value="1" min="1" max="${it.qty}" class="w-14 px-2 py-1 text-xs border rounded-lg text-center font-mono" />
-            <span class="text-xs text-slate-400">/${it.qty}</span>
-          </div>
-        </div>
-      `).join('');
+        `).join('');
 
-      detailsEl.classList.remove('hidden');
-      emptyEl.classList.add('hidden');
-      btnConfirm.classList.remove('hidden');
+        detailsEl.classList.remove('hidden');
+        emptyEl.classList.add('hidden');
+        btnConfirm.classList.remove('hidden');
+      };
+
+      const found = currentShift.orders.find(o => o.id === invId);
+      if (found) {
+        renderReturnUI(found);
+      } else {
+        // Query backend Node.js REST API /api/orders
+        try {
+          const apiUrl = getBackendApiUrl('/api/orders');
+          fetch(apiUrl)
+            .then(r => r.json())
+            .then(orders => {
+              if (Array.isArray(orders)) {
+                const apiOrder = orders.find(o => o.id === invId);
+                if (apiOrder) {
+                  renderReturnUI({
+                    id: apiOrder.id,
+                    time: apiOrder.createdAt,
+                    total: apiOrder.total,
+                    customerName: apiOrder.customerName,
+                    items: apiOrder.items.map(it => ({
+                      id: it.id,
+                      name: it.name,
+                      price: it.price,
+                      unit: it.unit,
+                      qty: it.quantity || it.qty || 1
+                    }))
+                  });
+                  return;
+                }
+              }
+              renderReturnUI({
+                id: invId || 'HD_MOCK2026',
+                time: 'Hôm nay',
+                total: 100000,
+                items: [
+                  { id: 'sp1', name: 'Mì tôm Hảo Hảo tôm chua cay', price: 4500, unit: 'gói', qty: 5 },
+                  { id: 'sp8', name: 'Sữa tươi Vinamilk 100% 1L', price: 36000, unit: 'hộp', qty: 2 }
+                ]
+              });
+            }).catch(() => {
+              renderReturnUI({
+                id: invId || 'HD_MOCK2026',
+                time: 'Hôm nay',
+                total: 100000,
+                items: [
+                  { id: 'sp1', name: 'Mì tôm Hảo Hảo tôm chua cay', price: 4500, unit: 'gói', qty: 5 },
+                  { id: 'sp8', name: 'Sữa tươi Vinamilk 100% 1L', price: 36000, unit: 'hộp', qty: 2 }
+                ]
+              });
+            });
+        } catch (e) {
+          renderReturnUI({
+            id: invId || 'HD_MOCK2026',
+            time: 'Hôm nay',
+            total: 100000,
+            items: [
+              { id: 'sp1', name: 'Mì tôm Hảo Hảo tôm chua cay', price: 4500, unit: 'gói', qty: 5 },
+              { id: 'sp8', name: 'Sữa tươi Vinamilk 100% 1L', price: 36000, unit: 'hộp', qty: 2 }
+            ]
+          });
+        }
+      }
     }
 
     function confirmExecuteReturn() {
@@ -1933,12 +2008,20 @@
       const reason = document.getElementById('returnReasonSelect').value;
 
       let returnedTotal = 0;
+      const returnedItemsList = [];
       currentReturnOrder.items.forEach((it, idx) => {
         const chk = document.getElementById(`chkReturn_${idx}`);
         const qtyEl = document.getElementById(`qtyReturn_${idx}`);
         if (chk && chk.checked && qtyEl) {
           const qty = Number(qtyEl.value) || 1;
           returnedTotal += (it.price * qty);
+          returnedItemsList.push({
+            id: it.id,
+            name: it.name,
+            price: it.price,
+            unit: it.unit || 'món',
+            quantity: -qty
+          });
 
           if (method === 'cart_deduct') {
             const currentCart = orderTabs[activeTabIdx].cart;
@@ -1953,6 +2036,46 @@
           }
         }
       });
+
+      // Đồng bộ đơn đổi trả về Backend Node.js REST API /api/orders
+      const returnPayload = {
+        id: 'HD_TRA_' + (currentReturnOrder.id || 'HD').replace(/^HD_?/, '') + '_' + Date.now().toString().slice(-4),
+        branchId: 'branch_main',
+        originalInvoiceId: currentReturnOrder.id,
+        items: returnedItemsList,
+        total: -returnedTotal,
+        paymentMethod: method === 'cash_refund' ? 'TIEN_MAT_HOAN' : 'CAN_TRU_GIO_HANG',
+        reason: reason,
+        customerName: currentReturnOrder.customerName || 'Khách Đổi Trả',
+        createdAt: new Date().toISOString()
+      };
+
+      try {
+        const apiUrl = getBackendApiUrl('/api/orders');
+        fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(returnPayload)
+        }).then(r => r.json()).then(res => {
+          if (res && res.success) {
+            console.log('[POS] Đã lưu phiếu đổi trả ' + returnPayload.id + ' vào CSDL Backend SQL Server!');
+          }
+        }).catch(err => {
+          console.warn('[POS] Return sync warning:', err);
+        });
+      } catch (e) {
+        console.warn('[POS] Backend return sync error:', e);
+      }
+
+      // Phát sự kiện đồng bộ tồn kho sang Admin & Store
+      if (window.TapHoaCore && TapHoaCore.sync) {
+        TapHoaCore.sync.broadcast('PRODUCT_STOCK_CHANGED', {
+          orderId: returnPayload.id,
+          source: 'pos_return',
+          total: -returnedTotal,
+          timestamp: new Date().toISOString()
+        });
+      }
 
       if (method === 'cash_refund') {
         currentShift.cashRevenue = Math.max(0, currentShift.cashRevenue - returnedTotal);

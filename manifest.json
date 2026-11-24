@@ -1,0 +1,45 @@
+{
+  "name": "Tạp Hóa 36 - Cửa Hàng Bán Lẻ & POS Thông Minh UTH",
+  "short_name": "TapHoa36",
+  "description": "Hệ thống quản trị bán lẻ tạp hóa, điểm bán POS siêu tốc và cửa hàng trực tuyến chuẩn dân cư UTH",
+  "start_url": "./store.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0284c7",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Bán hàng POS (F1)",
+      "url": "./pos.html",
+      "description": "Mở màn hình thu ngân bán lẻ tại quầy",
+      "icons": [{ "src": "icons/pos-icon.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Quản trị Admin",
+      "url": "./admin.html",
+      "description": "Bảng điều khiển quản trị Bento Grid",
+      "icons": [{ "src": "icons/admin-icon.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Cửa hàng Online",
+      "url": "./store.html",
+      "description": "Cửa hàng mua sắm trực tuyến dân cư",
+      "icons": [{ "src": "icons/store-icon.png", "sizes": "96x96" }]
+    }
+  ]
+}
