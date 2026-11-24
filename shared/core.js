@@ -16944,6 +16944,118 @@
     }
   };
 
+
+  const storeModule = {
+    getCategories() {
+      return [
+        { id: 'all', name: 'Tất cả sản phẩm', icon: 'apps' },
+        { id: 'rau_cu', name: 'Rau củ quả tươi', icon: 'spa', badge: 'Sáng nay' },
+        { id: 'thit_ca', name: 'Thịt & Hải sản', icon: 'kebab_dining' },
+        { id: 'trung_dau', name: 'Trứng & Đậu hũ', icon: 'egg' },
+        { id: 'gia_vi', name: 'Gia vị & Nước mắm', icon: 'soup_kitchen' },
+        { id: 'mi_goi', name: 'Mì tôm & Đồ khô', icon: 'ramen_dining' },
+        { id: 'sua_banh', name: 'Sữa & Bánh kẹo', icon: 'cookie' },
+        { id: 'nuoc_ngot', name: 'Bia & Nước ngọt', icon: 'local_drink' },
+        { id: 'giat_xa', name: 'Hóa phẩm giặt xả', icon: 'clean_hands' }
+      ];
+    },
+
+    getFlashSaleProducts() {
+      return [
+        {
+          id: 'FS_01',
+          name: 'Dầu ăn Simply đậu nành nguyên chất 1L',
+          price: 48000,
+          originalPrice: 65000,
+          discountPercent: 26,
+          soldPercent: 78,
+          remainingText: 'Còn 12 chai',
+          badge: 'Chỉ hôm nay',
+          image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBXp4-3TA0-pAlWDmVac-FwMtByXDCgU-KBTYv6Rai3kDTKWlOxnULl1b9dDryPHJ2B8JH-O2gJc9sS_cmmpv-MEJZaNVBjGFZ30JDigFXAUQsQN759Y7yJ7FXD-dWdkcy06V7vInG3WLRKlTcSL_knOkkRcB_QWSv8uQgAbm0DzhLqq7DHmci3g8h-qOm97QeUvmSoaS5YUNBIpMWDOCwnJn8pDWmlsgCOQMambgQ'
+        },
+        {
+          id: 'FS_02',
+          name: 'Thùng 30 gói mì Hảo Hảo Tôm Chua Cay',
+          price: 112000,
+          originalPrice: 135000,
+          discountPercent: 17,
+          soldPercent: 91,
+          remainingText: 'Sắp hết!',
+          badge: 'Bán chạy',
+          image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBGIKSaNMAt29m4xsCXliVd1RU9C9bsMUOKKfobW8AbsnPBgOF2VGJpoeEKAG5cFKaa1yg1eQRYoE9n1zc-3xKYw6yx83ZbA5bCCgTi9p7b3sZcgh7P7MDVj5WmeQYc6SQOG3QCj68aH5nTIipcb-zKUnjUatgenpXtOGGWRye7bT7GVehc8tuALIOUa29LAST__NZrHNZPvF-0mjaq4KP0oQQfx-XzJkZmRkb8CaU'
+        },
+        {
+          id: 'FS_03',
+          name: 'Thịt ba chỉ heo tươi VietGAP 500g',
+          price: 62000,
+          originalPrice: 85000,
+          discountPercent: 27,
+          soldPercent: 65,
+          remainingText: 'Còn 18 khay',
+          badge: 'VietGAP',
+          image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBls5kil6nPIieOQieXbtkE8NbQ9EpcVvI4iSLE_I09eGxQY99jlOP5pJ9N2pVVMHS6TPhhIZBJFntQUoEUCKkNHnBI-bOC2V64M5wnfaNRlw2Ea087c09RVWx_GMxeD2pU5Ew5o_ZioBPiPHIsKdXJJ7mnl3MxCE_oggK82DJfHX36dS9Xu7Mawf-_SUGREK-ociYQvfdhNvyvNEl-a5y4JJixjD7MC9qJi_fxVz8'
+        },
+        {
+          id: 'FS_04',
+          name: 'Trứng gà ta thảo mộc Ba Huân (Hộp 10 quả)',
+          price: 28000,
+          originalPrice: 38000,
+          discountPercent: 26,
+          soldPercent: 84,
+          remainingText: 'Còn 9 vỉ',
+          badge: 'Tươi mới',
+          image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDTp1l23l9XQ3gU09_FwMtByXDCgU-KBTYv6Rai3kDTKWlOxnULl1b9dDryPHJ2B8JH'
+        },
+        {
+          id: 'FS_05',
+          name: 'Lốc 6 lon Coca Cola vị nguyên bản 320ml',
+          price: 49000,
+          originalPrice: 62000,
+          discountPercent: 21,
+          soldPercent: 72,
+          remainingText: 'Còn 25 lốc',
+          badge: 'Giá sốc',
+          image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBE3l2cqJ_eauCiCzby93ePIzVugG2Avu6Rkk_uCDdN4xsLBY5lB2yFYP92'
+        }
+      ];
+    },
+
+    getSavingCombos() {
+      return [
+        {
+          id: 'COMBO_01',
+          name: 'Combo Bữa Cơm Sinh Viên UTH',
+          price: 45000,
+          originalPrice: 62000,
+          tag: 'Dành riêng SV UTH',
+          description: 'Trứng gà 4 quả + Rau muống sạch 500g + 2 gói mì Hảo Hảo',
+          icon: 'school',
+          color: 'emerald'
+        },
+        {
+          id: 'COMBO_02',
+          name: 'Combo Nấu Lẩu Cuối Tuần 4 Người',
+          price: 120000,
+          originalPrice: 165000,
+          tag: 'Gợi ý tiết kiệm',
+          description: 'Thịt ba chỉ 500g + Nấm kim châm + Rau muống + Gói cốt lẩu Thái',
+          icon: 'soup_kitchen',
+          color: 'rose'
+        },
+        {
+          id: 'COMBO_03',
+          name: 'Combo Nấu Cơm Gia Đình 3 Ngày',
+          price: 220000,
+          originalPrice: 280000,
+          tag: 'Đủ chất cho gia đình',
+          description: 'Thịt heo VietGAP 1kg + Cá basa phi lê 500g + Trứng gà 10 quả + Rau xanh',
+          icon: 'family_restroom',
+          color: 'amber'
+        }
+      ];
+    }
+  };
+
   const TapHoaCore = {
     version: '2.5.0',
     auth: authModule,
@@ -16962,6 +17074,7 @@
     pwa: pwaModule,
     barcode: barcodeModule,
     po: poModule,
+    store: storeModule,
     clearAllData: () => dalModule.clearAllData(),
     initCleanStoreState: async () => {
       await dalModule.clearAllData();
